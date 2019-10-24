@@ -6,7 +6,7 @@ public class DVT {
     private int id;
     private Timestamp timestamp;
     private int resistance; // units = ?
-    private int number_of_reps;
+    private int numberOfReps;
 
     public int getId() {
         return id;
@@ -32,11 +32,11 @@ public class DVT {
         this.resistance = resistance;
     }
 
-    public int getNumber_of_reps() {
-        return number_of_reps;
+    public int getNumberOfReps() {
+        return numberOfReps;
     }
 
-    public void setNumber_of_reps(int number_of_reps) {
-        this.number_of_reps = number_of_reps;
+    public void setNumberOfReps(int numberOfReps) {
+        this.numberOfReps = numberOfReps;
     }
 }
