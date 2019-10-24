@@ -9,7 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.example.incentive_spriometer_and_dvt_application.activities.PatientInfoActivity"></activity>
+        <activity android:name="com.example.incentive_spriometer_and_dvt_application.activities.PatientListActivity" />
+        <activity android:name="com.example.incentive_spriometer_and_dvt_application.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
