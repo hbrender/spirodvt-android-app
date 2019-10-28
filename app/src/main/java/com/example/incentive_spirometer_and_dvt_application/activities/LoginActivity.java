@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.example.incentive_spirometer_and_dvt_application.helpers.Authenticate;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -42,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkInput(String username, String password) {
+
+        Authenticate auth = new Authenticate(username, password);
+
         if(username.equals("") || password.equals("")) {
             return false;
         }
