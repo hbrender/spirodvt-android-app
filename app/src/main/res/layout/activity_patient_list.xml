@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".activities.PatientListActivity">
 
-    <TextView
-        android:id="@+id/testIntent"
-        android:layout_width="wrap_content"
+
+    <SearchView
+        android:id="@+id/patientSearch"
+        android:hint="@string/search"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
-</GridLayout>
+    <ListView
+        android:id="@+id/patientList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        />
+
+    <Button
+        android:id="@+id/newPatientButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20sp"
+        android:text="@string/new_patient_button"
+        />
+</LinearLayout>
