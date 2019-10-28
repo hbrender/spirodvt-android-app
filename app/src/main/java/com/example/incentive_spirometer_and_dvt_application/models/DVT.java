@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 public class DVT {
     private int id;
     private Timestamp timestamp;
-    private int resistance; // units = ?
+    private int resistance; // units = easy, medium, hard
     private int numberOfReps;
 
     public int getId() {
