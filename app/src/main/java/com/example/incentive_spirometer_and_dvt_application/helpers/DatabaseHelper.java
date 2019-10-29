@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_DOCTOR = "Doctor";
     private static final String TABLE_PATIENT = "Patient";
     private static final String TABLE_DOCTOR_PATIENT = "DoctorPatient";
+    private static final String TABLE_LOGIN = "Login";
 
     // Common column names
     private static final String ID = "id";
@@ -55,6 +56,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // DoctorPatient table column names
     private static final String DOCTOR_ID = "doctorId";
     private static final String PATIENT_ID = "patientId";
+
+    // Login table column names
+    private static final String SALT = "salt";
+    private static final String HASHED_PASSWORD = "hashedPassword";
 
     // IncentiveSpirometer table create statement
     private static final String CREATE_TABLE_INCENTIVE_SPIROMETER = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER + "("
@@ -97,6 +102,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + DOCTOR_ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
             + "FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
 
+    private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
+            + ID + " INTEGER,"
+            + USERNAME + " TEXT,"
+            + SALT + " INTEGER,"
+            + HASHED_PASSWORD + " INTEGER,"
+            + "FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -109,6 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_DOCTOR);
         db.execSQL(CREATE_TABLE_PATIENT);
         db.execSQL(CREATE_TABLE_DOCTOR_PATIENT);
+        db.execSQL(CREATE_TABLE_LOGIN);
     }
 
     @Override
