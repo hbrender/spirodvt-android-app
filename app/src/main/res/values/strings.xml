@@ -2,6 +2,7 @@
     <string name="app_name">App Name</string>
 
     <string name="add_patient">Add Patient</string>
+    <string name="sign_out">Sign Out</string>
 
     <!--Login Screen Strings-->
     <string name="welcome">Welcome to App Name</string>

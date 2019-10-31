@@ -28,7 +28,7 @@
             android:textSize="18sp" />
 
         <EditText
-            android:id="@+id/usernameInput"
+            android:id="@+id/usernameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -46,7 +46,7 @@
             android:textSize="18sp" />
 
         <EditText
-            android:id="@+id/passwordInput"
+            android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"

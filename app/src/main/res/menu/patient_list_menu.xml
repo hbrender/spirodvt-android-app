@@ -6,6 +6,9 @@
         android:id="@+id/addMenuItem"
         android:title="@string/add_patient"
         android:icon="@android:drawable/ic_menu_add"
-        app:showAsAction="always"
-        />
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/signOutMenuItem"
+        android:title="@string/sign_out"
+        app:showAsAction="never"/>
 </menu>

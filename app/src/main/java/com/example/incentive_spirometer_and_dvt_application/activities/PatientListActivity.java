@@ -47,16 +47,25 @@ public class PatientListActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    private void startPatientInfoActivity() {
+        Intent intent = new Intent(this, PatientInfoActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         switch(id) {
             case R.id.addMenuItem:
-                // to do
+                startPatientInfoActivity();
                 return true; // we consumed/handled the event
+            case R.id.signOutMenuItem:
+                PatientListActivity.this.finish();
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
 }

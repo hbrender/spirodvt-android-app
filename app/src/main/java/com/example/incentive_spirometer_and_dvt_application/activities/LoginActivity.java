@@ -19,15 +19,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final EditText userInput = (EditText) findViewById(R.id.usernameInput);
-        final EditText passInput = (EditText) findViewById(R.id.passwordInput);
+        final EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
+        final EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
         Button loginButt = (Button) findViewById(R.id.loginButton);
         loginButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = userInput.getText().toString();
-                String password = passInput.getText().toString();
+                String username = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
 
                 if(checkInput(username, password)) {
                     Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);
@@ -50,5 +50,17 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
+        EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
+
+        // remove username and password from previous activity
+        usernameEditText.setText("");
+        passwordEditText.setText("");
+
+        super.onStop();
     }
 }
