@@ -59,9 +59,10 @@ public class PatientListActivity extends AppCompatActivity {
         switch(id) {
             case R.id.addMenuItem:
                 startPatientInfoActivity();
-                return true; // we consumed/handled the event
+                return true;
             case R.id.signOutMenuItem:
                 PatientListActivity.this.finish();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

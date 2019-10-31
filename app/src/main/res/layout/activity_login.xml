@@ -73,6 +73,4 @@
         android:text="@string/forgot_username"
         android:textAlignment="center"
         android:layout_marginTop="10dp"/>
-
-
 </GridLayout>
