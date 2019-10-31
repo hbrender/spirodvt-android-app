@@ -8,6 +8,7 @@
 
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
+import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -93,7 +94,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + INCENTIVE_SPIROMETER_ID + "INTEGER,"
             + DVT_ID + "INTEGER,"
             + "FOREIGN KEY(" + INCENTIVE_SPIROMETER_ID + ") REFERENCES "
-            + TABLE_INCENTIVE_SPIROMETER + "(" + ID + "))";
+            + TABLE_INCENTIVE_SPIROMETER + "(" + ID + "),"
+            + "FOREIGN KEY(" + DVT_ID + ") REFERENCES "
+            + TABLE_DVT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_DOCTOR_PATIENT = "CREATE TABLE " + TABLE_DOCTOR_PATIENT + "("
             + DOCTOR_ID + " INTEGER,"
@@ -135,5 +138,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // create new tables
         onCreate(db);
+    }
+
+    public void addNewPatient(Patient patient) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        int spirometerId = patient.getIncentiveSpirometerId();
+        int dvtId = patient.getDvtId();
+
+        if (spirometerId != 0) { // aka null
+            String insertSpirometer = "INSERT INTO " + TABLE_INCENTIVE_SPIROMETER
+                    + "(" + ID + ") VALUES("
+                    + spirometerId + ")";
+            db.execSQL(insertSpirometer);
+        }
+
+        if (dvtId != 0) { // aka null
+            String insertSpirometer = "INSERT INTO " + TABLE_DVT
+                    + "(" + ID + ") VALUES("
+                    + dvtId + ")";
+            db.execSQL(insertSpirometer);
+        }
+
+        int patientId = patient.getId();
+        String firstName = patient.getFirstName();
+        String lastName = patient.getLastNames();
+        double heightFeet = patient.getHeightFeet();
+        double heightInches = patient.getHeightInches();
+        double weight = patient.getWeight();
+        int age = patient.getAge();
+        String sex = patient.getSex();
+
+        String insertPatient = "INSERT INTO " + TABLE_PATIENT + " VALUES("
+                + patientId + ", " + firstName + ", " + lastName + ", " + heightFeet + ","
+                + heightInches + ", " + weight + ", " + age + ", " + sex + ", " + spirometerId
+                + ", " + dvtId + ")";
+
+        db.execSQL(insertPatient);
     }
 }

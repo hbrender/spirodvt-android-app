@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Incentive-Spirometer-and-DVT-Application</string>
+    <string name="app_name">App Name</string>
+
+    <string name="add_patient">Add Patient</string>
 
     <!--Login Screen Strings-->
     <string name="welcome">Welcome to App Name</string>
@@ -10,6 +12,7 @@
     <string name="forgot_password">Forgot Password?</string>
     <string name="search">Search</string>
     <string name="new_patient_button">New Patient</string>
+
 
 
 </resources>

@@ -1,12 +1,17 @@
 package com.example.incentive_spirometer_and_dvt_application.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 
@@ -33,7 +38,25 @@ public class PatientListActivity extends AppCompatActivity {
             //TextView test = (TextView) findViewById(R.id.testIntent);
             //test.setText(user);
         }
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.patient_list_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        switch(id) {
+            case R.id.addMenuItem:
+                // to do
+                return true; // we consumed/handled the event
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
