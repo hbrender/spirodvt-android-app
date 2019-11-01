@@ -12,6 +12,23 @@ public class Patient {
     private int incentiveSpirometerId;
     private int dvtId;
 
+    public Patient() {
+
+    }
+
+    public Patient(int id, String firstName, String lastNames, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastNames = lastNames;
+        this.heightFeet = heightFeet;
+        this.heightInches = heightInches;
+        this.weight = weight;
+        this.age = age;
+        this.sex = sex;
+        this.incentiveSpirometerId = incentiveSpirometerId;
+        this.dvtId = dvtId;
+    }
+
     public int getId() {
         return id;
     }

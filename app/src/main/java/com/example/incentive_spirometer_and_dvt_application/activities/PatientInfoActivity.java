@@ -34,7 +34,10 @@ public class PatientInfoActivity extends AppCompatActivity {
             Toast.makeText(this, "Enter valid patient ID", Toast.LENGTH_SHORT).show();
         } else {
             Patient patient = createPatient(view);
-            databaseHelper.insertPatient(patient);
+            boolean result = databaseHelper.insertPatient(patient);
+            if (!result) {
+                Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

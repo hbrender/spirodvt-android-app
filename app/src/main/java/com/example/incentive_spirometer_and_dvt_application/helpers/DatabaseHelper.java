@@ -12,6 +12,7 @@ import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -143,7 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertPatient(Patient patient) {
+    public boolean insertPatient(Patient patient) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ID, patient.getId());
@@ -157,7 +158,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
         values.put(DVT_ID, Types.NULL);
 
-        db.insert(TABLE_PATIENT, null, values);
+        long result = db.insert(TABLE_PATIENT, null, values);
+
+        return result != -1; // if result = -1 data doesnt insert
 
         /*int spirometerId = patient.getIncentiveSpirometerId();
         int dvtId = patient.getDvtId();
@@ -192,4 +195,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.execSQL(insertPatient);*/
     }
+
+    public Cursor viewPatients() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT;
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor;
+    }
 }
+
