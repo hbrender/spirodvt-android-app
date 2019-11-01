@@ -1,9 +1,12 @@
 package com.example.incentive_spirometer_and_dvt_application.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -19,6 +22,9 @@ public class PatientInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_info);
+
+        // back menu item
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public void onClickSave(View view) {
@@ -53,10 +59,33 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setAge(Integer.parseInt(ageEditText.getText().toString()));
         patient.setSex(sexSpinner.getSelectedItem().toString());
 
+        // change edit texts to non-editable
+        patientIdEditText.setEnabled(false);
+        firstNameEditText.setEnabled(false);
+        lastNameEditText.setEnabled(false);
+        heightFeetEditText.setEnabled(false);
+        heightInchesEditText.setEnabled(false);
+        weightPoundsEditText.setEnabled(false);
+        ageEditText.setEnabled(false);
+        sexSpinner.setEnabled(false);
+
+        // hide save button
+        Button saveButton = (Button) findViewById(R.id.saveButton);
+        saveButton.setVisibility(View.GONE);
+
         return patient;
     }
 
-    public void onClickCancel(View view) {
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
 
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

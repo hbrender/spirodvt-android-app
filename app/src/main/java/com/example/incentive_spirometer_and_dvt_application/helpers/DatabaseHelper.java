@@ -16,6 +16,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.sql.Timestamp;
+import java.sql.Types;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LOG = "DatabaseHelper";
@@ -154,7 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(AGE, patient.getAge());
         values.put(SEX, patient.getSex());
         values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
-        values.put(DVT_ID, java.sql.Types.NULL);
+        values.put(DVT_ID, Types.NULL);
 
         db.insert(TABLE_PATIENT, null, values);
 

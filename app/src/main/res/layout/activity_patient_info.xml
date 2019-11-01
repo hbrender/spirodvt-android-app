@@ -153,13 +153,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal|bottom"
         android:text="Save"
+        android:layout_columnSpan="2"
         android:onClick="onClickSave"/>
 
-    <Button
-        android:id="@+id/cancelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal|bottom"
-        android:text="Cancel"
-        android:onClick="onClickCancel"/>
 </GridLayout>
