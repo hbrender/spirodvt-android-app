@@ -9,6 +9,8 @@
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
+
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -79,24 +81,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Doctor table create statement
     private static final String CREATE_TABLE_DOCTOR = "CREATE TABLE " + TABLE_DOCTOR + "("
             + ID + " INTEGER PRIMARY KEY,"
-            + USERNAME + "TEXT)";
+            + USERNAME + " TEXT)";
 
     // Patient table create statement
     private static final String CREATE_TABLE_PATIENT = "CREATE TABLE " + TABLE_PATIENT + "("
             + ID + " INTEGER PRIMARY KEY,"
             + FIRST_NAME + " TEXT,"
             + LAST_NAME + " TEXT,"
-            + HEIGHT_FEET + "INTEGER,"
-            + HEIGHT_INCHES + "INTEGER,"
-            + WEIGHT + "INTEGER,"
-            + AGE + "INTEGER,"
-            + SEX + "TEXT,"
-            + INCENTIVE_SPIROMETER_ID + "INTEGER,"
-            + DVT_ID + "INTEGER,"
-            + "FOREIGN KEY(" + INCENTIVE_SPIROMETER_ID + ") REFERENCES "
-            + TABLE_INCENTIVE_SPIROMETER + "(" + ID + "),"
-            + "FOREIGN KEY(" + DVT_ID + ") REFERENCES "
-            + TABLE_DVT + "(" + ID + "))";
+            + HEIGHT_FEET + " INTEGER,"
+            + HEIGHT_INCHES + " INTEGER,"
+            + WEIGHT + " INTEGER,"
+            + AGE + " INTEGER,"
+            + SEX + " TEXT,"
+            + INCENTIVE_SPIROMETER_ID + " INTEGER,"
+            + DVT_ID + " INTEGER)";
+            //+ "FOREIGN KEY(" + INCENTIVE_SPIROMETER_ID + ") REFERENCES "
+            //+ TABLE_INCENTIVE_SPIROMETER + "(" + ID + "),"
+            //+ "FOREIGN KEY(" + DVT_ID + ") REFERENCES "
+            //+ TABLE_DVT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_DOCTOR_PATIENT = "CREATE TABLE " + TABLE_DOCTOR_PATIENT + "("
             + DOCTOR_ID + " INTEGER,"
@@ -140,10 +142,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addNewPatient(Patient patient) {
+    public void insertPatient(Patient patient) {
         SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ID, patient.getId());
+        values.put(FIRST_NAME, patient.getFirstName());
+        values.put(LAST_NAME, patient.getLastNames());
+        values.put(HEIGHT_FEET, patient.getHeightFeet());
+        values.put(HEIGHT_INCHES, patient.getHeightInches());
+        values.put(WEIGHT, patient.getWeight());
+        values.put(AGE, patient.getAge());
+        values.put(SEX, patient.getSex());
+        values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
+        values.put(DVT_ID, java.sql.Types.NULL);
 
-        int spirometerId = patient.getIncentiveSpirometerId();
+        db.insert(TABLE_PATIENT, null, values);
+
+        /*int spirometerId = patient.getIncentiveSpirometerId();
         int dvtId = patient.getDvtId();
 
         if (spirometerId != 0) { // aka null
@@ -174,6 +189,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + heightInches + ", " + weight + ", " + age + ", " + sex + ", " + spirometerId
                 + ", " + dvtId + ")";
 
-        db.execSQL(insertPatient);
+        db.execSQL(insertPatient);*/
     }
 }
