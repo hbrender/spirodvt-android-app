@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,8 +12,11 @@ import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.Authenticate;
+import com.example.incentive_spirometer_and_dvt_application.models.User;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivityTag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else {
-                    Toast.makeText(LoginActivity.this, "Please enter valid input", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Either your username or password is invalid.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -46,11 +50,22 @@ public class LoginActivity extends AppCompatActivity {
 
         Authenticate auth = new Authenticate(username, password);
 
-        if(username.equals("") || password.equals("")) {
+        if (username.equals(User.username) && compareHash(auth)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean compareHash (Authenticate auth) {
+        // checks the hashed password input against the known users' hashed password
+        if(auth.getHashedPassword().equals(User.hashedPass) && auth.getHashedPassword() != "") {
+            return true;
+        }
+        else {
             return false;
         }
-        return true;
     }
+
 
     @Override
     protected void onStop() {
