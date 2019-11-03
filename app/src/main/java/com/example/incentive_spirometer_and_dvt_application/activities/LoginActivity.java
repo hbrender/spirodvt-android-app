@@ -23,6 +23,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
+        // setting the users that can login to the app
+        // this is just for testing right now dont worry
+        Authenticate user1 = new Authenticate("iBjornson", "iamthegreatest");
+        String[] user1help = new String[] {user1.getSalt(), user1.getHashedPassword(user1.getSalt())};
+        User.users.put("iBjornson", user1help);
+
+        Authenticate user2 = new Authenticate("cDesilva", "whatthefook");
+        String[] user2help = new String[] {user2.getSalt(), user2.getHashedPassword(user2.getSalt())};
+        User.users.put("cDesilva", user2help);
+
+
+
         final EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         final EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
@@ -53,15 +66,18 @@ public class LoginActivity extends AppCompatActivity {
 
         // checks to make sure the username input is equal to the known users' username
         // also checks the hashed password from the input against the users' hashed password;
-        if (username.equals(User.username) && compareHash(auth)) {
-            return true;
+        if (User.users.containsKey(username)) {
+            String[] info = User.users.get(username);
+            if (compareHash(auth, info)) {
+                return true;
+            }
         }
         return false;
     }
 
-    private boolean compareHash (Authenticate auth) {
+    private boolean compareHash (Authenticate auth, String[] info) {
         // checks the hashed password input against the known users' hashed password
-        if(auth.getHashedPassword(User.salt).equals(User.hashedPass) && auth.getHashedPassword(User.salt) != "") {
+        if(auth.getHashedPassword(info[0]).equals(info[1]) && auth.getHashedPassword(info[0]) != "") {
             return true;
         }
         else {
