@@ -13,18 +13,18 @@ public class Authenticate {
     private String salt;
     private String username;
     private String password;
-    private String hashedPassword;
 
     public Authenticate(String username, String password)
     {
         this.username = username;
         this.password = password;
-        this.salt = User.salt;
-        this.hashedPassword = getHash();
+        // this.salt is set to the users' salt so that we can prepend the users salt to the inputted password and then hash it
+        // if the real user's salt + the password hash is equal to the user's hashed password then we know they got the password right.
+        this.salt = saltIt();
     }
 
     public String getSalt() { return this.salt; }
-    public String getHashedPassword() { return this.hashedPassword; }
+    public String getHashedPassword(String salt) { return getHash(salt); }
     public String getUsername() { return this.username; }
     public String getPassword() { return this.password; }
 
@@ -54,9 +54,9 @@ public class Authenticate {
         return hexString.toString();
     }
 
-    private String getHash() {
+    private String getHash(String salt) {
         try {
-            return toHexString(getSHA(this.salt+this.password));
+            return toHexString(getSHA(salt + this.password));
         }
         catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

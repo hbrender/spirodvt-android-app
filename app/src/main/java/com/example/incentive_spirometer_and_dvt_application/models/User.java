@@ -7,5 +7,5 @@ public class User {
     public static String username = "isakIsSoCool";
     private static Authenticate auth = new Authenticate(username, "heLLoworLd");
     public static String salt = auth.getSalt();
-    public static String hashedPass = auth.getHashedPassword();
+    public static String hashedPass = auth.getHashedPassword(salt);
 }
