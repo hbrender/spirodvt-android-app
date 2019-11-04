@@ -88,6 +88,18 @@ public class PatientListActivity extends AppCompatActivity {
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
         patientListView.setAdapter(arrayAdapter);
 
+        // click listener for viewing patient information
+        patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final Patient patient = (Patient) parent.getItemAtPosition(position);
+
+                Intent intent = new Intent(PatientListActivity.this, PatientInfoActivity.class);
+                intent.putExtra("patientId", patient.getId());
+                startActivity(intent);
+            }
+        });
+
         // long click listener for deleting patient
         patientListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override

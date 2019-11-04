@@ -22,6 +22,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final int DATABASE_VERSION = 1;
@@ -200,11 +202,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<Patient> getAllPatients() {
-        List<Patient> patientList = new ArrayList<>();
-
-        String query = "SELECT * FROM " + TABLE_PATIENT;
         SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT;
         Cursor c = db.rawQuery(query, null);
+
+        List<Patient> patientList = new ArrayList<>();
 
         // create list of patients
         if (c.moveToFirst()) {
@@ -228,6 +230,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "getAllPatients: " + patientList.get(0).getFirstName());
 
         return patientList;
+    }
+
+    public Patient getPatient(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.e(TAG, "getPatient: "+ query);
+
+        if (c != null)
+            c.moveToFirst();
+
+        // create patient
+        Patient patient = new Patient();
+        patient.setId(c.getInt(c.getColumnIndex(ID)));
+        patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
+        patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
+        patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
+        patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
+        patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
+        patient.setAge(c.getInt(c.getColumnIndex(AGE)));
+        patient.setSex(c.getString(c.getColumnIndex(SEX)));
+        patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
+        patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
+
+        return patient;
     }
 
     public void deletePatient(int patientId) {

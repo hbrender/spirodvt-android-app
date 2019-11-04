@@ -18,11 +18,30 @@ import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 public class PatientInfoActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
+    EditText patientIdEditText;
+    EditText firstNameEditText;
+    EditText lastNameEditText;
+    EditText heightFeetEditText;
+    EditText heightInchesEditText;
+    EditText weightPoundsEditText;
+    EditText ageEditText;
+    Spinner sexSpinner;
+    Button saveButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_info);
+
+        patientIdEditText = (EditText) findViewById(R.id.patientIdEditText);
+        firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
+        lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
+        heightFeetEditText = (EditText) findViewById(R.id.heightFeetEditText);
+        heightInchesEditText = (EditText) findViewById(R.id.heightInchesEditText);
+        weightPoundsEditText = (EditText) findViewById(R.id.weightPoundsEditText);
+        ageEditText = (EditText) findViewById(R.id.ageEditText);
+        sexSpinner = (Spinner) findViewById(R.id.sexSpinner);
+        saveButton = (Button) findViewById(R.id.saveButton);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -30,11 +49,35 @@ public class PatientInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             int patientId = intent.getIntExtra("patientId", -1);
+
+            Patient patient = databaseHelper.getPatient(patientId);
+            setPatientInfo(patient);
         }
     }
 
-    public void setPatientInfo(int patientId) {
+    public void setPatientInfo(Patient patient) {
+        patientIdEditText.setText(String.valueOf(patient.getId()));
+        firstNameEditText.setText(patient.getFirstName());
+        lastNameEditText.setText(patient.getLastName());
+        heightFeetEditText.setText(String.valueOf(patient.getHeightFeet()));
+        heightInchesEditText.setText(String.valueOf(patient.getHeightInches()));
+        weightPoundsEditText.setText(String.valueOf(patient.getWeight()));
+        ageEditText.setText(String.valueOf(patient.getAge()));
 
+        switch (patient.getSex()) {
+            case "Female":
+                sexSpinner.setSelection(0);
+                break;
+            case "Male":
+                sexSpinner.setSelection(1);
+                break;
+            default:
+                sexSpinner.setSelection(2);
+                break;
+        }
+
+        disablePatientEdit();
+        saveButton.setVisibility(View.GONE);
     }
 
     public void onClickSave(View view) {
@@ -43,7 +86,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (patientIdEditText.getText().length() == 0) {
             Toast.makeText(this, "Enter valid patient ID", Toast.LENGTH_SHORT).show();
         } else {
-            Patient patient = createPatient(view);
+            Patient patient = savePatient(view);
             boolean result = databaseHelper.insertPatient(patient);
             if (!result) {
                 Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
@@ -51,16 +94,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         }
     }
 
-    public Patient createPatient(View view) {
-        EditText patientIdEditText = (EditText) findViewById(R.id.patientIdEditText);
-        EditText firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
-        EditText lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
-        EditText heightFeetEditText = (EditText) findViewById(R.id.heightFeetEditText);
-        EditText heightInchesEditText = (EditText) findViewById(R.id.heightInchesEditText);
-        EditText weightPoundsEditText = (EditText) findViewById(R.id.weightPoundsEditText);
-        EditText ageEditText = (EditText) findViewById(R.id.ageEditText);
-        Spinner sexSpinner = (Spinner) findViewById(R.id.sexSpinner);
-
+    public Patient savePatient(View view) {
         // create patient object
         Patient patient = new Patient();
         patient.setId(Integer.parseInt(patientIdEditText.getText().toString()));
@@ -73,6 +107,15 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setSex(sexSpinner.getSelectedItem().toString());
 
         // change edit texts to non-editable
+        disablePatientEdit();
+
+        // hide save button
+        saveButton.setVisibility(View.GONE);
+
+        return patient;
+    }
+
+    public void disablePatientEdit() {
         patientIdEditText.setEnabled(false);
         firstNameEditText.setEnabled(false);
         lastNameEditText.setEnabled(false);
@@ -81,12 +124,17 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(false);
         ageEditText.setEnabled(false);
         sexSpinner.setEnabled(false);
+    }
 
-        // hide save button
-        Button saveButton = (Button) findViewById(R.id.saveButton);
-        saveButton.setVisibility(View.GONE);
-
-        return patient;
+    public void enablePatientEdit() {
+        patientIdEditText.setEnabled(true);
+        firstNameEditText.setEnabled(true);
+        lastNameEditText.setEnabled(true);
+        heightFeetEditText.setEnabled(true);
+        heightInchesEditText.setEnabled(true);
+        weightPoundsEditText.setEnabled(true);
+        ageEditText.setEnabled(true);
+        sexSpinner.setEnabled(true);
     }
 
     @Override
