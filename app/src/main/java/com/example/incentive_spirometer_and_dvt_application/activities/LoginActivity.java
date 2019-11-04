@@ -26,11 +26,11 @@ public class LoginActivity extends AppCompatActivity {
 
         // setting the users that can login to the app
         // this is just for testing right now dont worry
-        Authenticate user1 = new Authenticate("iBjornson", "iamthegreatest");
+        Authenticate user1 = new Authenticate("ibjornson", "iamthegreatest");
         String[] user1help = new String[] {user1.getSalt(), user1.getHashedPassword(user1.getSalt())};
         User.users.put("iBjornson", user1help);
 
-        Authenticate user2 = new Authenticate("cDesilva", "whatthefook");
+        Authenticate user2 = new Authenticate("cdesilva", "helloworld");
         String[] user2help = new String[] {user2.getSalt(), user2.getHashedPassword(user2.getSalt())};
         User.users.put("cDesilva", user2help);
 
