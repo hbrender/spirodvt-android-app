@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">App Name</string>
-
+    <string name="delete_patient">Delete Patient</string>
+    <string name="message_delete_patient">Are you sure you want to delete patient </string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="add_patient">Add Patient</string>
     <string name="sign_out">Sign Out</string>
     <string-array name="sex_array">

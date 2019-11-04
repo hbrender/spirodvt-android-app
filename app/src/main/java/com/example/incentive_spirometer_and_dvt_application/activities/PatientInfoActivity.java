@@ -3,6 +3,7 @@ package com.example.incentive_spirometer_and_dvt_application.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,15 @@ public class PatientInfoActivity extends AppCompatActivity {
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            int patientId = intent.getIntExtra("patientId", -1);
+        }
+    }
+
+    public void setPatientInfo(int patientId) {
+
     }
 
     public void onClickSave(View view) {
@@ -55,7 +65,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         Patient patient = new Patient();
         patient.setId(Integer.parseInt(patientIdEditText.getText().toString()));
         patient.setFirstName(firstNameEditText.getText().toString());
-        patient.setLastNames(lastNameEditText.getText().toString());
+        patient.setLastName(lastNameEditText.getText().toString());
         patient.setHeightFeet(Integer.parseInt(heightFeetEditText.getText().toString()));
         patient.setHeightInches(Integer.parseInt(heightInchesEditText.getText().toString()));
         patient.setWeight(Double.parseDouble(weightPoundsEditText.getText().toString()));

@@ -34,6 +34,10 @@ public class LoginActivity extends AppCompatActivity {
         String[] user2help = new String[] {user2.getSalt(), user2.getHashedPassword(user2.getSalt())};
         User.users.put("cDesilva", user2help);
 
+        Authenticate user3 = new Authenticate("hbrender", "1234");
+        String[] user3help = new String[] {user3.getSalt(), user3.getHashedPassword(user3.getSalt())};
+        User.users.put("hbrender", user3help);
+
 
 
         final EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);

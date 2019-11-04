@@ -15,12 +15,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    private static final String LOG = "DatabaseHelper";
+    private static final String TAG = "DatabaseHelper";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "spirometerDvtApp";
 
@@ -91,8 +94,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + FIRST_NAME + " TEXT,"
             + LAST_NAME + " TEXT,"
             + HEIGHT_FEET + " INTEGER,"
-            + HEIGHT_INCHES + " INTEGER,"
-            + WEIGHT + " INTEGER,"
+            + HEIGHT_INCHES + " DOUBLE,"
+            + WEIGHT + " DOUBLE,"
             + AGE + " INTEGER,"
             + SEX + " TEXT,"
             + INCENTIVE_SPIROMETER_ID + " INTEGER,"
@@ -149,7 +152,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ID, patient.getId());
         values.put(FIRST_NAME, patient.getFirstName());
-        values.put(LAST_NAME, patient.getLastNames());
+        values.put(LAST_NAME, patient.getLastName());
         values.put(HEIGHT_FEET, patient.getHeightFeet());
         values.put(HEIGHT_INCHES, patient.getHeightInches());
         values.put(WEIGHT, patient.getWeight());
@@ -196,12 +199,41 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(insertPatient);*/
     }
 
-    public Cursor viewPatients() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT;
-        Cursor cursor = db.rawQuery(query, null);
+    public List<Patient> getAllPatients() {
+        List<Patient> patientList = new ArrayList<>();
 
-        return cursor;
+        String query = "SELECT * FROM " + TABLE_PATIENT;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        // create list of patients
+        if (c.moveToFirst()) {
+            do {
+                Patient patient = new Patient();
+                patient.setId(c.getInt(c.getColumnIndex(ID)));
+                patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
+                patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
+                patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
+                patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
+                patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
+                patient.setAge(c.getInt(c.getColumnIndex(AGE)));
+                patient.setSex(c.getString(c.getColumnIndex(SEX)));
+                patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
+                patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
+
+                patientList.add(patient);
+            } while (c.moveToNext());
+        }
+
+        Log.d(TAG, "getAllPatients: " + patientList.get(0).getFirstName());
+
+        return patientList;
+    }
+
+    public void deletePatient(int patientId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d(TAG, "deletePatient: " + patientId);
+        db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
     }
 }
 

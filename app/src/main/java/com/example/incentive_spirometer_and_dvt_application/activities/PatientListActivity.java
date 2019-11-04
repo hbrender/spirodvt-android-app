@@ -1,14 +1,19 @@
 package com.example.incentive_spirometer_and_dvt_application.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,11 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientListActivity extends AppCompatActivity {
-    DatabaseHelper databaseHelper;
-    List<String> patientList;
-    ArrayAdapter<String> arrayAdapter;
-    // temporary list of fake patients for display testing
-    //String[] patientArray = {"Jenny", "Brooke", "James", "Peter", "Mary", "Joseph", "Albert", "Patrick", "Mario", "Harry", "Alice", "Bella", "Fred", "George", "Marshall", "Teegan", "Lauren"};
+    static final String TAG = "PatientListActivityTag";
+    private DatabaseHelper databaseHelper;
+    private List<Patient> patientList;
+    private ArrayAdapter<Patient> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +45,9 @@ public class PatientListActivity extends AppCompatActivity {
         addTestData();
         setPatientListData(this);
 
-        //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_patient_listview, patientArray);
-
-        //ListView listView = (ListView) findViewById(R.id.patientListView);
-        //listView.setAdapter(adapter);
-
         Intent intent = getIntent();
         if (intent != null) {
             String user = intent.getStringExtra("username");
-            //TextView test = (TextView) findViewById(R.id.testIntent);
-            //test.setText(user);
         }
     }
 
@@ -83,21 +80,37 @@ public class PatientListActivity extends AppCompatActivity {
     }
 
     private void setPatientListData(PatientListActivity context) {
-        Cursor cursor = databaseHelper.viewPatients();
-        patientList = new ArrayList<>();
+        // get list of patients from the database
+        patientList = databaseHelper.getAllPatients();
 
-        if (cursor.getCount() != 0) {
-            while (cursor.moveToNext()) {
-                // lastname, firstname
-                patientList.add(cursor.getString(2) + ", " + cursor.getString(1));
-                //patientList.sort();
+        // set adapter for patient list
+        ListView patientListView = (ListView) findViewById(R.id.patientListView);
+        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
+        patientListView.setAdapter(arrayAdapter);
+
+        // long click listener for deleting patient
+        patientListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                final Patient patient = (Patient) parent.getItemAtPosition(position);
+
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientListActivity.this);
+                alertBuilder.setTitle(getString(R.string.delete_patient))
+                        .setMessage(getString(R.string.message_delete_patient) + " " + patient.getFirstName() + " " + patient.getLastName() + "?")
+                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // delete patient from database
+                                databaseHelper.deletePatient(patient.getId());
+                                setPatientListData(PatientListActivity.this);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, null);
+                alertBuilder.show();
+
+                return true;
             }
-
-            arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
-
-            ListView patientListView = (ListView) findViewById(R.id.patientListView);
-            patientListView.setAdapter(arrayAdapter);
-        }
+        });
     }
 
     private void addTestData() {
@@ -121,4 +134,11 @@ public class PatientListActivity extends AppCompatActivity {
         super.onResume();
         setPatientListData(this);
     }
+
+    @Override
+    protected void onDestroy() {
+        databaseHelper.close();
+        super.onDestroy();
+    }
+
 }
