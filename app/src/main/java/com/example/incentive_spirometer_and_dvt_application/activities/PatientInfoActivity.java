@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelp
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 public class PatientInfoActivity extends AppCompatActivity {
+    static final String TAG = "PatientInfoActivity";
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
     EditText patientIdEditText;
     EditText firstNameEditText;
@@ -50,8 +52,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (intent != null) {
             int patientId = intent.getIntExtra("patientId", -1);
 
-            Patient patient = databaseHelper.getPatient(patientId);
-            setPatientInfo(patient);
+            if (patientId != -1) {
+                Patient patient = databaseHelper.getPatient(patientId);
+                setPatientInfo(patient);
+            }
         }
     }
 
@@ -148,5 +152,12 @@ public class PatientInfoActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        databaseHelper.close();
+        super.onDestroy();
     }
 }

@@ -12,17 +12,22 @@ import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.Authenticate;
+import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.User;
+import com.example.incentive_spirometer_and_dvt_application.tests.TestData;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginActivityTag";
+    DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // hardcoding database with test data
+        createTestDatabase();
 
         // setting the users that can login to the app
         // this is just for testing right now dont worry
@@ -41,8 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         Authenticate user4 = new Authenticate("klally", "6789");
         String[] user4help = new String[] {user4.getSalt(), user4.getHashedPassword(user4.getSalt())};
         User.users.put("klally", user4help);
-
-
 
         final EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         final EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
@@ -104,5 +107,24 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText.setText("");
 
         super.onStop();
+    }
+
+    public void createTestDatabase() {
+        TestData testData = new TestData();
+        testData.populateLogin(databaseHelper);
+        testData.populateDoctor(databaseHelper);
+        testData.populatePatient(databaseHelper);
+        testData.populateDoctorPatient(databaseHelper);
+        testData.populateIncentiveSpirometer(databaseHelper);
+        testData.populateDvt(databaseHelper);
+        testData.populateIncentiveSpirometerData(databaseHelper);
+        testData.populateDvtData(databaseHelper);
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+        databaseHelper.close();
+        super.onDestroy();
     }
 }

@@ -42,7 +42,7 @@ public class PatientListActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         patientList = new ArrayList<>();
 
-        addTestData();
+        //addTestData();
         setPatientListData(this);
 
         Intent intent = getIntent();
@@ -125,22 +125,6 @@ public class PatientListActivity extends AppCompatActivity {
         });
     }
 
-    private void addTestData() {
-        Patient p1 = new Patient(2, "John", "Johnson", 0, 0, 0, 0, "Male", 0, 0);
-        Patient p2 = new Patient(3, "Lucy", "Riley", 0, 0, 0, 0, "Female", 0, 0);
-        Patient p3 = new Patient(4, "Sean", "Wilson", 0, 0, 0, 0, "Other", 0, 0);
-        Patient p4 = new Patient(5, "Sean", "Fred", 0, 0, 0, 0, "Male", 0, 0);
-        Patient p5 = new Patient(6, "Sammy", "Martinez", 0, 0, 0, 0, "Female", 0, 0);
-        Patient p6 = new Patient(7, "Nicole", "Meyers", 0, 0, 0, 0, "Female", 0, 0);
-
-        databaseHelper.insertPatient(p1);
-        databaseHelper.insertPatient(p2);
-        databaseHelper.insertPatient(p3);
-        databaseHelper.insertPatient(p4);
-        databaseHelper.insertPatient(p5);
-        databaseHelper.insertPatient(p6);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -149,8 +133,8 @@ public class PatientListActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
         databaseHelper.close();
         super.onDestroy();
     }
-
 }
