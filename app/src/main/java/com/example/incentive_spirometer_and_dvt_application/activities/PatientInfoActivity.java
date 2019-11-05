@@ -50,8 +50,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (intent != null) {
             int patientId = intent.getIntExtra("patientId", -1);
 
-            Patient patient = databaseHelper.getPatient(patientId);
-            setPatientInfo(patient);
+            if (patientId != -1) {
+                Patient patient = databaseHelper.getPatient(patientId);
+                setPatientInfo(patient);
+            }
         }
     }
 
