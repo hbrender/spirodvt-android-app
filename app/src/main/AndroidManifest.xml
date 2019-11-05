@@ -9,10 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
+
         <activity android:name=".activities.PatientSpirometerInfoActivity"></activity>
-=======
->>>>>>> 8911282a65b7780049c04145fb16a96eac677e1f
         <activity android:name=".activities.PatientInfoActivity" />
         <activity android:name=".activities.PatientListActivity" />
         <activity android:name=".activities.LoginActivity">
