@@ -23,12 +23,12 @@ public class TestData {
     }
 
     public void populateDoctorPatient(DatabaseHelper databaseHelper) {
-        databaseHelper.insertDoctorPatient(1, 1);
-        databaseHelper.insertDoctorPatient(2, 1);
-        databaseHelper.insertDoctorPatient(3, 1);
-        databaseHelper.insertDoctorPatient(4, 2);
-        databaseHelper.insertDoctorPatient(5, 2);
-        databaseHelper.insertDoctorPatient(6, 2);
+        //databaseHelper.insertDoctorPatient(1, 1);
+        //databaseHelper.insertDoctorPatient(2, 1);
+        //databaseHelper.insertDoctorPatient(3, 1);
+        //databaseHelper.insertDoctorPatient(4, 2);
+        //databaseHelper.insertDoctorPatient(5, 2);
+        //databaseHelper.insertDoctorPatient(6, 2);
     }
 
     public void populateDoctor(DatabaseHelper databaseHelper) {

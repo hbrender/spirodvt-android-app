@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ID + " INTEGER PRIMARY KEY)";
 
     // IncentiveSpirometerData table create statement
-    private static final String CREATE_TABLE_INCENTIVE_SPIROMETER_DATA = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER + "("
+    private static final String CREATE_TABLE_INCENTIVE_SPIROMETER_DATA = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER_DATA + "("
             + ID + " INTEGER,"
             + TIMESTAMP + " DATETIME,"
             + LUNG_VOLUME + " INTEGER,"
