@@ -3,7 +3,6 @@
  *
  * Source referenced: https://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
  * @author Hanna Brender
- * @version v1.0 10/23/19
  */
 
 package com.example.incentive_spirometer_and_dvt_application.helpers;
@@ -17,12 +16,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.login.LoginException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
@@ -32,6 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Table names
     private static final String TABLE_INCENTIVE_SPIROMETER = "IncentiveSpirometer";
     private static final String TABLE_DVT = "DVT";
+    private static final String TABLE_INCENTIVE_SPIROMETER_DATA = "IncentiveSpirometerData";
+    private static final String TABLE_DVT_DATA = "DvtData";
     private static final String TABLE_DOCTOR = "Doctor";
     private static final String TABLE_PATIENT = "Patient";
     private static final String TABLE_DOCTOR_PATIENT = "DoctorPatient";
@@ -45,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String LUNG_VOLUME = "lungVolume";
     private static final String NUMBER_OF_INHALATIONS = "numberOfInhalations";
 
-    // DVT table column names;
+    // DvtData table column names;
     private static final String RESISTANCE = "resistance";
     private static final String NUMBER_OF_REPS = "numberOfReps";
 
@@ -71,19 +69,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SALT = "salt";
     private static final String HASHED_PASSWORD = "hashedPassword";
 
-    // IncentiveSpirometer table create statement
+    // IncentiveSpirometerData table create statement
     private static final String CREATE_TABLE_INCENTIVE_SPIROMETER = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER + "("
-            + ID + " INTEGER PRIMARY KEY,"
+            + ID + " INTEGER PRIMARY KEY)";
+
+    // Dvt table create statement
+    private static final String CREATE_TABLE_DVT = "CREATE TABLE " + TABLE_DVT + "("
+            + ID + " INTEGER PRIMARY KEY)";
+
+    // IncentiveSpirometerData table create statement
+    private static final String CREATE_TABLE_INCENTIVE_SPIROMETER_DATA = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER_DATA + "("
+            + ID + " INTEGER,"
             + TIMESTAMP + " DATETIME,"
             + LUNG_VOLUME + " INTEGER,"
-            + NUMBER_OF_INHALATIONS + " INTEGER)";
+            + NUMBER_OF_INHALATIONS + " INTEGER,"
+            + " PRIMARY KEY(" + ID + ", " + TIMESTAMP + "),"
+            + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_INCENTIVE_SPIROMETER + "(" + ID + "))";
 
-    // DVT table create statement
-    private static final String CREATE_TABLE_DVT = "CREATE TABLE " + TABLE_DVT + "("
-            + ID + " INTEGER PRIMARY KEY,"
+    // DvtData table create statement
+    private static final String CREATE_TABLE_DVT_DATA = "CREATE TABLE " + TABLE_DVT_DATA + "("
+            + ID + " INTEGER,"
             + TIMESTAMP + " DATETIME,"
             + RESISTANCE + " INTEGER,"
-            + NUMBER_OF_REPS + " INTEGER)";
+            + NUMBER_OF_REPS + " INTEGER,"
+            + " PRIMARY KEY(" + ID + ", " + TIMESTAMP + "),"
+            + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DVT + "(" + ID + "))";
 
     // Doctor table create statement
     private static final String CREATE_TABLE_DOCTOR = "CREATE TABLE " + TABLE_DOCTOR + "("
@@ -131,10 +141,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // creating tables
         db.execSQL(CREATE_TABLE_INCENTIVE_SPIROMETER);
         db.execSQL(CREATE_TABLE_DVT);
+        db.execSQL(CREATE_TABLE_INCENTIVE_SPIROMETER_DATA);
+        db.execSQL(CREATE_TABLE_DVT_DATA);
         db.execSQL(CREATE_TABLE_DOCTOR);
         db.execSQL(CREATE_TABLE_PATIENT);
         db.execSQL(CREATE_TABLE_DOCTOR_PATIENT);
         db.execSQL(CREATE_TABLE_LOGIN);
+
+        // TEST DATA
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 0, 0, 0, 0, 'Male', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 0, 0, 0, 0, 'Female', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 0, 0, 0, 0, 'Other', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 0, 0, 0, 0, 'Male', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 0, 0, 0, 0, 'Female', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 0, 0, 0, 0, 'Female', 0, 0)");
     }
 
     @Override
@@ -142,9 +162,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INCENTIVE_SPIROMETER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DVT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_INCENTIVE_SPIROMETER_DATA);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DVT_DATA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCTOR);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PATIENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCTOR_PATIENT);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
 
         // create new tables
         onCreate(db);
@@ -166,40 +189,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_PATIENT, null, values);
 
-        return result != -1; // if result = -1 data doesnt insert
+        return result != -1; // if result = -1 data doesn't insert
+    }
 
-        /*int spirometerId = patient.getIncentiveSpirometerId();
-        int dvtId = patient.getDvtId();
+    public boolean insertDoctorPatient(int patientId, int doctorId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PATIENT_ID, patientId);
+        values.put(DOCTOR_ID, doctorId);
 
-        if (spirometerId != 0) { // aka null
-            String insertSpirometer = "INSERT INTO " + TABLE_INCENTIVE_SPIROMETER
-                    + "(" + ID + ") VALUES("
-                    + spirometerId + ")";
-            db.execSQL(insertSpirometer);
-        }
+        long result = db.insert(TABLE_DOCTOR_PATIENT, null, values);
 
-        if (dvtId != 0) { // aka null
-            String insertSpirometer = "INSERT INTO " + TABLE_DVT
-                    + "(" + ID + ") VALUES("
-                    + dvtId + ")";
-            db.execSQL(insertSpirometer);
-        }
-
-        int patientId = patient.getId();
-        String firstName = patient.getFirstName();
-        String lastName = patient.getLastNames();
-        double heightFeet = patient.getHeightFeet();
-        double heightInches = patient.getHeightInches();
-        double weight = patient.getWeight();
-        int age = patient.getAge();
-        String sex = patient.getSex();
-
-        String insertPatient = "INSERT INTO " + TABLE_PATIENT + " VALUES("
-                + patientId + ", " + firstName + ", " + lastName + ", " + heightFeet + ","
-                + heightInches + ", " + weight + ", " + age + ", " + sex + ", " + spirometerId
-                + ", " + dvtId + ")";
-
-        db.execSQL(insertPatient);*/
+        return result != -1; // if result = -1 data doesn't insert
     }
 
     public List<Patient> getAllPatients() {
@@ -227,8 +228,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 patientList.add(patient);
             } while (c.moveToNext());
         }
-
-        Log.d(TAG, "getAllPatients: " + patientList.get(0).getFirstName());
 
         return patientList;
     }

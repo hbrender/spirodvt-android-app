@@ -2,11 +2,22 @@ package com.example.incentive_spirometer_and_dvt_application.models;
 
 import java.sql.Timestamp;
 
-public class DVT {
+public class DvtData {
     private int id;
     private Timestamp timestamp;
     private int resistance; // units = easy, medium, hard
     private int numberOfReps;
+
+    public DvtData() {
+
+    }
+
+    public DvtData(int id, Timestamp timestamp, int resistance, int numberOfReps) {
+        this.id = id;
+        this.timestamp = timestamp;
+        this.resistance = resistance;
+        this.numberOfReps = numberOfReps;
+    }
 
     public int getId() {
         return id;
