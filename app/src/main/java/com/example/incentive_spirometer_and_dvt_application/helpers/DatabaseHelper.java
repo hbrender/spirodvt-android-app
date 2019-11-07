@@ -7,7 +7,6 @@
 
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
-import com.example.incentive_spirometer_and_dvt_application.models.Doctor;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 import android.content.ContentValues;
@@ -17,12 +16,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.security.auth.login.LoginException;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
@@ -150,6 +146,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_PATIENT);
         db.execSQL(CREATE_TABLE_DOCTOR_PATIENT);
         db.execSQL(CREATE_TABLE_LOGIN);
+
+        // TEST DATA
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 0, 0, 0, 0, 'Male', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 0, 0, 0, 0, 'Female', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 0, 0, 0, 0, 'Other', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 0, 0, 0, 0, 'Male', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 0, 0, 0, 0, 'Female', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 0, 0, 0, 0, 'Female', 0, 0)");
     }
 
     @Override
