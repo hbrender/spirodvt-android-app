@@ -156,7 +156,6 @@ public class PatientInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
         databaseHelper.close();
         super.onDestroy();
     }
