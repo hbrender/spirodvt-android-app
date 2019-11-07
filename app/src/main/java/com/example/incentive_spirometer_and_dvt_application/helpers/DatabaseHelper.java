@@ -115,10 +115,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
-            + ID + " INTEGER,"
+            + ID + " INTEGER PRIMARY KEY,"
             + USERNAME + " TEXT,"
             + SALT + " INTEGER,"
             + HASHED_PASSWORD + " INTEGER,"
+            + "FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
             + "FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
 
     public DatabaseHelper(Context context) {
