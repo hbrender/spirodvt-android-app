@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.jjoe64.graphview.GraphView;
 
 public class PatientSpirometerInfoActivity extends AppCompatActivity {
 
@@ -20,6 +21,6 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_spirometer_info);
-        //GraphView graph = (GraphView) findViewById()
+        GraphView graph = (GraphView) findViewById(R.id.graph);
     }
 }

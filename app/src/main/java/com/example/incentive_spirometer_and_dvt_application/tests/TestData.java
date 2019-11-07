@@ -7,12 +7,12 @@ import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 public class TestData {
 
     public void populatePatient(DatabaseHelper databaseHelper) {
-        Patient p1 = new Patient(1, "John", "Johnson", 0, 0, 0, 0, "Male", 0, 0);
-        Patient p2 = new Patient(2, "Lucy", "Riley", 0, 0, 0, 0, "Female", 0, 0);
-        Patient p3 = new Patient(3, "Sean", "Wilson", 0, 0, 0, 0, "Other", 0, 0);
-        Patient p4 = new Patient(4, "Sean", "Fred", 0, 0, 0, 0, "Male", 0, 0);
-        Patient p5 = new Patient(5, "Sammy", "Martinez", 0, 0, 0, 0, "Female", 0, 0);
-        Patient p6 = new Patient(6, "Nicole", "Meyers", 0, 0, 0, 0, "Female", 0, 0);
+        Patient p1 = new Patient(1, "John", "Johnson", 6, 4, 182, 25, "Male", 0, 0);
+        Patient p2 = new Patient(2, "Lucy", "Riley", 5, 5, 125, 30, "Female", 0, 0);
+        Patient p3 = new Patient(3, "Sean", "Wilson", 5, 10, 170, 42, "Other", 0, 0);
+        Patient p4 = new Patient(4, "Sean", "Fred", 6, 0, 180, 34, "Male", 0, 0);
+        Patient p5 = new Patient(5, "Sammy", "Martinez", 5, 2, 115, 27, "Female", 0, 0);
+        Patient p6 = new Patient(6, "Nicole", "Meyers", 5, 8, 140, 36, "Female", 0, 0);
 
         databaseHelper.insertPatient(p1);
         databaseHelper.insertPatient(p2);
