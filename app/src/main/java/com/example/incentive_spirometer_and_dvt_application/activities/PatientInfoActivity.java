@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 public class PatientInfoActivity extends AppCompatActivity {
     static final String TAG = "PatientInfoActivity";
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
+    int patientId;
     EditText patientIdEditText;
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -50,7 +53,7 @@ public class PatientInfoActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            int patientId = intent.getIntExtra("patientId", -1);
+            patientId = intent.getIntExtra("patientId", -1);
 
             if (patientId != -1) {
                 Patient patient = databaseHelper.getPatient(patientId);
@@ -89,7 +92,10 @@ public class PatientInfoActivity extends AppCompatActivity {
 
         if (patientIdEditText.getText().length() == 0) {
             Toast.makeText(this, "Enter valid patient ID", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (patientId != -1) { // editing existing patient info
+            Patient patient = savePatient(view);
+            int result = databaseHelper.updatePatient(patient);
+        } else { // saving info for newly created patient
             Patient patient = savePatient(view);
             boolean result = databaseHelper.insertPatient(patient);
             if (!result) {
@@ -105,7 +111,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setFirstName(firstNameEditText.getText().toString());
         patient.setLastName(lastNameEditText.getText().toString());
         patient.setHeightFeet(Integer.parseInt(heightFeetEditText.getText().toString()));
-        patient.setHeightInches(Integer.parseInt(heightInchesEditText.getText().toString()));
+        patient.setHeightInches(Double.parseDouble(heightInchesEditText.getText().toString()));
         patient.setWeight(Double.parseDouble(weightPoundsEditText.getText().toString()));
         patient.setAge(Integer.parseInt(ageEditText.getText().toString()));
         patient.setSex(sexSpinner.getSelectedItem().toString());
@@ -131,7 +137,7 @@ public class PatientInfoActivity extends AppCompatActivity {
     }
 
     public void enablePatientEdit() {
-        patientIdEditText.setEnabled(true);
+        //patientIdEditText.setEnabled(true);
         firstNameEditText.setEnabled(true);
         lastNameEditText.setEnabled(true);
         heightFeetEditText.setEnabled(true);
@@ -142,12 +148,23 @@ public class PatientInfoActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.patient_info_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         switch (id) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.editMenuItem:
+                enablePatientEdit();
+                saveButton.setVisibility(View.VISIBLE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

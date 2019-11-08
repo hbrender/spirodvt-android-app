@@ -263,5 +263,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "deletePatient: " + patientId);
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
     }
+
+    public int updatePatient(Patient patient) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FIRST_NAME, patient.getFirstName());
+        values.put(LAST_NAME, patient.getLastName());
+        values.put(HEIGHT_FEET, patient.getHeightFeet());
+        values.put(HEIGHT_INCHES, patient.getHeightInches());
+        values.put(WEIGHT, patient.getWeight());
+        values.put(AGE, patient.getAge());
+        values.put(SEX, patient.getSex());
+        values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
+        values.put(DVT_ID, patient.getDvtId());
+
+        return db.update(TABLE_PATIENT, values, ID + " = ?",
+                new String[] { String.valueOf(patient.getId()) });
+    }
 }
 

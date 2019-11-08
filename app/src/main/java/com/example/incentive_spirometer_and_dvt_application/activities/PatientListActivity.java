@@ -42,7 +42,6 @@ public class PatientListActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         patientList = new ArrayList<>();
 
-        //addTestData();
         setPatientListData(this);
 
         Intent intent = getIntent();
