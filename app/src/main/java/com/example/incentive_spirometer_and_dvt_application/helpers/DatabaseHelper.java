@@ -149,12 +149,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_LOGIN);
 
         // TEST DATA
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 5, 10, 145, 76, 'Male', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 6, 3, 190, 59, 'Other', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 5, 4, 155, 37, 'Male', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 0, 0)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 5, 10, 145, 76, 'Male', 10, 90)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 11, 91)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 6, 3, 190, 59, 'Other', 12, 92)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 5, 4, 155, 37, 'Male', 13, 93)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 14, 94)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 15, 95)");
 
         // this should be throwing an error but it doesn't?? doctors should be created before bc of foreign key constraint
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,1)");
@@ -165,6 +165,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,5)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,6)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,1)");
+
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 11:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 12:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 14:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 10:58:00.000', 2500, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 11:58:00.000', 2500, 8)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 12:58:00.000', 2500, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 13:58:00.000', 2500, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 10:58:00.000', 1500, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 11:58:00.000', 1500, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 12:58:00.000', 1500, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 13:58:00.000', 1500, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 14:58:00.000', 1500, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 15:58:00.000', 1500, 10)");
+
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 10:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 11:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 12:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 13:58:00.000', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 14:58:00.000', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 15:58:00.000', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 10:58:00.000', 1, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 11:58:00.000', 1, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 12:58:00.000', 1, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 13:58:00.000', 1, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 14:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 15:58:00.000', 1, 10)");
+
+
     }
 
     @Override
