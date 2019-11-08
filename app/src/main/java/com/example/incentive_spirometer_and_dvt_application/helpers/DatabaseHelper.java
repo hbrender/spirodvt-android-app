@@ -131,18 +131,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
             + ID + " INTEGER PRIMARY KEY,"
-            + USERNAME + " TEXT,"
-<<<<<<< HEAD
+            + USERNAME + " TEXT UNIQUE,"
             + SALT + " TEXT,"
             + HASHED_PASSWORD + " TEXT,"
             + "FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
             + "FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
-=======
-            + SALT + " INTEGER,"
-            + HASHED_PASSWORD + " INTEGER,"
-            + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
-            + " FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
->>>>>>> 6690506e9d4c1c78687a4d4c1d65c3a43121795a
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -181,15 +175,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_LOGIN);
 
         // TEST DATA
-<<<<<<< HEAD
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 0, 0, 0, 0, 'Male', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 0, 0, 0, 0, 'Female', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 0, 0, 0, 0, 'Other', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 0, 0, 0, 0, 'Male', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 0, 0, 0, 0, 'Female', 0, 0)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 0, 0, 0, 0, 'Female', 0, 0)");
-
-
         // creating one user account
         Doctor adminUser = new Doctor(1, "Admin");
         insertDoctor(adminUser);
@@ -208,7 +193,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'Admin', '" + adminAuth.getSalt() + "', '" +  adminHashedPass + "')");
 
         db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'User', '" + userAuth.getSalt() +"', '" +  userHashedPass + "')");
-=======
+
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 5, 10, 145, 76, 'Male', 10, 90)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 11, 91)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 6, 3, 190, 59, 'Other', 12, 92)");
@@ -255,8 +240,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 14:58:00.000', 1, 10)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 15:58:00.000', 1, 10)");
 
-
->>>>>>> 6690506e9d4c1c78687a4d4c1d65c3a43121795a
     }
 
     @Override
