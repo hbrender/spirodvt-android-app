@@ -125,17 +125,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_DOCTOR_PATIENT = "CREATE TABLE " + TABLE_DOCTOR_PATIENT + "("
             + DOCTOR_ID + " INTEGER,"
             + PATIENT_ID + " INTEGER,"
-            + "PRIMARY KEY(" + DOCTOR_ID + "," + PATIENT_ID + "),"
-            + "FOREIGN KEY(" + DOCTOR_ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
-            + "FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
+            + " PRIMARY KEY(" + DOCTOR_ID + "," + PATIENT_ID + "),"
+            + " FOREIGN KEY(" + DOCTOR_ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
+            + " FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
             + ID + " INTEGER PRIMARY KEY,"
             + USERNAME + " TEXT,"
+<<<<<<< HEAD
             + SALT + " TEXT,"
             + HASHED_PASSWORD + " TEXT,"
             + "FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
             + "FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
+=======
+            + SALT + " INTEGER,"
+            + HASHED_PASSWORD + " INTEGER,"
+            + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
+            + " FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
+>>>>>>> 6690506e9d4c1c78687a4d4c1d65c3a43121795a
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -174,6 +181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_LOGIN);
 
         // TEST DATA
+<<<<<<< HEAD
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 0, 0, 0, 0, 'Male', 0, 0)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 0, 0, 0, 0, 'Female', 0, 0)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 0, 0, 0, 0, 'Other', 0, 0)");
@@ -200,6 +208,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'Admin', '" + adminAuth.getSalt() + "', '" +  adminHashedPass + "')");
 
         db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'User', '" + userAuth.getSalt() +"', '" +  userHashedPass + "')");
+=======
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 5, 10, 145, 76, 'Male', 10, 90)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 11, 91)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 6, 3, 190, 59, 'Other', 12, 92)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 5, 4, 155, 37, 'Male', 13, 93)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 14, 94)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 15, 95)");
+
+        // this should be throwing an error but it doesn't?? doctors should be created before bc of foreign key constraint
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,1)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,2)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,3)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,4)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,4)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,5)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,6)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,1)");
+
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 11:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 12:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 14:58:00.000', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 10:58:00.000', 2500, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 11:58:00.000', 2500, 8)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 12:58:00.000', 2500, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 13:58:00.000', 2500, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 10:58:00.000', 1500, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 11:58:00.000', 1500, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 12:58:00.000', 1500, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 13:58:00.000', 1500, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 14:58:00.000', 1500, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 15:58:00.000', 1500, 10)");
+
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 10:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 11:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 12:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 13:58:00.000', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 14:58:00.000', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 15:58:00.000', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 10:58:00.000', 1, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 11:58:00.000', 1, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 12:58:00.000', 1, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 13:58:00.000', 1, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 14:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 15:58:00.000', 1, 10)");
+
+
+>>>>>>> 6690506e9d4c1c78687a4d4c1d65c3a43121795a
     }
 
     @Override
@@ -394,6 +451,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d(TAG, "deletePatient: " + patientId);
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
+    }
+
+    public int updatePatient(Patient patient) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FIRST_NAME, patient.getFirstName());
+        values.put(LAST_NAME, patient.getLastName());
+        values.put(HEIGHT_FEET, patient.getHeightFeet());
+        values.put(HEIGHT_INCHES, patient.getHeightInches());
+        values.put(WEIGHT, patient.getWeight());
+        values.put(AGE, patient.getAge());
+        values.put(SEX, patient.getSex());
+        values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
+        values.put(DVT_ID, patient.getDvtId());
+
+        return db.update(TABLE_PATIENT, values, ID + " = ?",
+                new String[] { String.valueOf(patient.getId()) });
     }
 }
 
