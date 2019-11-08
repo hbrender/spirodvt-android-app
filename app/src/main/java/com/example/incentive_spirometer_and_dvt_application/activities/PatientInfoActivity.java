@@ -97,6 +97,7 @@ public class PatientInfoActivity extends AppCompatActivity {
             int result = databaseHelper.updatePatient(patient);
         } else { // saving info for newly created patient
             Patient patient = savePatient(view);
+            patientId = patient.getId();
             boolean result = databaseHelper.insertPatient(patient);
             if (!result) {
                 Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();

@@ -9,10 +9,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -33,6 +35,7 @@ public class PatientListActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private List<Patient> patientList;
     private ArrayAdapter<Patient> arrayAdapter;
+    private ListView patientListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class PatientListActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         patientList = new ArrayList<>();
 
-        setPatientListData(this);
+        createPatientsList();
 
         Intent intent = getIntent();
         if (intent != null) {
@@ -78,12 +81,12 @@ public class PatientListActivity extends AppCompatActivity {
         }
     }
 
-    private void setPatientListData(PatientListActivity context) {
+    private void createPatientsList() {
         // get list of patients from the database
         patientList = databaseHelper.getAllPatients();
 
         // set adapter for patient list
-        ListView patientListView = (ListView) findViewById(R.id.patientListView);
+        patientListView = (ListView) findViewById(R.id.patientListView);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
         patientListView.setAdapter(arrayAdapter);
 
@@ -113,7 +116,7 @@ public class PatientListActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // delete patient from database
                                 databaseHelper.deletePatient(patient.getId());
-                                setPatientListData(PatientListActivity.this);
+                                updatePatientList();
                             }
                         })
                         .setNegativeButton(R.string.no, null);
@@ -122,12 +125,55 @@ public class PatientListActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // set the listener for entering CAM, user long presses they can select multiple patients
+        /*patientListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        patientListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                int numChecked = patientListView.getCheckedItemCount();
+                mode.setTitle(numChecked + " selected");
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater menuInflater = getMenuInflater();
+                menuInflater.inflate(R.menu.cam_menu, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.deleteMenuItem:
+                        // to do delete
+                        mode.finish(); // exit cam
+                        return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+        });*/
+    }
+
+    public void updatePatientList() {
+        patientList.clear();
+        patientList.addAll(databaseHelper.getAllPatients());
+        arrayAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setPatientListData(this);
+        updatePatientList();
     }
 
     @Override
