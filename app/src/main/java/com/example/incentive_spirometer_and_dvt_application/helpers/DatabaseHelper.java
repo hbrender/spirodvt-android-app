@@ -120,17 +120,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_DOCTOR_PATIENT = "CREATE TABLE " + TABLE_DOCTOR_PATIENT + "("
             + DOCTOR_ID + " INTEGER,"
             + PATIENT_ID + " INTEGER,"
-            + "PRIMARY KEY(" + DOCTOR_ID + "," + PATIENT_ID + "),"
-            + "FOREIGN KEY(" + DOCTOR_ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
-            + "FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
+            + " PRIMARY KEY(" + DOCTOR_ID + "," + PATIENT_ID + "),"
+            + " FOREIGN KEY(" + DOCTOR_ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
+            + " FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
             + ID + " INTEGER PRIMARY KEY,"
             + USERNAME + " TEXT,"
             + SALT + " INTEGER,"
             + HASHED_PASSWORD + " INTEGER,"
-            + "FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
-            + "FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
+            + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
+            + " FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -155,6 +155,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 5, 4, 155, 37, 'Male', 0, 0)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 0, 0)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 0, 0)");
+
+        // this should be throwing an error but it doesn't?? doctors should be created before bc of foreign key constraint
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,1)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,2)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,3)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,4)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,4)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,5)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,6)");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,1)");
     }
 
     @Override
