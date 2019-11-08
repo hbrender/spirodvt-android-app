@@ -3,16 +3,19 @@
  *
  * Source referenced: https://www.androidhive.info/2013/09/android-sqlite-database-with-multiple-tables/
  * @author Hanna Brender
+ * @editor Cole deSilva
  */
 
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
+import com.example.incentive_spirometer_and_dvt_application.models.Doctor;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -24,6 +27,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "spirometerDvtApp";
+    private static DatabaseHelper staticInstance;
+    private SQLiteDatabase defaultDB = null;
 
     // Table names
     private static final String TABLE_INCENTIVE_SPIROMETER = "IncentiveSpirometer";
@@ -98,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Doctor table create statement
     private static final String CREATE_TABLE_DOCTOR = "CREATE TABLE " + TABLE_DOCTOR + "("
             + ID + " INTEGER PRIMARY KEY,"
-            + USERNAME + " TEXT)";
+            + USERNAME + " TEXT UNIQUE)";
 
     // Patient table create statement
     private static final String CREATE_TABLE_PATIENT = "CREATE TABLE " + TABLE_PATIENT + "("
@@ -127,8 +132,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
             + ID + " INTEGER PRIMARY KEY,"
             + USERNAME + " TEXT,"
-            + SALT + " INTEGER,"
-            + HASHED_PASSWORD + " INTEGER,"
+            + SALT + " TEXT,"
+            + HASHED_PASSWORD + " TEXT,"
             + "FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DOCTOR + "(" + ID + "),"
             + "FOREIGN KEY(" + USERNAME + ") REFERENCES " + TABLE_DOCTOR + "(" + USERNAME + "))";
 
@@ -136,8 +141,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // found out had to implement this so that we wouldnt get the recursive calls to getDatabase
+    // http://www.programmersought.com/article/6020366286/ if you want to check it out
+    // also why this.defaultDB = db is in both onCreate and onUpgrade.
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+
+        final SQLiteDatabase db;
+        if(defaultDB != null) {
+            db = defaultDB;
+        }
+        else {
+            db = super.getWritableDatabase();
+        }
+
+        return db;
+    }
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        this.defaultDB = db;
         // creating tables
         db.execSQL(CREATE_TABLE_INCENTIVE_SPIROMETER);
         db.execSQL(CREATE_TABLE_DVT);
@@ -155,10 +180,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 0, 0, 0, 0, 'Male', 0, 0)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 0, 0, 0, 0, 'Female', 0, 0)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 0, 0, 0, 0, 'Female', 0, 0)");
+
+
+        // creating one user account
+        Doctor adminUser = new Doctor(1, "Admin");
+        insertDoctor(adminUser);
+        // getting the hashed password for the user
+        Authenticate adminAuth = new Authenticate(adminUser.getUsername(), "password");
+        String adminHashedPass = adminAuth.getHashedPassword(adminAuth.getSalt());
+
+        // creating another user account
+        Doctor otherUser = new Doctor(2, "User");
+        insertDoctor(otherUser);
+        // getting hahsed password for the second user;
+        Authenticate userAuth = new Authenticate(otherUser.getUsername(), "SchoolIsCool");
+        String userHashedPass = userAuth.getHashedPassword(userAuth.getSalt());
+
+        // inserting the users into the login table
+        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'Admin', '" + adminAuth.getSalt() + "', '" +  adminHashedPass + "')");
+
+        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'User', '" + userAuth.getSalt() +"', '" +  userHashedPass + "')");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        this.defaultDB = db;
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_INCENTIVE_SPIROMETER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DVT);
@@ -192,7 +238,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1; // if result = -1 data doesn't insert
     }
 
+    /**
+     * inserts a doctor(user) into the database
+     * @param doctor
+     * @return result if data was inserted or not *see comment after return statement*
+     */
+    public boolean insertDoctor(Doctor doctor){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(ID, doctor.getId());
+            values.put(USERNAME, doctor.getUsername());
+            db.insert(TABLE_DOCTOR, null, values);
+            db.setTransactionSuccessful();
+            return true;
+        } catch (SQLiteException e) {
+            return false;
+            //Error in between database transaction
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     public boolean insertDoctorPatient(int patientId, int doctorId) {
+
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(PATIENT_ID, patientId);
@@ -201,6 +273,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_DOCTOR_PATIENT, null, values);
 
         return result != -1; // if result = -1 data doesn't insert
+    }
+
+    /**
+     * Checks if the user exists in the login table (if they are a validated user of the application)
+     * @param username
+     * @return boolean if the username exists in the database or not
+     */
+    public boolean isRealUser(String username) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT COUNT(*) FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = '" + username + "';";
+
+        try {
+
+            Cursor c = db.rawQuery(query, null);
+            int empty = 0;
+            if(c != null && c.moveToFirst()) {
+
+                empty = c.getInt(0 );
+            }
+            
+            if (empty == 0) {
+
+                Log.d(TAG, "isRealUser: is not real user");
+                c.close();
+                return false;
+            }
+
+            Log.d(TAG, "isRealUser: is real user");
+            c.close();
+            return true;
+        }
+        catch (SQLiteException e){
+
+            Log.d(TAG, "isRealUser: fatal exception");
+            return false;
+        }
+
+    }
+
+    /**
+     * gets the salt and hashed password from the specified username so that authentication can be done
+     * @param username
+     * @return a string array containing the salt at results[0] and the hashed password at results[1]
+     */
+    public String[] getLoginInformation(String username) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + SALT + ", " + HASHED_PASSWORD + " FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = '" + username + "';  ";
+        Cursor c = db.rawQuery(query, null);
+
+        String[] results = new String[2];
+        if (c != null && c.moveToFirst()) {
+
+            results[0] = c.getString(c.getColumnIndex(SALT));
+            results[1] = c.getString(c.getColumnIndex(HASHED_PASSWORD));
+        }
+        c.close();
+        return results;
     }
 
     public List<Patient> getAllPatients() {
@@ -229,6 +360,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
 
+        c.close();
         return patientList;
     }
 
