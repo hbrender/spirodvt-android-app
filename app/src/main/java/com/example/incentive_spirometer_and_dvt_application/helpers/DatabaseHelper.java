@@ -48,10 +48,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Incentive Spirometer table column names;
     private static final String LUNG_VOLUME = "lungVolume";
     private static final String NUMBER_OF_INHALATIONS = "numberOfInhalations";
+    private static final String INHALATIONS_COMPLETED = "inhalationsCompleted";
 
     // DvtData table column names;
     private static final String RESISTANCE = "resistance";
     private static final String NUMBER_OF_REPS = "numberOfReps";
+    private static final String REPS_COMPLETED = "repsCompleted";
 
     // Doctor table column names
     private static final String USERNAME = "username";
@@ -92,7 +94,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ID + " INTEGER,"
             + START_TIMESTAMP + " DATETIME,"
             + END_TIMESTAMP + " DATETIME,"
+            + LUNG_VOLUME + " INTEGER,"
             + NUMBER_OF_INHALATIONS + " INTEGER,"
+            + INHALATIONS_COMPLETED + " INTEGER,"
             + " PRIMARY KEY(" + ID + ", " + START_TIMESTAMP + "),"
             + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_INCENTIVE_SPIROMETER + "(" + ID + "))";
 
@@ -103,6 +107,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + END_TIMESTAMP + " DATETIME,"
             + RESISTANCE + " INTEGER,"
             + NUMBER_OF_REPS + " INTEGER,"
+            + REPS_COMPLETED + " INTEGER,"
             + " PRIMARY KEY(" + ID + ", " + START_TIMESTAMP + "),"
             + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DVT + "(" + ID + "))";
 
