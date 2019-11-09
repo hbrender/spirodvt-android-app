@@ -23,6 +23,7 @@ public class PatientInfoActivity extends AppCompatActivity {
     static final String TAG = "PatientInfoActivity";
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
     int patientId;
+    int doctorId;
     EditText patientIdEditText;
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -54,6 +55,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             patientId = intent.getIntExtra("patientId", -1);
+            doctorId = intent.getIntExtra("doctorId", -1);
 
             if (patientId != -1) {
                 Patient patient = databaseHelper.getPatient(patientId);
@@ -99,7 +101,8 @@ public class PatientInfoActivity extends AppCompatActivity {
             Patient patient = savePatient(view);
             patientId = patient.getId();
             boolean result = databaseHelper.insertPatient(patient);
-            if (!result) {
+            boolean result2 = databaseHelper.insertDoctorPatient(patientId, doctorId);
+            if (!result || !result2) {
                 Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
             }
         }
