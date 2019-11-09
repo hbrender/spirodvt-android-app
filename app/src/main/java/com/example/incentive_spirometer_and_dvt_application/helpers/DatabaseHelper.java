@@ -42,7 +42,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Common column names
     private static final String ID = "id";
-    private static final String TIMESTAMP = "timestamp";
+    private static final String START_TIMESTAMP = "startTimestamp";
+    private static final String END_TIMESTAMP = "endTimestamp";
 
     // Incentive Spirometer table column names;
     private static final String LUNG_VOLUME = "lungVolume";
@@ -76,28 +77,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // IncentiveSpirometerData table create statement
     private static final String CREATE_TABLE_INCENTIVE_SPIROMETER = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER + "("
-            + ID + " INTEGER PRIMARY KEY)";
+            + ID + " INTEGER PRIMARY KEY, "
+            + LUNG_VOLUME + " INTEGER,"
+            + NUMBER_OF_INHALATIONS + " INTEGER)";
 
     // Dvt table create statement
     private static final String CREATE_TABLE_DVT = "CREATE TABLE " + TABLE_DVT + "("
-            + ID + " INTEGER PRIMARY KEY)";
+            + ID + " INTEGER PRIMARY KEY, "
+            + RESISTANCE + " INTEGER,"
+            + NUMBER_OF_REPS + " INTEGER)";
 
     // IncentiveSpirometerData table create statement
     private static final String CREATE_TABLE_INCENTIVE_SPIROMETER_DATA = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER_DATA + "("
             + ID + " INTEGER,"
-            + TIMESTAMP + " DATETIME,"
-            + LUNG_VOLUME + " INTEGER,"
+            + START_TIMESTAMP + " DATETIME,"
+            + END_TIMESTAMP + " DATETIME,"
             + NUMBER_OF_INHALATIONS + " INTEGER,"
-            + " PRIMARY KEY(" + ID + ", " + TIMESTAMP + "),"
+            + " PRIMARY KEY(" + ID + ", " + START_TIMESTAMP + "),"
             + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_INCENTIVE_SPIROMETER + "(" + ID + "))";
 
     // DvtData table create statement
     private static final String CREATE_TABLE_DVT_DATA = "CREATE TABLE " + TABLE_DVT_DATA + "("
             + ID + " INTEGER,"
-            + TIMESTAMP + " DATETIME,"
+            + START_TIMESTAMP + " DATETIME,"
+            + END_TIMESTAMP + " DATETIME,"
             + RESISTANCE + " INTEGER,"
             + NUMBER_OF_REPS + " INTEGER,"
-            + " PRIMARY KEY(" + ID + ", " + TIMESTAMP + "),"
+            + " PRIMARY KEY(" + ID + ", " + START_TIMESTAMP + "),"
             + " FOREIGN KEY(" + ID + ") REFERENCES " + TABLE_DVT + "(" + ID + "))";
 
     // Doctor table create statement
@@ -217,7 +223,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,6)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,1)");
 
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:58:00.000', 2000, 10)");
+        /*db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:58:00.000', 2000, 10)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 11:58:00.000', 2000, 10)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 12:58:00.000', 2000, 10)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:58:00.000', 2000, 10)");
@@ -244,7 +250,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 12:58:00.000', 1, 8)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 13:58:00.000', 1, 9)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 14:58:00.000', 1, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 15:58:00.000', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 15:58:00.000', 1, 10)");*/
     }
 
     @Override

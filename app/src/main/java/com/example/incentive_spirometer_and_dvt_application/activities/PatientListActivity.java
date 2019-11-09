@@ -115,6 +115,7 @@ public class PatientListActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // delete patient from database
                                 databaseHelper.deletePatient(patient.getId());
+                                // TODO: delete from DoctorPatient table
                                 updatePatientList();
                             }
                         })
