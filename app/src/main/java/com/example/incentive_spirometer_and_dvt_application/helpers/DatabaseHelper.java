@@ -176,23 +176,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // TEST DATA
         // creating one user account
-        Doctor adminUser = new Doctor(1, "Admin");
+        /*Doctor adminUser = new Doctor(1, "admin");
         insertDoctor(adminUser);
         // getting the hashed password for the user
-        Authenticate adminAuth = new Authenticate(adminUser.getUsername(), "password");
+        Authenticate adminAuth = new Authenticate(adminUser.getUsername(), "1234");
         String adminHashedPass = adminAuth.getHashedPassword(adminAuth.getSalt());
 
         // creating another user account
-        Doctor otherUser = new Doctor(2, "User");
+        Doctor otherUser = new Doctor(2, "user");
         insertDoctor(otherUser);
         // getting hahsed password for the second user;
-        Authenticate userAuth = new Authenticate(otherUser.getUsername(), "SchoolIsCool");
+        Authenticate userAuth = new Authenticate(otherUser.getUsername(), "5678");
         String userHashedPass = userAuth.getHashedPassword(userAuth.getSalt());
 
         // inserting the users into the login table
-        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'Admin', '" + adminAuth.getSalt() + "', '" +  adminHashedPass + "')");
+        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'admin', '" + adminAuth.getSalt() + "', '" +  adminHashedPass + "')");
+        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'user', '" + userAuth.getSalt() +"', '" +  userHashedPass + "')");*/
 
-        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'User', '" + userAuth.getSalt() +"', '" +  userHashedPass + "')");
+        // doctor1 password: 1234
+        // doctor2 password: 5678
+        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'doctor1', '0563267261', '9431a5c2ac7bdecbbeb3b07105428baa109c9682938fbabdcd3ef9c40fea19ec')");
+        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'doctor2', '7301846435', 'f052a76e75339f7506e39b963e6e2fbb0e3287ed0fada20474ea7e0249238cbd')");
+
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR + " VALUES(1, 'doctor1')");
+        db.execSQL("INSERT INTO " + TABLE_DOCTOR + " VALUES(2, 'doctor2')");
 
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 5, 10, 145, 76, 'Male', 10, 90)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 11, 91)");
@@ -201,7 +208,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 14, 94)");
         db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 15, 95)");
 
-        // this should be throwing an error but it doesn't?? doctors should be created before bc of foreign key constraint
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,1)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,2)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,3)");
@@ -239,7 +245,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 13:58:00.000', 1, 9)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 14:58:00.000', 1, 10)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-8 15:58:00.000', 1, 10)");
-
     }
 
     @Override
@@ -259,6 +264,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // *************************** Patient table CRUD functions ****************************
+
+    /**
+     * Insert a new patient
+     * @param patient Patient object to insert
+     * @return -1 if query fails
+     */
     public boolean insertPatient(Patient patient) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -275,8 +287,131 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         long result = db.insert(TABLE_PATIENT, null, values);
 
+        return result != -1;
+    }
+
+    /**
+     * Get all patients that a given doctor has
+     * @param doctorId Doctor's ID
+     * @return list of patients that the doctor has
+     */
+    public List<Patient> getAllPatients(int doctorId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT p.* FROM "
+                + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID;
+        Cursor c = db.rawQuery(query, null);
+
+        List<Patient> patientList = new ArrayList<>();
+
+        // create list of patients
+        if (c.moveToFirst()) {
+            do {
+                Patient patient = new Patient();
+                patient.setId(c.getInt(c.getColumnIndex(ID)));
+                patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
+                patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
+                patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
+                patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
+                patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
+                patient.setAge(c.getInt(c.getColumnIndex(AGE)));
+                patient.setSex(c.getString(c.getColumnIndex(SEX)));
+                patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
+                patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
+
+                patientList.add(patient);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return patientList;
+    }
+
+    /**
+     * Get a given patient's data
+     * @param patientId patient to read data from
+     * @return Patient object with the patient's data
+     */
+    public Patient getPatient(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.e(TAG, "getPatient: "+ query);
+
+        if (c != null)
+            c.moveToFirst();
+
+        // create patient
+        Patient patient = new Patient();
+        patient.setId(c.getInt(c.getColumnIndex(ID)));
+        patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
+        patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
+        patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
+        patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
+        patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
+        patient.setAge(c.getInt(c.getColumnIndex(AGE)));
+        patient.setSex(c.getString(c.getColumnIndex(SEX)));
+        patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
+        patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
+
+        return patient;
+    }
+
+    /**
+     * Delete a given patient
+     * @param patientId the id matching the patient to delete
+     */
+    public void deletePatient(int patientId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d(TAG, "deletePatient: " + patientId);
+        db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
+    }
+
+    /**
+     * Update a given patients information
+     * @param patient
+     * @return number of rows updated
+     */
+    public int updatePatient(Patient patient) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(FIRST_NAME, patient.getFirstName());
+        values.put(LAST_NAME, patient.getLastName());
+        values.put(HEIGHT_FEET, patient.getHeightFeet());
+        values.put(HEIGHT_INCHES, patient.getHeightInches());
+        values.put(WEIGHT, patient.getWeight());
+        values.put(AGE, patient.getAge());
+        values.put(SEX, patient.getSex());
+        values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
+        values.put(DVT_ID, patient.getDvtId());
+
+        return db.update(TABLE_PATIENT, values, ID + " = ?",
+                new String[] { String.valueOf(patient.getId()) });
+    }
+
+    // *************************** DoctorPatient table CRUD functions ****************************
+
+    /**
+     * Insert new doctor patient association
+     * @param patientId patient associated with doctor
+     * @param doctorId doctor associated with patient
+     * @return true if inserted correctly, false otherwise
+     */
+    public boolean insertDoctorPatient(int patientId, int doctorId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(PATIENT_ID, patientId);
+        values.put(DOCTOR_ID, doctorId);
+
+        long result = db.insert(TABLE_DOCTOR_PATIENT, null, values);
+
         return result != -1; // if result = -1 data doesn't insert
     }
+
+    // *************************** Doctor table CRUD functions ****************************
 
     /**
      * inserts a doctor(user) into the database
@@ -303,16 +438,43 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertDoctorPatient(int patientId, int doctorId) {
+    public int getDoctorId(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + ID + " FROM " + TABLE_DOCTOR
+                + " WHERE " + USERNAME + " = '" + username + "'";
+        Cursor c = db.rawQuery(query, null);
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(PATIENT_ID, patientId);
-        values.put(DOCTOR_ID, doctorId);
+        int doctorId = -1;
 
-        long result = db.insert(TABLE_DOCTOR_PATIENT, null, values);
+        if (c.moveToFirst()) {
+            do {
+                doctorId = c.getInt(c.getColumnIndex(ID));
+            } while (c.moveToNext());
+        }
+        return doctorId;
+    }
 
-        return result != -1; // if result = -1 data doesn't insert
+    // *************************** Login table CRUD functions ****************************
+
+    /**
+     * gets the salt and hashed password from the specified username so that authentication can be done
+     * @param username
+     * @return a string array containing the salt at results[0] and the hashed password at results[1]
+     */
+    public String[] getLoginInformation(String username) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + SALT + ", " + HASHED_PASSWORD + " FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = '" + username + "';  ";
+        Cursor c = db.rawQuery(query, null);
+
+        String[] results = new String[2];
+        if (c != null && c.moveToFirst()) {
+
+            results[0] = c.getString(c.getColumnIndex(SALT));
+            results[1] = c.getString(c.getColumnIndex(HASHED_PASSWORD));
+        }
+        c.close();
+        return results;
     }
 
     /**
@@ -350,108 +512,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "isRealUser: fatal exception");
             return false;
         }
-
-    }
-
-    /**
-     * gets the salt and hashed password from the specified username so that authentication can be done
-     * @param username
-     * @return a string array containing the salt at results[0] and the hashed password at results[1]
-     */
-    public String[] getLoginInformation(String username) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + SALT + ", " + HASHED_PASSWORD + " FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = '" + username + "';  ";
-        Cursor c = db.rawQuery(query, null);
-
-        String[] results = new String[2];
-        if (c != null && c.moveToFirst()) {
-
-            results[0] = c.getString(c.getColumnIndex(SALT));
-            results[1] = c.getString(c.getColumnIndex(HASHED_PASSWORD));
-        }
-        c.close();
-        return results;
-    }
-
-    public List<Patient> getAllPatients() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT;
-        Cursor c = db.rawQuery(query, null);
-
-        List<Patient> patientList = new ArrayList<>();
-
-        // create list of patients
-        if (c.moveToFirst()) {
-            do {
-                Patient patient = new Patient();
-                patient.setId(c.getInt(c.getColumnIndex(ID)));
-                patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
-                patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
-                patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
-                patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
-                patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
-                patient.setAge(c.getInt(c.getColumnIndex(AGE)));
-                patient.setSex(c.getString(c.getColumnIndex(SEX)));
-                patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
-                patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
-
-                patientList.add(patient);
-            } while (c.moveToNext());
-        }
-
-        c.close();
-        return patientList;
-    }
-
-    public Patient getPatient(int patientId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
-
-        Log.e(TAG, "getPatient: "+ query);
-
-        if (c != null)
-            c.moveToFirst();
-
-        // create patient
-        Patient patient = new Patient();
-        patient.setId(c.getInt(c.getColumnIndex(ID)));
-        patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
-        patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
-        patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
-        patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
-        patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
-        patient.setAge(c.getInt(c.getColumnIndex(AGE)));
-        patient.setSex(c.getString(c.getColumnIndex(SEX)));
-        patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
-        patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
-
-        return patient;
-    }
-
-    public void deletePatient(int patientId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        Log.d(TAG, "deletePatient: " + patientId);
-        db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
-    }
-
-    public int updatePatient(Patient patient) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(FIRST_NAME, patient.getFirstName());
-        values.put(LAST_NAME, patient.getLastName());
-        values.put(HEIGHT_FEET, patient.getHeightFeet());
-        values.put(HEIGHT_INCHES, patient.getHeightInches());
-        values.put(WEIGHT, patient.getWeight());
-        values.put(AGE, patient.getAge());
-        values.put(SEX, patient.getSex());
-        values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
-        values.put(DVT_ID, patient.getDvtId());
-
-        return db.update(TABLE_PATIENT, values, ID + " = ?",
-                new String[] { String.valueOf(patient.getId()) });
     }
 }
 

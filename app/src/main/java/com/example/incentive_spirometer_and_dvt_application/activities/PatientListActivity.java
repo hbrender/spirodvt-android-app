@@ -36,6 +36,7 @@ public class PatientListActivity extends AppCompatActivity {
     private List<Patient> patientList;
     private ArrayAdapter<Patient> arrayAdapter;
     private ListView patientListView;
+    private int doctorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +50,7 @@ public class PatientListActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null) {
-            String user = intent.getStringExtra("username");
+            doctorId = intent.getIntExtra("doctorId", -1);
         }
     }
 
@@ -60,18 +61,15 @@ public class PatientListActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    private void startPatientInfoActivity() {
-        Intent intent = new Intent(this, PatientInfoActivity.class);
-        startActivity(intent);
-    }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         switch(id) {
             case R.id.addMenuItem:
-                startPatientInfoActivity();
+                Intent intent = new Intent(this, PatientInfoActivity.class);
+                intent.putExtra("doctorId", doctorId);
+                startActivity(intent);
                 return true;
             case R.id.signOutMenuItem:
                 PatientListActivity.this.finish();
@@ -83,7 +81,7 @@ public class PatientListActivity extends AppCompatActivity {
 
     private void createPatientsList() {
         // get list of patients from the database
-        patientList = databaseHelper.getAllPatients();
+        patientList = databaseHelper.getAllPatients(doctorId);
 
         // set adapter for patient list
         patientListView = (ListView) findViewById(R.id.patientListView);
@@ -98,6 +96,7 @@ public class PatientListActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(PatientListActivity.this, PatientInfoActivity.class);
                 intent.putExtra("patientId", patient.getId());
+                intent.putExtra("doctorId", doctorId);
                 startActivity(intent);
             }
         });
@@ -166,7 +165,7 @@ public class PatientListActivity extends AppCompatActivity {
 
     public void updatePatientList() {
         patientList.clear();
-        patientList.addAll(databaseHelper.getAllPatients());
+        patientList.addAll(databaseHelper.getAllPatients(doctorId));
         arrayAdapter.notifyDataSetChanged();
     }
 
