@@ -9,8 +9,10 @@ package com.example.incentive_spirometer_and_dvt_application.activities;
  *
  */
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,16 +48,25 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                if(checkInput(username, password)) {
-
-                    Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);
-                    int doctorId = databaseHelper.getDoctorId(username);
-                    intent.putExtra("doctorId", doctorId);
-                    startActivity(intent);
-                }
-                else {
-
-                    Toast.makeText(LoginActivity.this, "Either your username or password is invalid.", Toast.LENGTH_SHORT).show();
+                if (checkUsername(username)) {
+                    if (checkPassword(username, password)) {
+                        Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);
+                        int doctorId = databaseHelper.getDoctorId(username);
+                        intent.putExtra("doctorId", doctorId);
+                        startActivity(intent);
+                    } else {
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LoginActivity.this);
+                        alertBuilder.setTitle(getString(R.string.title_incorrect_password))
+                                .setMessage(getString(R.string.message_incorrect_password))
+                                .setPositiveButton(getString(R.string.try_again), null);
+                        alertBuilder.show();
+                    }
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(LoginActivity.this);
+                    alertBuilder.setTitle(getString(R.string.title_incorrect_username))
+                            .setMessage(getString(R.string.message_incorrect_username))
+                            .setPositiveButton(getString(R.string.try_again), null);
+                    alertBuilder.show();
                 }
             }
         });
@@ -77,6 +88,25 @@ public class LoginActivity extends AppCompatActivity {
 
                 return true;
             }
+        }
+        return false;
+    }
+
+    private boolean checkUsername(String username) {
+        // checks to make sure the username input is equal to the known users' username
+        if (databaseHelper.isRealUser(username)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkPassword(String username, String password) {
+        // creating an Authenticate object so that the username and password input are set up to be easily compared
+        Authenticate auth = new Authenticate(username, password);
+        String[] queryResults = databaseHelper.getLoginInformation(username);
+
+        if (compareHash(auth, queryResults)) {
+            return true;
         }
         return false;
     }
