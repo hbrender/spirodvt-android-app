@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.PatientInfoActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <GridLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.PatientInfoActivity"
     android:columnCount="3"
-    android:padding="15dip">
+    android:padding="15dp">
 
     <TextView
         android:id="@+id/patientInfoTextView"
@@ -15,8 +20,8 @@
         android:text="Patient Information"
         android:layout_columnSpan="3"
         android:layout_gravity="fill_horizontal"
-        android:gravity="center"
-        android:textSize="24dp" />
+        android:textSize="22dp"
+        android:textColor="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/patientIdTextView"
@@ -137,4 +142,126 @@
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal" />
 
+    <View style="@style/Divider"/>
+
+    <TextView
+        android:id="@+id/spirometerInfoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Incentive Spirometer"
+        android:layout_columnSpan="3"
+        android:layout_gravity="fill_horizontal"
+        android:textSize="22dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/spirometerIdTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Device ID: " />
+
+    <EditText
+        android:id="@+id/spirometerIdEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:hint="unique ID"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/inhalationNumTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Inhalations\nper hour: " />
+
+    <EditText
+        android:id="@+id/inhalationsNumIdEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:hint="number"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/lungVolumeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Lung volume: " />
+
+    <EditText
+        android:id="@+id/lungVolumeEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:hint="ml."
+        android:inputType="number" />
+
+    <View style="@style/Divider" />
+
+    <TextView
+        android:id="@+id/dvtInfoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DVT Prevention Device"
+        android:layout_columnSpan="3"
+        android:layout_gravity="fill_horizontal"
+        android:textSize="22dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimary"/>
+
+    <TextView
+        android:id="@+id/dvtIdTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Device ID: " />
+
+    <EditText
+        android:id="@+id/dvtIdEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:hint="unique ID"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/repsNumTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Repetitions\nper hour: " />
+
+    <EditText
+        android:id="@+id/repsNumIdEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:hint="number"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/resistanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Lung volume: " />
+
+    <Spinner
+        android:id="@+id/dvtResistanceSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/resistance_array"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal" />
+
 </GridLayout>
+</ScrollView>

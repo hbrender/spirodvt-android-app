@@ -11,6 +11,11 @@
         <item>Male</item>
         <item>Other</item>
     </string-array>
+    <string-array name="resistance_array">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
 
     <!--Login Screen Strings-->
     <string name="welcome">Welcome to App Name</string>
