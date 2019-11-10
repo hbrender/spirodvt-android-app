@@ -1,11 +1,26 @@
 <resources>
     <string name="app_name">App Name</string>
+
+    <!-- Login Screen Strings -->
+    <string name="welcome">Welcome to App Name</string>
+    <string name="username_prompt">Username</string>
+    <string name="password_prompt">Password</string>
+    <string name="login_button">Login</string>
+    <string name="forgot_username">Forgot Username?</string>
+    <string name="forgot_password">Forgot Password?</string>
+
+    <!-- Patient list screen strings -->
+    <string name="search">Search</string>
+    <string name="add_patient">Add Patient</string>
     <string name="delete_patient">Delete Patient</string>
     <string name="message_delete_patient">Are you sure you want to delete patient </string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="add_patient">Add Patient</string>
     <string name="sign_out">Sign Out</string>
+
+    <!-- Patient info screen strings -->
+    <string name="label_save">Save</string>
+    <string name="label_edit">Edit</string>
     <string-array name="sex_array">
         <item>Female</item>
         <item>Male</item>
@@ -16,18 +31,5 @@
         <item>Medium</item>
         <item>Hard</item>
     </string-array>
-
-    <!--Login Screen Strings-->
-    <string name="welcome">Welcome to App Name</string>
-    <string name="username_prompt">Username:</string>
-    <string name="password_prompt">Password:</string>
-    <string name="login_button">Login</string>
-    <string name="forgot_username">Forgot Username?</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="search">Search</string>
-    <string name="new_patient_button">New Patient</string>
-    <string name="label_save">Save</string>
-    <string name="label_edit">Edit</string>
-
 
 </resources>
