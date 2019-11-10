@@ -35,7 +35,7 @@
         android:inputType="number" />
 
     <TextView
-        android:id="@+id/firstnameTextView"
+        android:id="@+id/firstNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
@@ -52,7 +52,7 @@
         android:inputType="textPersonName" />
 
     <TextView
-        android:id="@+id/lastnameTextView"
+        android:id="@+id/lastNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
@@ -136,14 +136,5 @@
         android:entries="@array/sex_array"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal" />
-
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal|bottom"
-        android:text="Save"
-        android:layout_columnSpan="2"
-        android:onClick="onClickSave"/>
 
 </GridLayout>

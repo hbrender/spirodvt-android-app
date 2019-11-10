@@ -33,6 +33,8 @@ public class PatientInfoActivity extends AppCompatActivity {
     EditText ageEditText;
     Spinner sexSpinner;
     Button saveButton;
+    MenuItem editMenuItem;
+    MenuItem saveMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +49,6 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText = (EditText) findViewById(R.id.weightPoundsEditText);
         ageEditText = (EditText) findViewById(R.id.ageEditText);
         sexSpinner = (Spinner) findViewById(R.id.sexSpinner);
-        saveButton = (Button) findViewById(R.id.saveButton);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -64,6 +65,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Sets patients information in the view
+     * @param patient has the information to set
+     */
     public void setPatientInfo(Patient patient) {
         patientIdEditText.setText(String.valueOf(patient.getId()));
         firstNameEditText.setText(patient.getFirstName());
@@ -86,30 +91,36 @@ public class PatientInfoActivity extends AppCompatActivity {
         }
 
         disablePatientEdit();
-        saveButton.setVisibility(View.GONE);
     }
 
-    public void onClickSave(View view) {
-        EditText patientIdEditText = (EditText) findViewById(R.id.patientIdEditText);
-
+    /**
+     * Save patient information
+     */
+    public void savePatient() {
         if (patientIdEditText.getText().length() == 0) {
             Toast.makeText(this, "Enter valid patient ID", Toast.LENGTH_SHORT).show();
-        } else if (patientId != -1) { // editing existing patient info
-            Patient patient = savePatient(view);
-            int result = databaseHelper.updatePatient(patient);
-        } else { // saving info for newly created patient
-            Patient patient = savePatient(view);
-            patientId = patient.getId();
-            boolean result = databaseHelper.insertPatient(patient);
-            boolean result2 = databaseHelper.insertDoctorPatient(patientId, doctorId);
-            if (!result || !result2) {
-                Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
+        } else {
+            Patient patient = getPatientInfo();
+            disablePatientEdit(); // change edit texts to non-editable
+
+            if (patientId != -1) { // editing existing patient info
+                int result = databaseHelper.updatePatient(patient);
+            } else {
+                patientId = patient.getId();
+                boolean result = databaseHelper.insertPatient(patient);
+                boolean result2 = databaseHelper.insertDoctorPatient(patientId, doctorId);
+                if (!result || !result2) {
+                    Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
 
-    public Patient savePatient(View view) {
-        // create patient object
+    /**
+     * Gets patient information from the view
+     * @return Patient object
+     */
+    public Patient getPatientInfo() {
         Patient patient = new Patient();
         patient.setId(Integer.parseInt(patientIdEditText.getText().toString()));
         patient.setFirstName(firstNameEditText.getText().toString());
@@ -120,15 +131,12 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setAge(Integer.parseInt(ageEditText.getText().toString()));
         patient.setSex(sexSpinner.getSelectedItem().toString());
 
-        // change edit texts to non-editable
-        disablePatientEdit();
-
-        // hide save button
-        saveButton.setVisibility(View.GONE);
-
         return patient;
     }
 
+    /**
+     * Disables editing of patient information
+     */
     public void disablePatientEdit() {
         patientIdEditText.setEnabled(false);
         firstNameEditText.setEnabled(false);
@@ -140,6 +148,9 @@ public class PatientInfoActivity extends AppCompatActivity {
         sexSpinner.setEnabled(false);
     }
 
+    /**
+     * Enables editing of patient information
+     */
     public void enablePatientEdit() {
         //patientIdEditText.setEnabled(true);
         firstNameEditText.setEnabled(true);
@@ -155,6 +166,15 @@ public class PatientInfoActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.patient_info_menu, menu);
+
+        editMenuItem = menu.findItem(R.id.editMenuItem);
+        saveMenuItem = menu.findItem(R.id.saveMenuItem);
+
+        if (patientId == -1) {
+            editMenuItem.setVisible(false);
+            saveMenuItem.setVisible(true);
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -168,8 +188,14 @@ public class PatientInfoActivity extends AppCompatActivity {
                 return true;
             case R.id.editMenuItem:
                 enablePatientEdit();
-                saveButton.setVisibility(View.VISIBLE);
+                //saveButton.setVisibility(View.VISIBLE);
+                editMenuItem.setVisible(false);
+                saveMenuItem.setVisible(true);
                 return true;
+            case R.id.saveMenuItem:
+                savePatient();
+                editMenuItem.setVisible(true);
+                saveMenuItem.setVisible(false);
             default:
                 return super.onOptionsItemSelected(item);
         }

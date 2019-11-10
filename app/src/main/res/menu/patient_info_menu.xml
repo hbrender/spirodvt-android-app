@@ -6,5 +6,13 @@
         android:id="@+id/editMenuItem"
         android:title="Edit"
         android:icon="@android:drawable/ic_menu_preferences"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom"
+        android:tooltipText="Edit"/>
+    <item
+        android:id="@+id/saveMenuItem"
+        android:title="Save"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        android:tooltipText="Save"/>
 </menu>
