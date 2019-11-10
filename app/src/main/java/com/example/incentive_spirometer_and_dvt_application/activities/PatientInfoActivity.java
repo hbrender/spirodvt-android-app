@@ -2,8 +2,11 @@ package com.example.incentive_spirometer_and_dvt_application.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -174,6 +177,22 @@ public class PatientInfoActivity extends AppCompatActivity {
             editMenuItem.setVisible(false);
             saveMenuItem.setVisible(true);
         }
+
+        // set menu item icon color
+        Drawable drawable = menu.findItem(R.id.editMenuItem).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
+        menu.findItem(R.id.editMenuItem).setIcon(drawable);
+
+        drawable = menu.findItem(R.id.saveMenuItem).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
+        menu.findItem(R.id.saveMenuItem).setIcon(drawable);
+
+        /*drawable = menu.findItem(android.R.id.home).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
+        menu.findItem(android.R.id.home).setIcon(drawable);*/
 
         return super.onCreateOptionsMenu(menu);
     }

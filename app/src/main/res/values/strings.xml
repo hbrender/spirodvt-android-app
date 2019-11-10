@@ -26,6 +26,8 @@
     <string name="forgot_password">Forgot Password?</string>
     <string name="search">Search</string>
     <string name="new_patient_button">New Patient</string>
+    <string name="label_save">Save</string>
+    <string name="label_edit">Edit</string>
 
 
 </resources>

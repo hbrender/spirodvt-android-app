@@ -3,10 +3,13 @@ package com.example.incentive_spirometer_and_dvt_application.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ActionMode;
@@ -58,6 +61,12 @@ public class PatientListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.patient_list_menu, menu);
+
+        // set menu item icon color
+        Drawable drawable = menu.findItem(R.id.addMenuItem).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
+        menu.findItem(R.id.addMenuItem).setIcon(drawable);
         return super.onCreateOptionsMenu(menu);
     }
 
