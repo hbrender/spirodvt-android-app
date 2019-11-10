@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.PatientInfoActivity"
-    android:columnCount="2"
+    android:columnCount="3"
     android:padding="15dip">
 
     <TextView
@@ -13,16 +13,33 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Patient Information"
-        android:layout_columnSpan="2"
+        android:layout_columnSpan="3"
         android:layout_gravity="fill_horizontal"
         android:gravity="center"
-        android:textSize="24dp"/>
+        android:textSize="24dp" />
+
+    <TextView
+        android:id="@+id/patientIdTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:text="Patient ID: " />
+
+    <EditText
+        android:id="@+id/patientIdEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="2"
+        android:layout_gravity="fill_horizontal"
+        android:hint="unique ID"
+        android:inputType="number" />
 
     <TextView
         android:id="@+id/firstnameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
+        android:layout_marginRight="15dp"
         android:text="First Name:" />
 
     <EditText
@@ -30,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="first name"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="textPersonName" />
 
@@ -37,7 +55,6 @@
         android:id="@+id/lastnameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
         android:text="TextView"
         tools:text="Last Name:" />
 
@@ -46,38 +63,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="last name"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="textPersonName" />
-
-    <TextView
-        android:id="@+id/heightFeetTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        android:text="Patient ID: " />
-
-    <EditText
-        android:id="@+id/patientIdEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="unique ID"
-        android:layout_gravity="fill_horizontal"
-        android:inputType="number" />
 
     <TextView
         android:id="@+id/heightTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        android:text="Height: "
-        android:layout_rowSpan="2"/>
+        android:layout_columnSpan="1"
+        android:text="Height: " />
 
     <EditText
         android:id="@+id/heightFeetEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="ft."
-        android:layout_gravity="fill_horizontal"
+        android:layout_columnSpan="1"
         android:inputType="number" />
 
     <EditText
@@ -85,14 +87,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="in."
-        android:layout_gravity="fill_horizontal"
+        android:layout_columnSpan="1"
         android:inputType="number" />
 
     <TextView
         android:id="@+id/weightTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
+        android:layout_columnSpan="1"
         android:text="Weight: " />
 
     <EditText
@@ -100,6 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="lb."
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="numberDecimal" />
 
@@ -107,7 +110,7 @@
         android:id="@+id/ageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
+        android:layout_columnSpan="1"
         android:text="Age: " />
 
     <EditText
@@ -115,6 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="years"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="number" />
 
@@ -130,23 +134,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:entries="@array/sex_array"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal" />
-
-    <Button
-        android:id="@+id/addSpirometerButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="center"
-        android:text="Add Incentive Spirometer" />
-
-    <Button
-        android:id="@+id/addDvtButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="center"
-        android:text="Add DVT Prevention Device" />
 
     <Button
         android:id="@+id/saveButton"
