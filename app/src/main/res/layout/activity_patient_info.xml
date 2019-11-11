@@ -253,7 +253,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Lung volume: " />
+        android:text="Resistance: " />
 
     <Spinner
         android:id="@+id/dvtResistanceSpinner"
