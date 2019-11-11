@@ -9,6 +9,7 @@
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
 import com.example.incentive_spirometer_and_dvt_application.models.Doctor;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 import android.content.ContentValues;
@@ -19,8 +20,13 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -352,6 +358,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
         return patientList;
     }
+
+    /**
+     * Get a given patient's spirometer data
+     * @param patientId patient to read data from
+     * @return a list of patient spirometer exercises
+     */
+    public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER_DATA + " WHERE " +
+                ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
+
+        Log.e(TAG, "getPatientSpirometer: " + query);
+
+        if (c.moveToFirst()){
+            do{
+                IncentiveSpirometerData spData = new IncentiveSpirometerData();
+                spData.setId(c.getInt(c.getColumnIndex(ID)));
+                spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
+                spData.setEndTime(Timestamp.valueOf(c.getString(c.getColumnIndex(END_TIMESTAMP))));
+                spData.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(LUNG_VOLUME))));
+                spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return spirometerData;
+    }
+
+    public Timestamp convertStringToDate (String st) {
+        return Timestamp.valueOf(st);
+    }
+
 
     /**
      * Get a given patient's data

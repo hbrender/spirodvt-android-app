@@ -103,7 +103,7 @@ public class PatientListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Patient patient = (Patient) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(PatientListActivity.this, PatientInfoActivity.class);
+                Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
                 intent.putExtra("patientId", patient.getId());
                 intent.putExtra("doctorId", doctorId);
                 startActivity(intent);

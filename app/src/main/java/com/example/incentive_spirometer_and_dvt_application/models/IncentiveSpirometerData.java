@@ -1,22 +1,36 @@
 package com.example.incentive_spirometer_and_dvt_application.models;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+
+import androidx.annotation.NonNull;
 
 public class IncentiveSpirometerData {
     private int id;
-    private Timestamp timestamp;
+    private Timestamp startTime;
+    private Timestamp endTime;
+    //private Timestamp timestamp;
     private int lungVolume; // units = ml
     private int numberOfInhalations;
+    private int inhalationsCompleted;
 
     public IncentiveSpirometerData() {
 
     }
 
-    public IncentiveSpirometerData(int id, Timestamp timestamp, int lungVolume, int numberOfInhalations) {
+
+    public IncentiveSpirometerData(int id, Timestamp startTime, Timestamp endTime, int lungVolume, int numberOfInhalations, int inhalationsCompleted) {
         this.id = id;
-        this.timestamp = timestamp;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        //this.timestamp = timestamp;
         this.lungVolume = lungVolume;
         this.numberOfInhalations = numberOfInhalations;
+        this.inhalationsCompleted = inhalationsCompleted;
     }
 
     public int getId() {
@@ -27,15 +41,23 @@ public class IncentiveSpirometerData {
         this.id = id;
     }
 
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Timestamp getStartTime() {
+        return startTime;
     }
 
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
     }
 
-    public int getLung_volume() {
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
+    }
+
+    public int getLungVolume() {
         return lungVolume;
     }
 
@@ -43,11 +65,31 @@ public class IncentiveSpirometerData {
         this.lungVolume = lungVolume;
     }
 
-    public int getNumberOfInhalationss() {
+    public int getNumberOfInhalations() {
         return numberOfInhalations;
     }
 
     public void setNumberOfInhalations(int numberOfInhalations) {
         this.numberOfInhalations = numberOfInhalations;
+    }
+
+    public int getInhalationsCompleted() {
+        return inhalationsCompleted;
+    }
+
+    public void setInhalationsCompleted(int inhalationsCompleted) {
+        this.inhalationsCompleted = inhalationsCompleted;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        Calendar cs = GregorianCalendar.getInstance();
+        cs.setTime(startTime);
+        Calendar ce = GregorianCalendar.getInstance();
+        ce.setTime(endTime);
+        return "start time: " + cs.get(Calendar.HOUR_OF_DAY) + ":"  + String.format(Locale.ENGLISH, "%02d", cs.get(Calendar.MINUTE)) + " "  +
+                " end time: " + ce.get(Calendar.HOUR_OF_DAY) + ":"  + String.format(Locale.ENGLISH, "%02d", ce.get(Calendar.MINUTE)) + " "  +
+                " completed " + inhalationsCompleted;
     }
 }

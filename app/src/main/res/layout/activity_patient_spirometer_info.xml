@@ -7,10 +7,44 @@
     android:orientation="vertical"
     tools:context=".activities.PatientSpirometerInfoActivity">
 
+    <LinearLayout
+        android:id="@+id/spirometerInfoButtons"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/six_hours"
+            android:text="@string/six_hour_button_text"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/twentyfour_hours"
+            android:text="@string/twentyfour_hour_button_text"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/past_week"
+            android:text="@string/weekly_button_text"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
     <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
         android:layout_height="200dip"
-        android:id="@+id/graph"
+        android:id="@+id/patient_spirometer_graph"
+        />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/patient_spirometer_table"
         />
 
 
