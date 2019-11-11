@@ -40,7 +40,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class PatientSpirometerInfoActivity extends AppCompatActivity {
-    static final String TAG = "PatientSpirometerInfoActivity";
+    static final String TAG = "PatientSpiroInfoAct";
     private DatabaseHelper databaseHelper;
     private List<IncentiveSpirometerData> spData;
     private ArrayAdapter<IncentiveSpirometerData> arrayAdapter;
@@ -56,20 +56,23 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        createDataList ();
-        drawGraph ();
+
 
         Intent intent = getIntent();
         if (intent != null) {
             patientId = intent.getIntExtra("patientId", -1);
+            Log.d(TAG, "onCreate: PATIENTID: " + patientId);
             doctorId = intent.getIntExtra("doctorId", -1);
         }
+
+        createDataList ();
+        drawGraph ();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
         // connection to database currently not working
-//        spData = new ArrayList<>();
+        spData = new ArrayList<>();
 //        spData = databaseHelper.getPatinetSpirometerData(patientId);
 //        for (IncentiveSpirometerData i: spData) {
 //            Log.d("data", i.toString());
@@ -112,8 +115,12 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
     }
 
     private void createDataList () {
-        //spData = databaseHelper.getPatinetSpirometerData(patientId);
-        spData = testData();
+        Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
+        spData = databaseHelper.getPatinetSpirometerData(patientId);
+        for (IncentiveSpirometerData i: spData) {
+            Log.d("data", i.toString());
+        }
+        //spData = testData();
         dataListView = (ListView) findViewById(R.id.patient_spirometer_table);
         arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, spData);
         dataListView.setAdapter(arrayAdapter);

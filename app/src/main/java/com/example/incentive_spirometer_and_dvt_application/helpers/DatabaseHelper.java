@@ -366,16 +366,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER_DATA + " WHERE " +
-                ID + " = " + patientId;
+        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
+        String query = "SELECT isd.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER_DATA + " isd WHERE p." + INCENTIVE_SPIROMETER_ID +
+                " = isd." + ID + " AND p." + ID + " = " + patientId;
         Cursor c = db.rawQuery(query, null);
 
         List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
 
-        Log.e(TAG, "getPatientSpirometer: " + query);
+        Log.d(TAG, "getPatientSpirometer: " + query);
 
         if (c.moveToFirst()){
             do{
+                Log.d(TAG, "getPatinetSpirometerData: THINGS");
                 IncentiveSpirometerData spData = new IncentiveSpirometerData();
                 spData.setId(c.getInt(c.getColumnIndex(ID)));
                 spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
@@ -405,7 +407,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
         Cursor c = db.rawQuery(query, null);
 
-        Log.e(TAG, "getPatient: "+ query);
+        Log.d(TAG, "getPatient: "+ query);
 
         if (c != null)
             c.moveToFirst();
