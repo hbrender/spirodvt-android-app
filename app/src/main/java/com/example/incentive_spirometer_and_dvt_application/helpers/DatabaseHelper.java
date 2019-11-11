@@ -360,44 +360,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Get a given patient's spirometer data
-     * @param patientId patient to read data from
-     * @return a list of patient spirometer exercises
-     */
-    public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
-        String query = "SELECT isd.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER_DATA + " isd WHERE p." + INCENTIVE_SPIROMETER_ID +
-                " = isd." + ID + " AND p." + ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
-
-        List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
-
-        Log.d(TAG, "getPatientSpirometer: " + query);
-
-        if (c.moveToFirst()){
-            do{
-                Log.d(TAG, "getPatinetSpirometerData: THINGS");
-                IncentiveSpirometerData spData = new IncentiveSpirometerData();
-                spData.setId(c.getInt(c.getColumnIndex(ID)));
-                spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
-                spData.setEndTime(Timestamp.valueOf(c.getString(c.getColumnIndex(END_TIMESTAMP))));
-                spData.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
-                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(LUNG_VOLUME))));
-                spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
-            } while (c.moveToNext());
-        }
-
-        c.close();
-        return spirometerData;
-    }
-
-    public Timestamp convertStringToDate (String st) {
-        return Timestamp.valueOf(st);
-    }
-
-
-    /**
      * Get a given patient's data
      * @param patientId patient to read data from
      * @return Patient object with the patient's data
@@ -582,5 +544,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return false;
         }
     }
+
+    // *************************** Incentive Spirometer Data table CRUD functions ****************************
+
+    /**
+     * Get a given patient's spirometer data
+     * @param patientId patient to read data from
+     * @return a list of patient spirometer exercises
+     */
+    public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
+        String query = "SELECT isd.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER_DATA
+                + " isd WHERE p." + INCENTIVE_SPIROMETER_ID + " = isd." + ID
+                + " AND p." + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
+
+        Log.d(TAG, "getPatientSpirometer: " + query);
+
+        if (c.moveToFirst()){
+            do{
+                Log.d(TAG, "getPatinetSpirometerData: THINGS");
+                IncentiveSpirometerData spData = new IncentiveSpirometerData();
+                spData.setId(c.getInt(c.getColumnIndex(ID)));
+                spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
+                spData.setEndTime(Timestamp.valueOf(c.getString(c.getColumnIndex(END_TIMESTAMP))));
+                spData.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(LUNG_VOLUME))));
+                spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
+
+                spirometerData.add(spData); // you were missing this line
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return spirometerData;
+    }
+
+    public Timestamp convertStringToDate (String st) {
+        return Timestamp.valueOf(st);
+    }
+
 }
 

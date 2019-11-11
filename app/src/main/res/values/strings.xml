@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">App Name</string>
+    <string name="app_name">SpiroDVT</string>
 
     <!-- Login Screen Strings -->
     <string name="welcome">Welcome to App Name</string>
