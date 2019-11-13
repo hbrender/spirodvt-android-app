@@ -98,12 +98,12 @@ public class PatientInfoActivity extends AppCompatActivity {
 
     /**
      * Save patient information
+     * @return true if able to save patient info with not errors, false otherwise
      */
-    public void savePatient() {
-        if (patientIdEditText.getText().length() == 0) {
-            Toast.makeText(this, "Enter valid patient ID", Toast.LENGTH_SHORT).show();
-        } else {
-            Patient patient = getPatientInfo();
+    public boolean savePatient() {
+        // if no errors in user input
+        if (!hasEmptyInput()) {
+            Patient patient = getPatientInfo(); // get patient info from view components
             disablePatientEdit(); // change edit texts to non-editable
 
             if (patientId != -1) { // editing existing patient info
@@ -114,17 +114,58 @@ public class PatientInfoActivity extends AppCompatActivity {
                 boolean result2 = databaseHelper.insertDoctorPatient(patientId, doctorId);
                 if (!result || !result2) {
                     Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
             }
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * Checks if user input for required input is empty and displays appropriate error messages
+     * @return true if not empty input, false otherwise
+     */
+    public boolean hasEmptyInput() {
+        boolean hasInputErrors = false;
+        if (patientIdEditText.getText().length() == 0) {
+            patientIdEditText.setError("Enter a unique id");
+            hasInputErrors = true;
+        }
+        if (firstNameEditText.getText().length() == 0) {
+            firstNameEditText.setError("Enter name");
+            hasInputErrors = true;
+        }
+        if (lastNameEditText.getText().length() == 0) {
+            lastNameEditText.setError("Enter name");
+            hasInputErrors = true;
+        }
+        if (heightFeetEditText.getText().length() == 0) {
+            heightFeetEditText.setError("Enter feet");
+            hasInputErrors = true;
+        }
+        if (heightInchesEditText.getText().length() == 0) {
+            heightInchesEditText.setError("Enter inches");
+            hasInputErrors = true;
+        }
+        if (weightPoundsEditText.getText().length() == 0) {
+            weightPoundsEditText.setError("Enter weight");
+            hasInputErrors = true;
+        }
+        if (ageEditText.getText().length() == 0) {
+            ageEditText.setError("Enter age");
+            hasInputErrors = true;
+        }
+        return hasInputErrors;
     }
 
     /**
      * Gets patient information from the view
-     * @return Patient object
+     * @return Patient object or null there are user input errors
      */
     public Patient getPatientInfo() {
         Patient patient = new Patient();
+
         patient.setId(Integer.parseInt(patientIdEditText.getText().toString()));
         patient.setFirstName(firstNameEditText.getText().toString());
         patient.setLastName(lastNameEditText.getText().toString());
@@ -189,11 +230,6 @@ public class PatientInfoActivity extends AppCompatActivity {
         DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
         menu.findItem(R.id.saveMenuItem).setIcon(drawable);
 
-        /*drawable = menu.findItem(android.R.id.home).getIcon();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
-        menu.findItem(android.R.id.home).setIcon(drawable);*/
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -207,14 +243,15 @@ public class PatientInfoActivity extends AppCompatActivity {
                 return true;
             case R.id.editMenuItem:
                 enablePatientEdit();
-                //saveButton.setVisibility(View.VISIBLE);
                 editMenuItem.setVisible(false);
                 saveMenuItem.setVisible(true);
                 return true;
             case R.id.saveMenuItem:
-                savePatient();
-                editMenuItem.setVisible(true);
-                saveMenuItem.setVisible(false);
+                // check if patient info can be saved with no errors
+                if (savePatient()) {
+                    editMenuItem.setVisible(true);
+                    saveMenuItem.setVisible(false);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
