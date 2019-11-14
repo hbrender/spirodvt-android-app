@@ -65,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String USERNAME = "username";
 
     // Patient table column names
-    private static final String FIRST_NAME = "firstName";
+    public static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "lastName";
     private static final String HEIGHT_FEET = "heightFeet";
     private static final String HEIGHT_INCHES = "heightInches";
@@ -357,6 +357,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         c.close();
         return patientList;
+    }
+
+    public Cursor getAllPatientsCursor(int doctorId) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT p.* FROM "
+                + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID;
+
+        Log.d(TAG, "getAllPatientsCursor: " + query);
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor;
     }
 
     /**

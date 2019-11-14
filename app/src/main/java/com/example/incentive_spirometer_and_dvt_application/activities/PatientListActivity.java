@@ -21,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,7 @@ public class PatientListActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private List<Patient> patientList;
     private ArrayAdapter<Patient> arrayAdapter;
+    private SimpleCursorAdapter simpleCursorAdapter;
     private ListView patientListView;
     private int doctorId;
 
@@ -94,8 +96,19 @@ public class PatientListActivity extends AppCompatActivity {
 
         // set adapter for patient list
         patientListView = (ListView) findViewById(R.id.patientListView);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
-        patientListView.setAdapter(arrayAdapter);
+        //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
+        //patientListView.setAdapter(arrayAdapter);
+
+        Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+        simpleCursorAdapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_1,
+                cursor,
+                new String[] {DatabaseHelper.FIRST_NAME},
+                new int[] {android.R.id.text1},
+                0
+        );
+        patientListView.setAdapter(simpleCursorAdapter);
 
         // click listener for viewing patient information
         patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -125,7 +138,8 @@ public class PatientListActivity extends AppCompatActivity {
                                 // delete patient from database
                                 databaseHelper.deletePatientById(patient.getId());
                                 // TODO: delete from DoctorPatient table
-                                updatePatientList();
+                                //updatePatientList();
+                                updatePatientListView();
                             }
                         })
                         .setNegativeButton(R.string.no, null);
@@ -168,7 +182,8 @@ public class PatientListActivity extends AppCompatActivity {
                         for (long id: checkIds) {
                             Log.d(TAG, "onActionItemClicked: HERERERE");
                             databaseHelper.deletePatientById((int) id);
-                            updatePatientList();
+                            //updatePatientList();
+                            updatePatientListView();
                         }
 
                         mode.finish(); // exit cam
@@ -189,10 +204,19 @@ public class PatientListActivity extends AppCompatActivity {
         arrayAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Updates the adapter and updates the view
+     */
+    public void updatePatientListView() {
+        Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+        simpleCursorAdapter.changeCursor(cursor);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        updatePatientList();
+        //updatePatientList();
+        updatePatientListView();
     }
 
     @Override
