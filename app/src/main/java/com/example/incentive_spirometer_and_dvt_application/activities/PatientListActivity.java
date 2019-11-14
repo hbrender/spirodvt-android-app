@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -98,26 +99,43 @@ public class PatientListActivity extends AppCompatActivity {
         patientListView = (ListView) findViewById(R.id.patientListView);
         //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
         //patientListView.setAdapter(arrayAdapter);
-
-        Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+        final Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
         simpleCursorAdapter = new SimpleCursorAdapter(
                 this,
-                android.R.layout.simple_list_item_activated_1,
+                android.R.layout.simple_list_item_activated_2,
                 cursor,
                 new String[] {DatabaseHelper.FIRST_NAME},
                 new int[] {android.R.id.text1},
-                0
-        );
+                0) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+                Log.d(TAG, "getView: " + position);
+                if (cursor.moveToPosition(position)) {
+                    text1.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
+                    text2.setText(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                }
+
+                return view;
+            }
+        };
         patientListView.setAdapter(simpleCursorAdapter);
 
         // click listener for viewing patient information
         patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Patient patient = (Patient) parent.getItemAtPosition(position);
+                //final Patient patient = (Patient) parent.getItemAtPosition(position);
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+
 
                 Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
-                intent.putExtra("patientId", patient.getId());
+                //intent.putExtra("patientId", patient.getId());
+                intent.putExtra("patientId", cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
                 intent.putExtra("doctorId", doctorId);
                 startActivity(intent);
             }

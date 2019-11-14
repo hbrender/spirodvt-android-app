@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_LOGIN = "Login";
 
     // Common column names
-    private static final String ID = "_id";
+    public static final String ID = "_id";
     private static final String START_TIMESTAMP = "startTimestamp";
     private static final String END_TIMESTAMP = "endTimestamp";
 
