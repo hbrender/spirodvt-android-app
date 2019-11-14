@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_LOGIN = "Login";
 
     // Common column names
-    private static final String ID = "id";
+    private static final String ID = "_id";
     private static final String START_TIMESTAMP = "startTimestamp";
     private static final String END_TIMESTAMP = "endTimestamp";
 
@@ -394,7 +394,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Delete a given patient
      * @param patientId the id matching the patient to delete
      */
-    public void deletePatient(int patientId) {
+    public void deletePatientById(int patientId) {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d(TAG, "deletePatient: " + patientId);
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});

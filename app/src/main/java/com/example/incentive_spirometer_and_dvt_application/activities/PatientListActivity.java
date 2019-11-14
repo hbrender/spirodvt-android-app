@@ -123,7 +123,7 @@ public class PatientListActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // delete patient from database
-                                databaseHelper.deletePatient(patient.getId());
+                                databaseHelper.deletePatientById(patient.getId());
                                 // TODO: delete from DoctorPatient table
                                 updatePatientList();
                             }
@@ -136,7 +136,7 @@ public class PatientListActivity extends AppCompatActivity {
         });
 
         // set the listener for entering CAM, user long presses they can select multiple patients
-        /*patientListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        patientListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         patientListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
@@ -160,7 +160,17 @@ public class PatientListActivity extends AppCompatActivity {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.deleteMenuItem:
-                        // to do delete
+                        Log.d(TAG, "onActionItemClicked: " + patientListView.getCheckedItemPositions());
+                        long[] checkIds = patientListView.getCheckedItemIds();
+                        Log.d(TAG, "onActionItemClicked: " + checkIds.length);
+
+                        // delete all selected patients
+                        for (long id: checkIds) {
+                            Log.d(TAG, "onActionItemClicked: HERERERE");
+                            databaseHelper.deletePatientById((int) id);
+                            updatePatientList();
+                        }
+
                         mode.finish(); // exit cam
                         return true;
                 }
@@ -170,7 +180,7 @@ public class PatientListActivity extends AppCompatActivity {
             @Override
             public void onDestroyActionMode(ActionMode mode) {
             }
-        });*/
+        });
     }
 
     public void updatePatientList() {
