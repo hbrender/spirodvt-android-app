@@ -38,8 +38,6 @@ import java.util.List;
 public class PatientListActivity extends AppCompatActivity {
     static final String TAG = "PatientListActivityTag";
     private DatabaseHelper databaseHelper;
-    private List<Patient> patientList;
-    private ArrayAdapter<Patient> arrayAdapter;
     private SimpleCursorAdapter simpleCursorAdapter;
     private ListView patientListView;
     private int doctorId;
@@ -50,14 +48,13 @@ public class PatientListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patient_list);
 
         databaseHelper = new DatabaseHelper(this);
-        patientList = new ArrayList<>();
-
-        createPatientsList();
 
         Intent intent = getIntent();
         if (intent != null) {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
+
+        createPatientsList();
     }
 
     @Override
@@ -92,14 +89,9 @@ public class PatientListActivity extends AppCompatActivity {
     }
 
     private void createPatientsList() {
-        // get list of patients from the database
-        patientList = databaseHelper.getAllPatients(doctorId);
-
         // set adapter for patient list
         patientListView = (ListView) findViewById(R.id.patientListView);
-        //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
-        //patientListView.setAdapter(arrayAdapter);
-        final Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+        Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
         simpleCursorAdapter = new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_activated_2,
@@ -109,15 +101,17 @@ public class PatientListActivity extends AppCompatActivity {
                 0) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+
                 View view = super.getView(position, convertView, parent);
 
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                Log.d(TAG, "getView: " + position);
                 if (cursor.moveToPosition(position)) {
-                    text1.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
-                    text2.setText(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                    text1.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.LAST_NAME))
+                            + ", " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
+                    text2.setText("ID: " + String.valueOf(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID))));
                 }
 
                 return view;
@@ -129,12 +123,9 @@ public class PatientListActivity extends AppCompatActivity {
         patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //final Patient patient = (Patient) parent.getItemAtPosition(position);
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
 
-
                 Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
-                //intent.putExtra("patientId", patient.getId());
                 intent.putExtra("patientId", cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
                 intent.putExtra("doctorId", doctorId);
                 startActivity(intent);
@@ -223,14 +214,8 @@ public class PatientListActivity extends AppCompatActivity {
         });
     }
 
-    public void updatePatientList() {
-        patientList.clear();
-        patientList.addAll(databaseHelper.getAllPatients(doctorId));
-        arrayAdapter.notifyDataSetChanged();
-    }
-
     /**
-     * Updates the adapter and updates the view
+     * Updates the adapter and list view
      */
     public void updatePatientListView() {
         Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
@@ -240,7 +225,6 @@ public class PatientListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //updatePatientList();
         updatePatientListView();
     }
 

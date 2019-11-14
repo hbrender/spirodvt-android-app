@@ -66,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Patient table column names
     public static final String FIRST_NAME = "firstName";
-    private static final String LAST_NAME = "lastName";
+    public static final String LAST_NAME = "lastName";
     private static final String HEIGHT_FEET = "heightFeet";
     private static final String HEIGHT_INCHES = "heightInches";
     private static final String WEIGHT = "weight";
