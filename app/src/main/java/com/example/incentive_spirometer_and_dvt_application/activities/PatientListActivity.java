@@ -102,7 +102,7 @@ public class PatientListActivity extends AppCompatActivity {
         Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
         simpleCursorAdapter = new SimpleCursorAdapter(
                 this,
-                android.R.layout.simple_list_item_1,
+                android.R.layout.simple_list_item_activated_1,
                 cursor,
                 new String[] {DatabaseHelper.FIRST_NAME},
                 new int[] {android.R.id.text1},
@@ -174,17 +174,24 @@ public class PatientListActivity extends AppCompatActivity {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.deleteMenuItem:
-                        Log.d(TAG, "onActionItemClicked: " + patientListView.getCheckedItemPositions());
-                        long[] checkIds = patientListView.getCheckedItemIds();
-                        Log.d(TAG, "onActionItemClicked: " + checkIds.length);
+                        final long[] checkIds = patientListView.getCheckedItemIds();
 
-                        // delete all selected patients
-                        for (long id: checkIds) {
-                            Log.d(TAG, "onActionItemClicked: HERERERE");
-                            databaseHelper.deletePatientById((int) id);
-                            //updatePatientList();
-                            updatePatientListView();
-                        }
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientListActivity.this);
+                        alertBuilder.setTitle(getString(R.string.delete_patient))
+                                .setMessage(getString(R.string.message_delete_patients))
+                                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // delete all selected patients
+                                        for (long id: checkIds) {
+                                            databaseHelper.deletePatientById((int) id);
+                                            // TODO: delete from DoctorPatient table
+                                            updatePatientListView();
+                                        }
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null);
+                        alertBuilder.show();
 
                         mode.finish(); // exit cam
                         return true;
