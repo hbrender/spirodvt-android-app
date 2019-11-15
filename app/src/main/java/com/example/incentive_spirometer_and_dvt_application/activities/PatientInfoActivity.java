@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 public class PatientInfoActivity extends AppCompatActivity {
@@ -27,6 +30,8 @@ public class PatientInfoActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
     int patientId;
     int doctorId;
+
+    // Patient Information components
     EditText patientIdEditText;
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -35,7 +40,18 @@ public class PatientInfoActivity extends AppCompatActivity {
     EditText weightPoundsEditText;
     EditText ageEditText;
     Spinner sexSpinner;
-    Button saveButton;
+
+    // Incentive Spirometer components
+    EditText spirometerIdEditText;
+    EditText inhalationsNumIdEditText;
+    EditText lungVolumeEditText;
+
+    // DVT Prevention Device components
+    EditText dvtIdEditText;
+    EditText repsNumIdEditText;
+    Spinner dvtResistanceSpinner;
+
+    // Menu components
     MenuItem editMenuItem;
     MenuItem saveMenuItem;
 
@@ -52,6 +68,12 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText = (EditText) findViewById(R.id.weightPoundsEditText);
         ageEditText = (EditText) findViewById(R.id.ageEditText);
         sexSpinner = (Spinner) findViewById(R.id.sexSpinner);
+        spirometerIdEditText = (EditText) findViewById(R.id.spirometerIdEditText);
+        inhalationsNumIdEditText = (EditText) findViewById(R.id.inhalationsNumIdEditText);
+        lungVolumeEditText = (EditText) findViewById(R.id.lungVolumeEditText);
+        dvtIdEditText = (EditText) findViewById(R.id.dvtIdEditText);
+        repsNumIdEditText = (EditText) findViewById(R.id.repsNumIdEditText);
+        dvtResistanceSpinner = (Spinner) findViewById(R.id.dvtResistanceSpinner);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,7 +85,9 @@ public class PatientInfoActivity extends AppCompatActivity {
 
             if (patientId != -1) {
                 Patient patient = databaseHelper.getPatient(patientId);
-                setPatientInfo(patient);
+                IncentiveSpirometer incentiveSpirometer = databaseHelper.getIncentiveSpirometer(patientId);
+                Dvt dvt = databaseHelper.getDvt(patientId);
+                setPatientInfo(patient, incentiveSpirometer, dvt);
             }
         }
     }
@@ -72,7 +96,7 @@ public class PatientInfoActivity extends AppCompatActivity {
      * Sets patients information in the view
      * @param patient has the information to set
      */
-    public void setPatientInfo(Patient patient) {
+    public void setPatientInfo(Patient patient, IncentiveSpirometer incentiveSpirometer, Dvt dvt) {
         patientIdEditText.setText(String.valueOf(patient.getId()));
         firstNameEditText.setText(patient.getFirstName());
         lastNameEditText.setText(patient.getLastName());
@@ -91,6 +115,28 @@ public class PatientInfoActivity extends AppCompatActivity {
             default:
                 sexSpinner.setSelection(2);
                 break;
+        }
+
+        if (incentiveSpirometer != null) {
+            spirometerIdEditText.setText(String.valueOf(incentiveSpirometer.getId()));
+            inhalationsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
+            lungVolumeEditText.setText(String.valueOf(incentiveSpirometer.getLungVolume()));
+        }
+
+        if (dvt != null) {
+            dvtIdEditText.setText(String.valueOf(incentiveSpirometer.getId()));
+            repsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
+
+            switch (dvt.getResistance()) {
+                case "Easy":
+                    dvtResistanceSpinner.setSelection(0);
+                    break;
+                case "Medium":
+                    dvtResistanceSpinner.setSelection(1);
+                    break;
+                default:
+                    dvtResistanceSpinner.setSelection(2);
+            }
         }
 
         disablePatientEdit();
@@ -190,11 +236,17 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(false);
         ageEditText.setEnabled(false);
         sexSpinner.setEnabled(false);
+        spirometerIdEditText.setEnabled(false);
+        inhalationsNumIdEditText.setEnabled(false);
+        lungVolumeEditText.setEnabled(false);
+        dvtIdEditText.setEnabled(false);
+        repsNumIdEditText.setEnabled(false);
+        dvtResistanceSpinner.setEnabled(false);
     }
 
-    /**
-     * Enables editing of patient information
-     */
+        /**
+         * Enables editing of patient information
+         */
     public void enablePatientEdit() {
         //patientIdEditText.setEnabled(true);
         firstNameEditText.setEnabled(true);
@@ -204,6 +256,12 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(true);
         ageEditText.setEnabled(true);
         sexSpinner.setEnabled(true);
+        //spirometerIdEditText.setEnabled(true);
+        inhalationsNumIdEditText.setEnabled(true);
+        lungVolumeEditText.setEnabled(true);
+        //dvtIdEditText.setEnabled(true);
+        repsNumIdEditText.setEnabled(true);
+        dvtResistanceSpinner.setEnabled(true);
     }
 
     @Override

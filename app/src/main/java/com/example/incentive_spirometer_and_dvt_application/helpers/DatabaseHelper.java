@@ -9,6 +9,8 @@
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
 import com.example.incentive_spirometer_and_dvt_application.models.Doctor;
+import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
@@ -92,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Dvt table create statement
     private static final String CREATE_TABLE_DVT = "CREATE TABLE " + TABLE_DVT + "("
             + ID + " INTEGER PRIMARY KEY, "
-            + RESISTANCE + " INTEGER,"
+            + RESISTANCE + " TEXT,"
             + NUMBER_OF_REPS + " INTEGER)";
 
     // IncentiveSpirometerData table create statement
@@ -111,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ID + " INTEGER,"
             + START_TIMESTAMP + " DATETIME,"
             + END_TIMESTAMP + " DATETIME,"
-            + RESISTANCE + " INTEGER,"
+            + RESISTANCE + " TEXT,"
             + NUMBER_OF_REPS + " INTEGER,"
             + REPS_COMPLETED + " INTEGER,"
             + " PRIMARY KEY(" + ID + ", " + START_TIMESTAMP + "),"
@@ -600,6 +602,69 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Timestamp convertStringToDate (String st) {
         return Timestamp.valueOf(st);
     }
+
+    // *************************** Incentive Spirometer table CRUD functions ****************************
+
+    /**
+     * Get a patient's incentive spirometer data
+     * @param patientId patient related to the incentive spirometer
+     * @return IncentiveSpirometer object with the patient's device data
+     */
+    public IncentiveSpirometer getIncentiveSpirometer(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT i.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER + " i"
+                + " WHERE p." + ID + " = " + patientId
+                + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getIncentiveSpirometer: "+ query);
+
+        if (c != null) {
+            c.moveToFirst();
+
+            // create incentive spirometer
+            IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+            incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+            incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
+
+            return incentiveSpirometer;
+        }
+        return null;
+    }
+
+    // *************************** Incentive Spirometer table CRUD functions ****************************
+
+    /**
+     * Get a patient's DVT data
+     * @param patientId patient related to the dvt device
+     * @return Dvt object with the patient's device data
+     */
+    public Dvt getDvt(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT d.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT + " d"
+                + " WHERE p." + ID + " = " + patientId
+                + " AND p." + DVT_ID + " = d." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getDvt: "+ query);
+
+        if (c != null) {
+            c.moveToFirst();
+
+            // create dvt
+            Dvt dvt = new Dvt();
+            dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
+            dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
+
+            return dvt;
+        }
+        return null;
+    }
+
 
 }
 
