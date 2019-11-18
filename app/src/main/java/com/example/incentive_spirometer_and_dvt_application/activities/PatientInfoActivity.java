@@ -124,8 +124,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         }
 
         if (dvt != null) {
-            dvtIdEditText.setText(String.valueOf(incentiveSpirometer.getId()));
-            repsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
+            dvtIdEditText.setText(String.valueOf(dvt.getId()));
+            repsNumIdEditText.setText(String.valueOf(dvt.getNumberOfReps()));
 
             switch (dvt.getResistance()) {
                 case "Easy":
@@ -149,11 +149,17 @@ public class PatientInfoActivity extends AppCompatActivity {
     public boolean savePatient() {
         // if no errors in user input
         if (!hasEmptyInput()) {
-            Patient patient = getPatientInfo(); // get patient info from view components
+            // get info from view components
+            Patient patient = getPatientInfo();
+            IncentiveSpirometer incentiveSpirometer = getSpirometerInfo();
+            Dvt dvt = getDvtInfo();
+
             disablePatientEdit(); // change edit texts to non-editable
 
             if (patientId != -1) { // editing existing patient info
                 int result = databaseHelper.updatePatient(patient);
+                int result2 = databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
+                int result3 = databaseHelper.updateDvt(dvt);
             } else {
                 patientId = patient.getId();
                 boolean result = databaseHelper.insertPatient(patient);
@@ -207,7 +213,7 @@ public class PatientInfoActivity extends AppCompatActivity {
 
     /**
      * Gets patient information from the view
-     * @return Patient object or null there are user input errors
+     * @return Patient object
      */
     public Patient getPatientInfo() {
         Patient patient = new Patient();
@@ -220,8 +226,38 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setWeight(Double.parseDouble(weightPoundsEditText.getText().toString()));
         patient.setAge(Integer.parseInt(ageEditText.getText().toString()));
         patient.setSex(sexSpinner.getSelectedItem().toString());
+        patient.setIncentiveSpirometerId(Integer.parseInt(spirometerIdEditText.getText().toString()));
+        patient.setDvtId(Integer.parseInt(dvtIdEditText.getText().toString()));
 
         return patient;
+    }
+
+    /**
+     * Gets incentive spirometer information from the view
+     * @return IncentiveSpirometer object
+     */
+    public IncentiveSpirometer getSpirometerInfo() {
+        IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+
+        incentiveSpirometer.setId(Integer.parseInt(spirometerIdEditText.getText().toString()));
+        incentiveSpirometer.setLungVolume(Integer.parseInt(lungVolumeEditText.getText().toString()));
+        incentiveSpirometer.setNumberOfInhalations(Integer.parseInt(inhalationsNumIdEditText.getText().toString()));
+
+        return incentiveSpirometer;
+    }
+
+    /**
+     * Gets DVT information from the view
+     * @return Dvt object or null there are user input errors
+     */
+    public Dvt getDvtInfo() {
+        Dvt dvt = new Dvt();
+
+        dvt.setId(Integer.parseInt(dvtIdEditText.getText().toString()));
+        dvt.setResistance(dvtResistanceSpinner.getSelectedItem().toString());
+        dvt.setNumberOfReps(Integer.parseInt(repsNumIdEditText.getText().toString()));
+
+        return dvt;
     }
 
     /**

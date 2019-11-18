@@ -634,7 +634,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    // *************************** Incentive Spirometer table CRUD functions ****************************
+    /**
+     * Update a given Incentive Spirometer's information
+     * @param incentiveSpirometer
+     * @return number of rows updated
+     */
+    public int updateIncentiveSpirometer(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
+        values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
+
+        return db.update(TABLE_INCENTIVE_SPIROMETER, values, ID + " = ?",
+                new String[] { String.valueOf(incentiveSpirometer.getId()) });
+    }
+
+    // *************************** Dvt table CRUD functions ****************************
 
     /**
      * Get a patient's DVT data
@@ -665,6 +681,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    /**
+     * Update a given DVT device's information
+     * @param dvt
+     * @return number of rows updated
+     */
+    public int updateDvt(Dvt dvt) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
+        values.put(RESISTANCE, dvt.getResistance());
+
+        return db.update(TABLE_DVT, values, ID + " = ?",
+                new String[] { String.valueOf(dvt.getId()) });
+    }
 }
 
