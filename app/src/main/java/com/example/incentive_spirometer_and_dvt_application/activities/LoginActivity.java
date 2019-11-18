@@ -73,25 +73,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private boolean checkInput(String username, String password) {
-
-        // creating an Authenticate object so that the username and password input are set up to be easily compared
-        Authenticate auth = new Authenticate(username, password);
-
-        // checks to make sure the username input is equal to the known users' username
-        // also checks the hashed password from the input against the users' hashed password;
-        if (databaseHelper.isRealUser(username)) {
-
-            String[] queryResults = databaseHelper.getLoginInformation(username);
-
-            if (compareHash(auth, queryResults)) {
-
-                return true;
-            }
-        }
-        return false;
-    }
-
     private boolean checkUsername(String username) {
         // checks to make sure the username input is equal to the known users' username
         if (databaseHelper.isRealUser(username)) {

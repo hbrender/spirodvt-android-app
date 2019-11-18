@@ -192,23 +192,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_LOGIN);
 
         // TEST DATA
-        // creating one user account
-        /*Doctor adminUser = new Doctor(1, "admin");
-        insertDoctor(adminUser);
-        // getting the hashed password for the user
-        Authenticate adminAuth = new Authenticate(adminUser.getUsername(), "1234");
-        String adminHashedPass = adminAuth.getHashedPassword(adminAuth.getSalt());
-
-        // creating another user account
-        Doctor otherUser = new Doctor(2, "user");
-        insertDoctor(otherUser);
-        // getting hahsed password for the second user;
-        Authenticate userAuth = new Authenticate(otherUser.getUsername(), "5678");
-        String userHashedPass = userAuth.getHashedPassword(userAuth.getSalt());
-
-        // inserting the users into the login table
-        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(1, 'admin', '" + adminAuth.getSalt() + "', '" +  adminHashedPass + "')");
-        db.execSQL("INSERT INTO " + TABLE_LOGIN + " VALUES(2, 'user', '" + userAuth.getSalt() +"', '" +  userHashedPass + "')");*/
 
         // doctor1 password: 1234
         // doctor2 password: 5678
