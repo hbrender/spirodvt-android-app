@@ -9,6 +9,8 @@
 package com.example.incentive_spirometer_and_dvt_application.helpers;
 
 import com.example.incentive_spirometer_and_dvt_application.models.Doctor;
+import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
@@ -47,7 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_LOGIN = "Login";
 
     // Common column names
-    private static final String ID = "id";
+    public static final String ID = "_id";
     private static final String START_TIMESTAMP = "startTimestamp";
     private static final String END_TIMESTAMP = "endTimestamp";
 
@@ -65,8 +67,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String USERNAME = "username";
 
     // Patient table column names
-    private static final String FIRST_NAME = "firstName";
-    private static final String LAST_NAME = "lastName";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
     private static final String HEIGHT_FEET = "heightFeet";
     private static final String HEIGHT_INCHES = "heightInches";
     private static final String WEIGHT = "weight";
@@ -92,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Dvt table create statement
     private static final String CREATE_TABLE_DVT = "CREATE TABLE " + TABLE_DVT + "("
             + ID + " INTEGER PRIMARY KEY, "
-            + RESISTANCE + " INTEGER,"
+            + RESISTANCE + " TEXT,"
             + NUMBER_OF_REPS + " INTEGER)";
 
     // IncentiveSpirometerData table create statement
@@ -111,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + ID + " INTEGER,"
             + START_TIMESTAMP + " DATETIME,"
             + END_TIMESTAMP + " DATETIME,"
-            + RESISTANCE + " INTEGER,"
+            + RESISTANCE + " TEXT,"
             + NUMBER_OF_REPS + " INTEGER,"
             + REPS_COMPLETED + " INTEGER,"
             + " PRIMARY KEY(" + ID + ", " + START_TIMESTAMP + "),"
@@ -231,11 +233,49 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(94, 1, 10)");
         db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(95, 1, 10)");
 
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:58:00', '2019-11-8 11:57:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 11:58:00', '2019-11-8 12:57:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 12:58:00', '2019-11-8 13:57:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:58:00', '2019-11-8 14:57:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 14:58:00', '2019-11-8 15:57:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 08:00:00', '2019-11-8 08:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 09:00:00', '2019-11-8 09:59:59', 2000, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:00:00', '2019-11-8 10:59:59', 2000, 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 11:00:00', '2019-11-8 11:59:59', 2000, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 12:00:00', '2019-11-8 12:59:59', 2000, 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:00:00', '2019-11-8 13:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 14:00:00', '2019-11-8 14:59:59', 2000, 10, 4)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 15:00:00', '2019-11-8 15:59:59', 2000, 10, 3)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 2000, 10, 4)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 2000, 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 2000, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 2000, 10, 10)");
+
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 08:00:00', '2019-11-9 08:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 09:00:00', '2019-11-9 09:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 10:00:00', '2019-11-9 10:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 11:00:00', '2019-11-9 11:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 12:00:00', '2019-11-9 12:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 13:00:00', '2019-11-9 13:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 14:00:00', '2019-11-9 14:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 15:00:00', '2019-11-9 15:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 16:00:00', '2019-11-9 16:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 17:00:00', '2019-11-9 17:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 18:00:00', '2019-11-9 18:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 19:00:00', '2019-11-9 19:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 20:00:00', '2019-11-9 20:59:59', 2000, 10, 5)");
+
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 08:00:00', '2019-11-10 08:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 09:00:00', '2019-11-10 09:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 10:00:00', '2019-11-10 10:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 11:00:00', '2019-11-10 11:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 12:00:00', '2019-11-10 12:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 13:00:00', '2019-11-10 13:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 14:00:00', '2019-11-10 14:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 15:00:00', '2019-11-10 15:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 16:00:00', '2019-11-10 16:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 17:00:00', '2019-11-10 17:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 18:00:00', '2019-11-10 18:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 19:00:00', '2019-11-10 19:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 20:00:00', '2019-11-10 20:59:59', 2000, 10, 2)");
+
+
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 10:58:00', '2019-11-8 11:57:59', 2500, 10, 9)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 11:58:00', '2019-11-8 12:57:59', 2500, 10, 8)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 12:58:00', '2019-11-8 13:57:59', 2500, 10, 7)");
@@ -296,8 +336,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(WEIGHT, patient.getWeight());
         values.put(AGE, patient.getAge());
         values.put(SEX, patient.getSex());
-        values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
-        values.put(DVT_ID, Types.NULL);
+        values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
+        values.put(DVT_ID, patient.getDvtId());
+
+        //values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
+        //values.put(DVT_ID, Types.NULL);
 
         long result = db.insert(TABLE_PATIENT, null, values);
 
@@ -342,41 +385,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return patientList;
     }
 
-    /**
-     * Get a given patient's spirometer data
-     * @param patientId patient to read data from
-     * @return a list of patient spirometer exercises
-     */
-    public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER_DATA + " WHERE " +
-                ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
+    public Cursor getAllPatientsCursor(int doctorId) {
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT p.* FROM "
+                + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID;
 
-        List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
+        Log.d(TAG, "getAllPatientsCursor: " + query);
 
-        Log.e(TAG, "getPatientSpirometer: " + query);
+        Cursor cursor = db.rawQuery(query, null);
 
-        if (c.moveToFirst()){
-            do{
-                IncentiveSpirometerData spData = new IncentiveSpirometerData();
-                spData.setId(c.getInt(c.getColumnIndex(ID)));
-                spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
-                spData.setEndTime(Timestamp.valueOf(c.getString(c.getColumnIndex(END_TIMESTAMP))));
-                spData.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
-                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(LUNG_VOLUME))));
-                spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
-            } while (c.moveToNext());
-        }
-
-        c.close();
-        return spirometerData;
+        return cursor;
     }
-
-    public Timestamp convertStringToDate (String st) {
-        return Timestamp.valueOf(st);
-    }
-
 
     /**
      * Get a given patient's data
@@ -388,9 +409,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
         Cursor c = db.rawQuery(query, null);
 
-        Log.e(TAG, "getPatient: "+ query);
+        Log.d(TAG, "getPatient: "+ query);
 
-        if (c != null)
+        if (c != null && c.getCount() > 0)
             c.moveToFirst();
 
         // create patient
@@ -413,7 +434,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * Delete a given patient
      * @param patientId the id matching the patient to delete
      */
-    public void deletePatient(int patientId) {
+    public void deletePatientById(int patientId) {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.d(TAG, "deletePatient: " + patientId);
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
@@ -562,6 +583,215 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Log.d(TAG, "isRealUser: fatal exception");
             return false;
         }
+    }
+
+    // *************************** Incentive Spirometer Data table CRUD functions ****************************
+
+    /**
+     * Get a given patient's spirometer data
+     * @param patientId patient to read data from
+     * @return a list of patient spirometer exercises
+     */
+    public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
+        String query = "SELECT isd.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER_DATA
+                + " isd WHERE p." + INCENTIVE_SPIROMETER_ID + " = isd." + ID
+                + " AND p." + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
+
+        Log.d(TAG, "getPatientSpirometer: " + query);
+
+        if (c.moveToFirst()){
+            do{
+                IncentiveSpirometerData spData = new IncentiveSpirometerData();
+                spData.setId(c.getInt(c.getColumnIndex(ID)));
+                spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
+                spData.setEndTime(Timestamp.valueOf(c.getString(c.getColumnIndex(END_TIMESTAMP))));
+                spData.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(LUNG_VOLUME))));
+                spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
+
+                spirometerData.add(spData); // you were missing this line
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return spirometerData;
+    }
+
+    public Timestamp convertStringToDate (String st) {
+        return Timestamp.valueOf(st);
+    }
+
+    // *************************** Incentive Spirometer table CRUD functions ****************************
+
+    /**
+     * Get a patient's incentive spirometer data
+     * @param patientId patient related to the incentive spirometer
+     * @return IncentiveSpirometer object with the patient's device data
+     */
+    public IncentiveSpirometer getIncentiveSpirometer(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT i.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER + " i"
+                + " WHERE p." + ID + " = " + patientId
+                + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getIncentiveSpirometer: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create incentive spirometer
+            IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+            incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+            incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
+
+            return incentiveSpirometer;
+        }
+        return null;
+    }
+
+    /**
+     * Insert a new Incentive Spirometer device
+     * @param incentiveSpirometer spirometer object to insert
+     * @return -1 if query fails
+     */
+    public boolean insertIncentiveSpirometer(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, incentiveSpirometer.getId());
+        values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
+        values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
+
+        long result = db.insert(TABLE_INCENTIVE_SPIROMETER, null, values);
+
+        return result != -1;
+    }
+
+    /**
+     * Checks if a certain incentive spirometer exists
+     * @param incentiveSpirometer
+     * @return true if exists, false otherwise
+     */
+    public boolean incentiveSpirometerExists(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER + " WHERE " + ID + " = " + incentiveSpirometer.getId();
+        Log.d(TAG, "incentiveSpirometerExists: " + query);
+
+        Cursor c = db.rawQuery(query, null);
+
+        if (c != null && c.getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update a given Incentive Spirometer's information
+     * @param incentiveSpirometer
+     * @return number of rows updated
+     */
+    public int updateIncentiveSpirometer(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
+        values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
+
+        return db.update(TABLE_INCENTIVE_SPIROMETER, values, ID + " = ?",
+                new String[] { String.valueOf(incentiveSpirometer.getId()) });
+    }
+
+    // *************************** Dvt table CRUD functions ****************************
+
+    /**
+     * Get a patient's DVT data
+     * @param patientId patient related to the dvt device
+     * @return Dvt object with the patient's device data
+     */
+    public Dvt getDvt(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT d.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT + " d"
+                + " WHERE p." + ID + " = " + patientId
+                + " AND p." + DVT_ID + " = d." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getDvt: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create dvt
+            Dvt dvt = new Dvt();
+            dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
+            dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
+
+            return dvt;
+        }
+        return null;
+    }
+
+    /**
+     * Insert a new Dvt device
+     * @param dvt Dvt object to insert
+     * @return -1 if query fails
+     */
+    public boolean insertDvt(Dvt dvt) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, dvt.getId());
+        values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
+        values.put(RESISTANCE, dvt.getResistance());
+
+        long result = db.insert(TABLE_DVT, null, values);
+
+        return result != -1;
+    }
+
+    /**
+     * Checks if a certain Dvt device exists
+     * @param dvt
+     * @return true if exists, false otherwise
+     */
+    public boolean dvtExists(Dvt dvt) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_DVT + " WHERE " + ID + " = " + dvt.getId();
+        Log.d(TAG, "dvtExists: " + query);
+
+        Cursor c = db.rawQuery(query, null);
+
+        if (c != null && c.getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update a given DVT device's information
+     * @param dvt
+     * @return number of rows updated
+     */
+    public int updateDvt(Dvt dvt) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
+        values.put(RESISTANCE, dvt.getResistance());
+
+        return db.update(TABLE_DVT, values, ID + " = ?",
+                new String[] { String.valueOf(dvt.getId()) });
     }
 }
 

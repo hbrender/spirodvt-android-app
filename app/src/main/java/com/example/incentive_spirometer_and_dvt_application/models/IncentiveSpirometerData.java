@@ -9,7 +9,7 @@ import java.util.Locale;
 
 import androidx.annotation.NonNull;
 
-public class IncentiveSpirometerData {
+public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerData>{
     private int id;
     private Timestamp startTime;
     private Timestamp endTime;
@@ -81,6 +81,24 @@ public class IncentiveSpirometerData {
         this.inhalationsCompleted = inhalationsCompleted;
     }
 
+    public String getDate (Timestamp timestamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timestamp);
+        return (cal.get(Calendar.MONTH) + 1) + " / " + cal.get(Calendar.DAY_OF_MONTH); // months are 0 indexed
+    }
+
+    public String getTime (Timestamp timestamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timestamp);
+
+        return (cal.get(Calendar.HOUR_OF_DAY)) + " : " + String.format("%02d", cal.get(Calendar.MINUTE));
+    }
+
+    @Override
+    public int compareTo(IncentiveSpirometerData isd) {
+        return getStartTime().compareTo(isd.getStartTime());
+    }
+
     @NonNull
     @Override
     public String toString() {
@@ -92,4 +110,6 @@ public class IncentiveSpirometerData {
                 " end time: " + ce.get(Calendar.HOUR_OF_DAY) + ":"  + String.format(Locale.ENGLISH, "%02d", ce.get(Calendar.MINUTE)) + " "  +
                 " completed " + inhalationsCompleted;
     }
+
+
 }

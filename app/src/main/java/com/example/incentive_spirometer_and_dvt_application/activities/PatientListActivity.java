@@ -17,10 +17,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +38,7 @@ import java.util.List;
 public class PatientListActivity extends AppCompatActivity {
     static final String TAG = "PatientListActivityTag";
     private DatabaseHelper databaseHelper;
-    private List<Patient> patientList;
-    private ArrayAdapter<Patient> arrayAdapter;
+    private SimpleCursorAdapter simpleCursorAdapter;
     private ListView patientListView;
     private int doctorId;
 
@@ -47,14 +48,13 @@ public class PatientListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_patient_list);
 
         databaseHelper = new DatabaseHelper(this);
-        patientList = new ArrayList<>();
-
-        createPatientsList();
 
         Intent intent = getIntent();
         if (intent != null) {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
+
+        createPatientsList();
     }
 
     @Override
@@ -89,22 +89,44 @@ public class PatientListActivity extends AppCompatActivity {
     }
 
     private void createPatientsList() {
-        // get list of patients from the database
-        patientList = databaseHelper.getAllPatients(doctorId);
-
         // set adapter for patient list
         patientListView = (ListView) findViewById(R.id.patientListView);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, patientList);
-        patientListView.setAdapter(arrayAdapter);
+        Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+        simpleCursorAdapter = new SimpleCursorAdapter(
+                this,
+                android.R.layout.simple_list_item_activated_2,
+                cursor,
+                new String[] {DatabaseHelper.FIRST_NAME},
+                new int[] {android.R.id.text1},
+                0) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+
+                View view = super.getView(position, convertView, parent);
+
+                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+                if (cursor.moveToPosition(position)) {
+                    text1.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.LAST_NAME))
+                            + ", " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
+                    text2.setText("ID: " + cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                }
+
+                return view;
+            }
+        };
+        patientListView.setAdapter(simpleCursorAdapter);
 
         // click listener for viewing patient information
         patientListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Patient patient = (Patient) parent.getItemAtPosition(position);
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
-                intent.putExtra("patientId", patient.getId());
+                intent.putExtra("patientId", cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
                 intent.putExtra("doctorId", doctorId);
                 startActivity(intent);
             }
@@ -123,9 +145,10 @@ public class PatientListActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // delete patient from database
-                                databaseHelper.deletePatient(patient.getId());
+                                databaseHelper.deletePatientById(patient.getId());
                                 // TODO: delete from DoctorPatient table
-                                updatePatientList();
+                                //updatePatientList();
+                                updatePatientListView();
                             }
                         })
                         .setNegativeButton(R.string.no, null);
@@ -136,7 +159,7 @@ public class PatientListActivity extends AppCompatActivity {
         });
 
         // set the listener for entering CAM, user long presses they can select multiple patients
-        /*patientListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        patientListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         patientListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
@@ -160,7 +183,25 @@ public class PatientListActivity extends AppCompatActivity {
             public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.deleteMenuItem:
-                        // to do delete
+                        final long[] checkIds = patientListView.getCheckedItemIds();
+
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientListActivity.this);
+                        alertBuilder.setTitle(getString(R.string.delete_patient))
+                                .setMessage(getString(R.string.message_delete_patients))
+                                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // delete all selected patients
+                                        for (long id: checkIds) {
+                                            databaseHelper.deletePatientById((int) id);
+                                            // TODO: delete from DoctorPatient table
+                                            updatePatientListView();
+                                        }
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, null);
+                        alertBuilder.show();
+
                         mode.finish(); // exit cam
                         return true;
                 }
@@ -170,19 +211,21 @@ public class PatientListActivity extends AppCompatActivity {
             @Override
             public void onDestroyActionMode(ActionMode mode) {
             }
-        });*/
+        });
     }
 
-    public void updatePatientList() {
-        patientList.clear();
-        patientList.addAll(databaseHelper.getAllPatients(doctorId));
-        arrayAdapter.notifyDataSetChanged();
+    /**
+     * Updates the adapter and list view
+     */
+    public void updatePatientListView() {
+        Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+        simpleCursorAdapter.changeCursor(cursor);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        updatePatientList();
+        updatePatientListView();
     }
 
     @Override

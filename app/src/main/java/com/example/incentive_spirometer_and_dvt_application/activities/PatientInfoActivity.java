@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 
 public class PatientInfoActivity extends AppCompatActivity {
@@ -27,6 +30,8 @@ public class PatientInfoActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
     int patientId;
     int doctorId;
+
+    // Patient Information components
     EditText patientIdEditText;
     EditText firstNameEditText;
     EditText lastNameEditText;
@@ -35,7 +40,18 @@ public class PatientInfoActivity extends AppCompatActivity {
     EditText weightPoundsEditText;
     EditText ageEditText;
     Spinner sexSpinner;
-    Button saveButton;
+
+    // Incentive Spirometer components
+    EditText spirometerIdEditText;
+    EditText inhalationsNumIdEditText;
+    EditText lungVolumeEditText;
+
+    // DVT Prevention Device components
+    EditText dvtIdEditText;
+    EditText repsNumIdEditText;
+    Spinner dvtResistanceSpinner;
+
+    // Menu components
     MenuItem editMenuItem;
     MenuItem saveMenuItem;
 
@@ -52,6 +68,12 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText = (EditText) findViewById(R.id.weightPoundsEditText);
         ageEditText = (EditText) findViewById(R.id.ageEditText);
         sexSpinner = (Spinner) findViewById(R.id.sexSpinner);
+        spirometerIdEditText = (EditText) findViewById(R.id.spirometerIdEditText);
+        inhalationsNumIdEditText = (EditText) findViewById(R.id.inhalationsNumIdEditText);
+        lungVolumeEditText = (EditText) findViewById(R.id.lungVolumeEditText);
+        dvtIdEditText = (EditText) findViewById(R.id.dvtIdEditText);
+        repsNumIdEditText = (EditText) findViewById(R.id.repsNumIdEditText);
+        dvtResistanceSpinner = (Spinner) findViewById(R.id.dvtResistanceSpinner);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,7 +85,9 @@ public class PatientInfoActivity extends AppCompatActivity {
 
             if (patientId != -1) {
                 Patient patient = databaseHelper.getPatient(patientId);
-                setPatientInfo(patient);
+                IncentiveSpirometer incentiveSpirometer = databaseHelper.getIncentiveSpirometer(patientId);
+                Dvt dvt = databaseHelper.getDvt(patientId);
+                setPatientInfo(patient, incentiveSpirometer, dvt);
             }
         }
     }
@@ -72,7 +96,7 @@ public class PatientInfoActivity extends AppCompatActivity {
      * Sets patients information in the view
      * @param patient has the information to set
      */
-    public void setPatientInfo(Patient patient) {
+    public void setPatientInfo(Patient patient, IncentiveSpirometer incentiveSpirometer, Dvt dvt) {
         patientIdEditText.setText(String.valueOf(patient.getId()));
         firstNameEditText.setText(patient.getFirstName());
         lastNameEditText.setText(patient.getLastName());
@@ -93,30 +117,141 @@ public class PatientInfoActivity extends AppCompatActivity {
                 break;
         }
 
+        if (incentiveSpirometer != null) {
+            spirometerIdEditText.setText(String.valueOf(incentiveSpirometer.getId()));
+            inhalationsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
+            lungVolumeEditText.setText(String.valueOf(incentiveSpirometer.getLungVolume()));
+        }
+
+        if (dvt != null) {
+            dvtIdEditText.setText(String.valueOf(dvt.getId()));
+            repsNumIdEditText.setText(String.valueOf(dvt.getNumberOfReps()));
+
+            switch (dvt.getResistance()) {
+                case "Easy":
+                    dvtResistanceSpinner.setSelection(0);
+                    break;
+                case "Medium":
+                    dvtResistanceSpinner.setSelection(1);
+                    break;
+                default:
+                    dvtResistanceSpinner.setSelection(2);
+            }
+        }
+
         disablePatientEdit();
     }
 
     /**
      * Save patient information
+     * @return true if able to save patient info with not errors, false otherwise
      */
-    public void savePatient() {
-        if (patientIdEditText.getText().length() == 0) {
-            Toast.makeText(this, "Enter valid patient ID", Toast.LENGTH_SHORT).show();
-        } else {
+    public boolean savePatient() {
+        // if no errors in user input
+        if (!hasEmptyInput()) {
+            // get info from view components
             Patient patient = getPatientInfo();
+            IncentiveSpirometer incentiveSpirometer = getSpirometerInfo();
+            Dvt dvt = getDvtInfo();
+
             disablePatientEdit(); // change edit texts to non-editable
 
             if (patientId != -1) { // editing existing patient info
-                int result = databaseHelper.updatePatient(patient);
+                if (incentiveSpirometer != null) {
+                    // check if need to update existing device or insert new device
+                    if (!databaseHelper.incentiveSpirometerExists(incentiveSpirometer)) {
+                        databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                    } else {
+                        int result1 = databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
+                    }
+                }
+
+                if (dvt != null) {
+                    // check if need to update existing device or insert new device
+                    if (!databaseHelper.dvtExists(dvt)) {
+                        databaseHelper.insertDvt(dvt);
+                    } else {
+                        int result2 = databaseHelper.updateDvt(dvt);
+                    }
+                }
+
+                int result3 = databaseHelper.updatePatient(patient);
             } else {
                 patientId = patient.getId();
-                boolean result = databaseHelper.insertPatient(patient);
-                boolean result2 = databaseHelper.insertDoctorPatient(patientId, doctorId);
-                if (!result || !result2) {
+                boolean result1, result2, result3, result4;
+
+                if (incentiveSpirometer != null) {
+                    result1 = databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                }
+                if (dvt != null) {
+                    result2 = databaseHelper.insertDvt(dvt);
+                }
+                result3 = databaseHelper.insertPatient(patient);
+                result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
+
+                if (!result3 || !result4) {
                     Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
             }
+            return true;
         }
+        return false;
+    }
+
+    /**
+     * Checks if user input for required input is empty and displays appropriate error messages
+     * @return true if not empty input, false otherwise
+     */
+    public boolean hasEmptyInput() {
+        boolean hasInputErrors = false;
+        if (patientIdEditText.getText().length() == 0) {
+            patientIdEditText.setError("Enter a unique id");
+            hasInputErrors = true;
+        }
+        if (firstNameEditText.getText().length() == 0) {
+            firstNameEditText.setError("Enter name");
+            hasInputErrors = true;
+        }
+        if (lastNameEditText.getText().length() == 0) {
+            lastNameEditText.setError("Enter name");
+            hasInputErrors = true;
+        }
+        if (heightFeetEditText.getText().length() == 0) {
+            heightFeetEditText.setError("Enter feet");
+            hasInputErrors = true;
+        }
+        if (heightInchesEditText.getText().length() == 0) {
+            heightInchesEditText.setError("Enter inches");
+            hasInputErrors = true;
+        }
+        if (weightPoundsEditText.getText().length() == 0) {
+            weightPoundsEditText.setError("Enter weight");
+            hasInputErrors = true;
+        }
+        if (ageEditText.getText().length() == 0) {
+            ageEditText.setError("Enter age");
+            hasInputErrors = true;
+        }
+
+        if (spirometerIdEditText.getText().length() != 0) {
+            if (inhalationsNumIdEditText.getText().length() == 0) {
+                inhalationsNumIdEditText.setError("Enter number");
+                hasInputErrors = true;
+            }
+            if (lungVolumeEditText.getText().length() == 0) {
+                lungVolumeEditText.setError("Enter number");
+                hasInputErrors = true;
+            }
+        }
+
+        if (dvtIdEditText.getText().length() != 0) {
+            if (repsNumIdEditText.getText().length() == 0) {
+                repsNumIdEditText.setError("Enter number");
+                hasInputErrors = true;
+            }
+        }
+        return hasInputErrors;
     }
 
     /**
@@ -125,6 +260,7 @@ public class PatientInfoActivity extends AppCompatActivity {
      */
     public Patient getPatientInfo() {
         Patient patient = new Patient();
+
         patient.setId(Integer.parseInt(patientIdEditText.getText().toString()));
         patient.setFirstName(firstNameEditText.getText().toString());
         patient.setLastName(lastNameEditText.getText().toString());
@@ -134,7 +270,50 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setAge(Integer.parseInt(ageEditText.getText().toString()));
         patient.setSex(sexSpinner.getSelectedItem().toString());
 
+        if (spirometerIdEditText.getText().toString().length() > 0) {
+            patient.setIncentiveSpirometerId(Integer.parseInt(spirometerIdEditText.getText().toString()));
+        }
+
+        if (dvtIdEditText.getText().toString().length() > 0) {
+            patient.setDvtId(Integer.parseInt(dvtIdEditText.getText().toString()));
+        }
+
         return patient;
+    }
+
+    /**
+     * Gets incentive spirometer information from the view
+     * @return IncentiveSpirometer object
+     */
+    public IncentiveSpirometer getSpirometerInfo() {
+        IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+
+        if (spirometerIdEditText.getText().toString().length() > 0) {
+            incentiveSpirometer.setId(Integer.parseInt(spirometerIdEditText.getText().toString()));
+            incentiveSpirometer.setLungVolume(Integer.parseInt(lungVolumeEditText.getText().toString()));
+            incentiveSpirometer.setNumberOfInhalations(Integer.parseInt(inhalationsNumIdEditText.getText().toString()));
+
+            return incentiveSpirometer;
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets DVT information from the view
+     * @return Dvt object or null there are user input errors
+     */
+    public Dvt getDvtInfo() {
+        Dvt dvt = new Dvt();
+
+        if (dvtIdEditText.getText().toString().length() > 0) {
+            dvt.setId(Integer.parseInt(dvtIdEditText.getText().toString()));
+            dvt.setResistance(dvtResistanceSpinner.getSelectedItem().toString());
+            dvt.setNumberOfReps(Integer.parseInt(repsNumIdEditText.getText().toString()));
+
+            return dvt;
+        }
+        return null;
     }
 
     /**
@@ -149,11 +328,17 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(false);
         ageEditText.setEnabled(false);
         sexSpinner.setEnabled(false);
+        spirometerIdEditText.setEnabled(false);
+        inhalationsNumIdEditText.setEnabled(false);
+        lungVolumeEditText.setEnabled(false);
+        dvtIdEditText.setEnabled(false);
+        repsNumIdEditText.setEnabled(false);
+        dvtResistanceSpinner.setEnabled(false);
     }
 
-    /**
-     * Enables editing of patient information
-     */
+        /**
+         * Enables editing of patient information
+         */
     public void enablePatientEdit() {
         //patientIdEditText.setEnabled(true);
         firstNameEditText.setEnabled(true);
@@ -163,6 +348,18 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(true);
         ageEditText.setEnabled(true);
         sexSpinner.setEnabled(true);
+
+        if (spirometerIdEditText.getText().toString().length() == 0) {
+            spirometerIdEditText.setEnabled(true);
+        }
+        inhalationsNumIdEditText.setEnabled(true);
+        lungVolumeEditText.setEnabled(true);
+
+        if (dvtIdEditText.getText().toString().length() == 0) {
+            dvtIdEditText.setEnabled(true);
+        }
+        repsNumIdEditText.setEnabled(true);
+        dvtResistanceSpinner.setEnabled(true);
     }
 
     @Override
@@ -189,11 +386,6 @@ public class PatientInfoActivity extends AppCompatActivity {
         DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
         menu.findItem(R.id.saveMenuItem).setIcon(drawable);
 
-        /*drawable = menu.findItem(android.R.id.home).getIcon();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
-        menu.findItem(android.R.id.home).setIcon(drawable);*/
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -207,14 +399,15 @@ public class PatientInfoActivity extends AppCompatActivity {
                 return true;
             case R.id.editMenuItem:
                 enablePatientEdit();
-                //saveButton.setVisibility(View.VISIBLE);
                 editMenuItem.setVisible(false);
                 saveMenuItem.setVisible(true);
                 return true;
             case R.id.saveMenuItem:
-                savePatient();
-                editMenuItem.setVisible(true);
-                saveMenuItem.setVisible(false);
+                // check if patient info can be saved with no errors
+                if (savePatient()) {
+                    editMenuItem.setVisible(true);
+                    saveMenuItem.setVisible(false);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

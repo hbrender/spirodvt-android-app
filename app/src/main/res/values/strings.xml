@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">App Name</string>
+    <string name="app_name">SpiroDVT</string>
 
     <!-- Login Screen Strings -->
     <string name="welcome">Welcome to App Name</string>
@@ -14,6 +14,7 @@
     <string name="add_patient">Add Patient</string>
     <string name="delete_patient">Delete Patient</string>
     <string name="message_delete_patient">Are you sure you want to delete patient </string>
+    <string name="message_delete_patients">Are you sure you want to delete the selected patient(s)?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="sign_out">Sign Out</string>
@@ -25,9 +26,10 @@
 
 
     <!-- Spirometer info screen strings -->
-    <string name="six_hour_button_text">6 hours</string>
-    <string name="twentyfour_hour_button_text">24 hours</string>
-    <string name="weekly_button_text">week</string>
+    <string name="one_day_button_text">1 day</string>
+    <string name="two_day_button_text">2 days</string>
+    <string name="three_day_button_text">3 days</string>
+    <string name="week_button_text">week</string>
     <string name="spirometer_graph_title">Spirometry Exercises</string>
 
     <!-- Patient info screen strings -->

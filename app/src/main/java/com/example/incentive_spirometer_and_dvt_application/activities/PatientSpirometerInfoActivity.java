@@ -10,43 +10,53 @@ package com.example.incentive_spirometer_and_dvt_application.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
-import com.jjoe64.graphview.DefaultLabelFormatter;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
-import java.sql.Array;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-public class PatientSpirometerInfoActivity extends AppCompatActivity {
-    static final String TAG = "PatientSpirometerInfoActivity";
+public class PatientSpirometerInfoActivity extends AppCompatActivity implements View.OnClickListener {
+    static final String TAG = "PatientSpiroInfoAct";
     private DatabaseHelper databaseHelper;
-    private List<IncentiveSpirometerData> spData;
-    private ArrayAdapter<IncentiveSpirometerData> arrayAdapter;
+    private List<IncentiveSpirometerData> allSpData;
+    private List<BarEntry> oneDaySpData;
+    private List<BarEntry> twoDaySpData;
+    private List<BarEntry> threeDaySpData;
+    private List<BarEntry> oneWeekSpData;
+    private List<BarEntry> barEntryList;
     private ListView dataListView;
     private int patientId;
     private int doctorId;
+    private TimeShown timeShown;
 
 
     @Override
@@ -54,28 +64,39 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_spirometer_info);
 
-        databaseHelper = new DatabaseHelper(this);
+        Button oneDayButton = (Button) findViewById(R.id.one_day_button);
+        Button twoDayButton = (Button) findViewById(R.id.two_day_button);
+        Button threeDayButton = (Button) findViewById(R.id.three_day_button);
+        Button weekButton = (Button) findViewById(R.id.one_week_button);
 
-        createDataList ();
-        drawGraph ();
+        oneDayButton.setOnClickListener(this);
+        twoDayButton.setOnClickListener(this);
+        threeDayButton.setOnClickListener(this);
+        weekButton.setOnClickListener(this);
+
+        databaseHelper = new DatabaseHelper(this);
 
         Intent intent = getIntent();
         if (intent != null) {
             patientId = intent.getIntExtra("patientId", -1);
+            Log.d(TAG, "onCreate: PATIENTID: " + patientId);
             doctorId = intent.getIntExtra("doctorId", -1);
         }
+        allSpData = new ArrayList<>();
+        oneDaySpData = new ArrayList<>();
+        twoDaySpData = new ArrayList<>();
+        threeDaySpData = new ArrayList<>();
+        oneWeekSpData = new ArrayList<>();
+
+        barEntryList = new ArrayList<>();
+
+        timeShown = TimeShown.ONEDAY;
+
+        createDataLists();
+        drawGraph();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        // connection to database currently not working
-//        spData = new ArrayList<>();
-//        spData = databaseHelper.getPatinetSpirometerData(patientId);
-//        for (IncentiveSpirometerData i: spData) {
-//            Log.d("data", i.toString());
-//        }
-
-//
 
     }
 
@@ -84,11 +105,6 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.spirometer_info_menu, menu);
 
-        // set menu item icon color
-//        Drawable drawable = menu.findItem(R.id.addMenuItem).getIcon();
-//        drawable = DrawableCompat.wrap(drawable);
-//        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
-//        menu.findItem(R.id.addMenuItem).setIcon(drawable);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -96,7 +112,7 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        switch(id) {
+        switch (id) {
             case android.R.id.home:
                 finish();
                 return true;
@@ -111,74 +127,138 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {
         }
     }
 
-    private void createDataList () {
-        //spData = databaseHelper.getPatinetSpirometerData(patientId);
-        spData = testData();
+    @Override
+    public void onClick(View view) {
+        Log.d(TAG, "onClick: BUTTON CLICK");
+        switch (view.getId()) {
+            case R.id.one_day_button:
+                Log.d(TAG, "onClick: one day button clicked");
+                timeShown = TimeShown.ONEDAY;
+                barEntryList = oneDaySpData;
+                break;
+            case R.id.two_day_button:
+                Log.d(TAG, "onClick: two day button clicked");
+                timeShown = TimeShown.TWODAYS;
+                barEntryList = twoDaySpData;
+                break;
+            case R.id.three_day_button:
+                Log.d(TAG, "onClick: three day button clicked");
+                timeShown = TimeShown.THREEDAYS;
+                barEntryList = threeDaySpData;
+                break;
+            case R.id.one_week_button:
+                Log.d(TAG, "onClick: week button clicked");
+                timeShown = TimeShown.ONEWEEK;
+                barEntryList = oneWeekSpData;
+                break;
+        }
+        drawGraph();
+    }
+
+    /*
+    gets the data for display from the database, sorts it into the different lists for display
+     */
+    private void createDataLists() {
+        Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
+        allSpData = databaseHelper.getPatinetSpirometerData(patientId);
+        Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
+
+        // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
+        Calendar now = new GregorianCalendar(2019, 10, 11, 7, 0, 0);
+        for (IncentiveSpirometerData sp : allSpData) {
+            Calendar cs = GregorianCalendar.getInstance();
+            cs.setTime(sp.getStartTime());
+
+            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - cs.getTimeInMillis()));
+            Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
+            //Log.d(TAG, "createDataLists: now: " + now.toString());
+            //Log.d(TAG, "createDataLists: time: " + cs.toString());
+            int offset = (timeDiff / 24) * 14;
+            if (timeDiff <= 24) {
+                //Log.d(TAG, "createDataLists: ADDED one day data");
+                oneDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 48) {
+                //Log.d(TAG, "createDataLists: ADDED TWO day data");
+                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 72) {
+                //Log.d(TAG, "createDataLists: ADDED thREE day data");
+                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 168) {
+                //Log.d(TAG, "createDataLists: ADDED week data");
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+            }
+        }
+        barEntryList = oneDaySpData;
+
         dataListView = (ListView) findViewById(R.id.patient_spirometer_table);
-        arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, spData);
+        ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(this,
+                R.layout.spirometer_info_list_row, R.id.row_date, allSpData) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView date = (TextView) view.findViewById(R.id.row_date);
+                TextView time = (TextView) view.findViewById(R.id.row_time);
+                TextView breaths = (TextView) view.findViewById(R.id.row_breaths_completed);
+
+                date.setText(allSpData.get(position).getDate(allSpData.get(position).getStartTime()));
+                time.setText(allSpData.get(position).getTime(allSpData.get(position).getStartTime()));
+                breaths.setText(String.valueOf(allSpData.get(position).getInhalationsCompleted()));
+                return view;
+            }
+        };
+        //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSpData);
         dataListView.setAdapter(arrayAdapter);
     }
 
-    private ArrayList<IncentiveSpirometerData> testData () {
-        ArrayList<IncentiveSpirometerData> testData = new ArrayList<IncentiveSpirometerData>();
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 8:00:00"), Timestamp.valueOf("2019-11-08 8:59:59"), 2500, 10, 5));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 9:00:00"), Timestamp.valueOf("2019-11-08 9:59:59"), 2500, 10, 5));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 10:00:00"), Timestamp.valueOf("2019-11-08 10:59:59"), 2500, 10, 5));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 11:00:00"), Timestamp.valueOf("2019-11-08 11:59:59"), 2500, 10, 6));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 12:00:00"), Timestamp.valueOf("2019-11-08 12:59:59"), 2500, 10, 8));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 13:00:00"), Timestamp.valueOf("2019-11-08 13:59:59"), 2500, 10, 10));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 14:00:00"), Timestamp.valueOf("2019-11-08 14:59:59"), 2500, 10, 10));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 15:00:00"), Timestamp.valueOf("2019-11-08 15:59:59"), 2500, 10, 10));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 16:00:00"), Timestamp.valueOf("2019-11-08 16:59:59"), 2500, 10, 10));
-        testData.add(new IncentiveSpirometerData(0, Timestamp.valueOf("2019-11-08 17:00:00"), Timestamp.valueOf("2019-11-08 17:59:59"), 2500, 10, 10));
 
-        return testData;
-    }
+    private void drawGraph() {
+        BarChart graph = (BarChart) findViewById((R.id.patient_spirometer_graph));
 
-    private void drawGraph () {
-        GraphView graph = (GraphView) findViewById(R.id.patient_spirometer_graph);
-        ArrayList<DataPoint> initialGraphData = new ArrayList<>();
-
-        for (IncentiveSpirometerData sp: spData){
-            Calendar cs = GregorianCalendar.getInstance();
-            cs.setTime(sp.getStartTime());
-            initialGraphData.add(new DataPoint(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-        }
-
-        DataPoint[] graphData = new DataPoint[initialGraphData.size()];
-        for (int i = 0; i < initialGraphData.size(); i++){
-            graphData[i] = initialGraphData.get(i);
-        }
-
-        BarGraphSeries<DataPoint> series = new BarGraphSeries<>(graphData);
+        graph.getDescription().setEnabled(false);
+        graph.getLegend().setEnabled(false);
 
 
-        graph.addSeries(series);
-        series.setSpacing (30);
+        BarDataSet set = new BarDataSet(barEntryList, "BarDataSet");
+        BarData data = new BarData(set);
 
-        graph.setTitle(this.getString(R.string.spirometer_graph_title));
+        // will individually label bars in the graph if removed - good for testing bar overlap
+        set.setDrawValues(false);
 
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(12);
+        XAxis x = graph.getXAxis();
+        x.setPosition(XAxis.XAxisPosition.BOTTOM);
+        x.setLabelRotationAngle(-90);
+        x.setDrawGridLines(false);
+        x.setDrawAxisLine(true);
+       // x.setDrawLabels(false);
 
-        graph.getViewport().setScrollable(true);
-
-        graph.getGridLabelRenderer().setHorizontalAxisTitle("Time");
-        graph.getGridLabelRenderer().setVerticalAxisTitle("Breaths Performed");
-        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
-
-        graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter(){
-                @Override
-                public String formatLabel(double value, boolean isValueX){
-                    if (isValueX){
-                        return super.formatLabel(value, isValueX)  + ":00";
-                    } else {
-                        return super.formatLabel(value, isValueX);
-                    }
-                }
+        x.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getBarLabel(BarEntry barEntry) {
+                return super.getBarLabel(barEntry);
+            }
         });
 
+
+                YAxis yleft = graph.getAxisLeft();
+        graph.getAxisRight().setEnabled(false);
+
+        yleft.setAxisMinimum(0);
+        yleft.setAxisMaximum(12);
+
+        graph.setData(data);
+        graph.invalidate();
     }
 
+    enum TimeShown {
+        ONEDAY, TWODAYS, THREEDAYS, ONEWEEK;
+    }
 }
+
+
+
