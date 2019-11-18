@@ -15,36 +15,81 @@
         android:gravity="center">
 
         <Button
-            android:id="@+id/six_hours"
-            android:text="@string/six_hour_button_text"
+            android:id="@+id/one_day_button"
+            android:text="@string/one_day_button_text"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <Button
-            android:id="@+id/twentyfour_hours"
-            android:text="@string/twentyfour_hour_button_text"
+            android:id="@+id/two_day_button"
+            android:text="@string/two_day_button_text"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <Button
-            android:id="@+id/past_week"
-            android:text="@string/weekly_button_text"
+            android:id="@+id/three_day_button"
+            android:text="@string/three_day_button_text"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/one_week_button"
+            android:text="@string/week_button_text"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
-    <com.jjoe64.graphview.GraphView
+    <com.github.mikephil.charting.charts.BarChart
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:id="@+id/patient_spirometer_graph"
         />
 
+    <LinearLayout
+        android:id="@+id/column_titles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/date_col_label"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="18sp"
+            android:paddingLeft="10dp"
+            />
+
+        <TextView
+            android:id="@+id/time_col_label"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:id="@+id/breath_col_label"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Inhaliations"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            />
+
+    </LinearLayout>
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/patient_spirometer_table"
+        android:padding="10dp"
         />
 
 
