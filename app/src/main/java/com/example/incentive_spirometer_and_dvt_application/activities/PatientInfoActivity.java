@@ -157,14 +157,39 @@ public class PatientInfoActivity extends AppCompatActivity {
             disablePatientEdit(); // change edit texts to non-editable
 
             if (patientId != -1) { // editing existing patient info
-                int result = databaseHelper.updatePatient(patient);
-                int result2 = databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
-                int result3 = databaseHelper.updateDvt(dvt);
+                if (incentiveSpirometer != null) {
+                    // check if need to update existing device or insert new device
+                    if (!databaseHelper.incentiveSpirometerExists(incentiveSpirometer)) {
+                        databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                    } else {
+                        int result1 = databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
+                    }
+                }
+
+                if (dvt != null) {
+                    // check if need to update existing device or insert new device
+                    if (!databaseHelper.dvtExists(dvt)) {
+                        databaseHelper.insertDvt(dvt);
+                    } else {
+                        int result2 = databaseHelper.updateDvt(dvt);
+                    }
+                }
+
+                int result3 = databaseHelper.updatePatient(patient);
             } else {
                 patientId = patient.getId();
-                boolean result = databaseHelper.insertPatient(patient);
-                boolean result2 = databaseHelper.insertDoctorPatient(patientId, doctorId);
-                if (!result || !result2) {
+                boolean result1, result2, result3, result4;
+
+                if (incentiveSpirometer != null) {
+                    result1 = databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                }
+                if (dvt != null) {
+                    result2 = databaseHelper.insertDvt(dvt);
+                }
+                result3 = databaseHelper.insertPatient(patient);
+                result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
+
+                if (!result3 || !result4) {
                     Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
                     return false;
                 }
@@ -208,6 +233,24 @@ public class PatientInfoActivity extends AppCompatActivity {
             ageEditText.setError("Enter age");
             hasInputErrors = true;
         }
+
+        if (spirometerIdEditText.getText().length() != 0) {
+            if (inhalationsNumIdEditText.getText().length() == 0) {
+                inhalationsNumIdEditText.setError("Enter number");
+                hasInputErrors = true;
+            }
+            if (lungVolumeEditText.getText().length() == 0) {
+                lungVolumeEditText.setError("Enter number");
+                hasInputErrors = true;
+            }
+        }
+
+        if (dvtIdEditText.getText().length() != 0) {
+            if (repsNumIdEditText.getText().length() == 0) {
+                repsNumIdEditText.setError("Enter number");
+                hasInputErrors = true;
+            }
+        }
         return hasInputErrors;
     }
 
@@ -226,8 +269,14 @@ public class PatientInfoActivity extends AppCompatActivity {
         patient.setWeight(Double.parseDouble(weightPoundsEditText.getText().toString()));
         patient.setAge(Integer.parseInt(ageEditText.getText().toString()));
         patient.setSex(sexSpinner.getSelectedItem().toString());
-        patient.setIncentiveSpirometerId(Integer.parseInt(spirometerIdEditText.getText().toString()));
-        patient.setDvtId(Integer.parseInt(dvtIdEditText.getText().toString()));
+
+        if (spirometerIdEditText.getText().toString().length() > 0) {
+            patient.setIncentiveSpirometerId(Integer.parseInt(spirometerIdEditText.getText().toString()));
+        }
+
+        if (dvtIdEditText.getText().toString().length() > 0) {
+            patient.setDvtId(Integer.parseInt(dvtIdEditText.getText().toString()));
+        }
 
         return patient;
     }
@@ -239,11 +288,15 @@ public class PatientInfoActivity extends AppCompatActivity {
     public IncentiveSpirometer getSpirometerInfo() {
         IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
 
-        incentiveSpirometer.setId(Integer.parseInt(spirometerIdEditText.getText().toString()));
-        incentiveSpirometer.setLungVolume(Integer.parseInt(lungVolumeEditText.getText().toString()));
-        incentiveSpirometer.setNumberOfInhalations(Integer.parseInt(inhalationsNumIdEditText.getText().toString()));
+        if (spirometerIdEditText.getText().toString().length() > 0) {
+            incentiveSpirometer.setId(Integer.parseInt(spirometerIdEditText.getText().toString()));
+            incentiveSpirometer.setLungVolume(Integer.parseInt(lungVolumeEditText.getText().toString()));
+            incentiveSpirometer.setNumberOfInhalations(Integer.parseInt(inhalationsNumIdEditText.getText().toString()));
 
-        return incentiveSpirometer;
+            return incentiveSpirometer;
+        }
+
+        return null;
     }
 
     /**
@@ -253,11 +306,14 @@ public class PatientInfoActivity extends AppCompatActivity {
     public Dvt getDvtInfo() {
         Dvt dvt = new Dvt();
 
-        dvt.setId(Integer.parseInt(dvtIdEditText.getText().toString()));
-        dvt.setResistance(dvtResistanceSpinner.getSelectedItem().toString());
-        dvt.setNumberOfReps(Integer.parseInt(repsNumIdEditText.getText().toString()));
+        if (dvtIdEditText.getText().toString().length() > 0) {
+            dvt.setId(Integer.parseInt(dvtIdEditText.getText().toString()));
+            dvt.setResistance(dvtResistanceSpinner.getSelectedItem().toString());
+            dvt.setNumberOfReps(Integer.parseInt(repsNumIdEditText.getText().toString()));
 
-        return dvt;
+            return dvt;
+        }
+        return null;
     }
 
     /**
@@ -292,10 +348,16 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(true);
         ageEditText.setEnabled(true);
         sexSpinner.setEnabled(true);
-        //spirometerIdEditText.setEnabled(true);
+
+        if (spirometerIdEditText.getText().toString().length() == 0) {
+            spirometerIdEditText.setEnabled(true);
+        }
         inhalationsNumIdEditText.setEnabled(true);
         lungVolumeEditText.setEnabled(true);
-        //dvtIdEditText.setEnabled(true);
+
+        if (dvtIdEditText.getText().toString().length() == 0) {
+            dvtIdEditText.setEnabled(true);
+        }
         repsNumIdEditText.setEnabled(true);
         dvtResistanceSpinner.setEnabled(true);
     }
