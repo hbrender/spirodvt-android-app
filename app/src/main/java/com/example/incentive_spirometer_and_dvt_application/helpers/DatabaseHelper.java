@@ -353,8 +353,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(WEIGHT, patient.getWeight());
         values.put(AGE, patient.getAge());
         values.put(SEX, patient.getSex());
-        values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
-        values.put(DVT_ID, Types.NULL);
+        values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
+        values.put(DVT_ID, patient.getDvtId());
+
+        //values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
+        //values.put(DVT_ID, Types.NULL);
 
         long result = db.insert(TABLE_PATIENT, null, values);
 
@@ -425,7 +428,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "getPatient: "+ query);
 
-        if (c != null)
+        if (c != null && c.getCount() > 0)
             c.moveToFirst();
 
         // create patient
@@ -657,7 +660,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "getIncentiveSpirometer: "+ query);
 
-        if (c != null) {
+        if (c != null && c.getCount() > 0) {
             c.moveToFirst();
 
             // create incentive spirometer
@@ -671,7 +674,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    // *************************** Incentive Spirometer table CRUD functions ****************************
+    /**
+     * Insert a new Incentive Spirometer device
+     * @param incentiveSpirometer spirometer object to insert
+     * @return -1 if query fails
+     */
+    public boolean insertIncentiveSpirometer(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, incentiveSpirometer.getId());
+        values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
+        values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
+
+        long result = db.insert(TABLE_INCENTIVE_SPIROMETER, null, values);
+
+        return result != -1;
+    }
+
+    /**
+     * Checks if a certain incentive spirometer exists
+     * @param incentiveSpirometer
+     * @return true if exists, false otherwise
+     */
+    public boolean incentiveSpirometerExists(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER + " WHERE " + ID + " = " + incentiveSpirometer.getId();
+        Log.d(TAG, "incentiveSpirometerExists: " + query);
+
+        Cursor c = db.rawQuery(query, null);
+
+        if (c != null && c.getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update a given Incentive Spirometer's information
+     * @param incentiveSpirometer
+     * @return number of rows updated
+     */
+    public int updateIncentiveSpirometer(IncentiveSpirometer incentiveSpirometer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
+        values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
+
+        return db.update(TABLE_INCENTIVE_SPIROMETER, values, ID + " = ?",
+                new String[] { String.valueOf(incentiveSpirometer.getId()) });
+    }
+
+    // *************************** Dvt table CRUD functions ****************************
 
     /**
      * Get a patient's DVT data
@@ -688,7 +744,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "getDvt: "+ query);
 
-        if (c != null) {
+        if (c != null && c.getCount() > 0) {
             c.moveToFirst();
 
             // create dvt
@@ -702,6 +758,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    /**
+     * Insert a new Dvt device
+     * @param dvt Dvt object to insert
+     * @return -1 if query fails
+     */
+    public boolean insertDvt(Dvt dvt) {
+        SQLiteDatabase db = this.getWritableDatabase();
 
+        ContentValues values = new ContentValues();
+        values.put(ID, dvt.getId());
+        values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
+        values.put(RESISTANCE, dvt.getResistance());
+
+        long result = db.insert(TABLE_DVT, null, values);
+
+        return result != -1;
+    }
+
+    /**
+     * Checks if a certain Dvt device exists
+     * @param dvt
+     * @return true if exists, false otherwise
+     */
+    public boolean dvtExists(Dvt dvt) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_DVT + " WHERE " + ID + " = " + dvt.getId();
+        Log.d(TAG, "dvtExists: " + query);
+
+        Cursor c = db.rawQuery(query, null);
+
+        if (c != null && c.getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update a given DVT device's information
+     * @param dvt
+     * @return number of rows updated
+     */
+    public int updateDvt(Dvt dvt) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
+        values.put(RESISTANCE, dvt.getResistance());
+
+        return db.update(TABLE_DVT, values, ID + " = ?",
+                new String[] { String.valueOf(dvt.getId()) });
+    }
 }
 
