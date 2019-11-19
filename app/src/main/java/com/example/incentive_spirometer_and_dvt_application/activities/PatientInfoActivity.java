@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -407,6 +408,10 @@ public class PatientInfoActivity extends AppCompatActivity {
                 if (savePatient()) {
                     editMenuItem.setVisible(true);
                     saveMenuItem.setVisible(false);
+
+                    // update name in toolbar if it was changed in the patient info activity
+                    Intent intent = new Intent();
+                    setResult(Activity.RESULT_OK, intent);
                 }
             default:
                 return super.onOptionsItemSelected(item);

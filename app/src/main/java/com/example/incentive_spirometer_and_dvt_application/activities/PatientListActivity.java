@@ -20,20 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PatientListActivity extends AppCompatActivity {
     static final String TAG = "PatientListActivityTag";
@@ -125,8 +118,11 @@ public class PatientListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
+                //Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
+                Intent intent = new Intent(PatientListActivity.this, DeviceDataActivity.class);
                 intent.putExtra("patientId", cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                intent.putExtra("firstName", cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
+                intent.putExtra("lastName", cursor.getString(cursor.getColumnIndex(DatabaseHelper.LAST_NAME)));
                 intent.putExtra("doctorId", doctorId);
                 startActivity(intent);
             }

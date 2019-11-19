@@ -1,22 +1,16 @@
-/*
-Programmed by: Kelsey Lally
-Created on: 11/4
-Last Update: Kelsey Lally, 11/4
+package com.example.incentive_spirometer_and_dvt_application.fragments;
 
- */
-
-
-package com.example.incentive_spirometer_and_dvt_application.activities;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -25,7 +19,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.example.incentive_spirometer_and_dvt_application.activities.PatientSpirometerInfoActivity;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -35,8 +31,6 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
-
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -44,7 +38,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class PatientSpirometerInfoActivity extends AppCompatActivity implements View.OnClickListener {
+
+public class SpirometerFragment extends Fragment implements View.OnClickListener {
     static final String TAG = "PatientSpiroInfoAct";
     private DatabaseHelper databaseHelper;
     private List<IncentiveSpirometerData> allSpData;
@@ -54,33 +49,45 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
     private List<BarEntry> oneWeekSpData;
     private List<BarEntry> barEntryList;
     private ListView dataListView;
+    private BarChart graph;
     private int patientId;
     private int doctorId;
-    private TimeShown timeShown;
+    private SpirometerFragment.TimeShown timeShown;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_spirometer_info);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            patientId = bundle.getInt("patientId", -1);
+            doctorId = bundle.getInt("doctorId", -1);
+        }
+    }
 
-        Button oneDayButton = (Button) findViewById(R.id.one_day_button);
-        Button twoDayButton = (Button) findViewById(R.id.two_day_button);
-        Button threeDayButton = (Button) findViewById(R.id.three_day_button);
-        Button weekButton = (Button) findViewById(R.id.one_week_button);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        setHasOptionsMenu(true);
+
+        View view = inflater.inflate(R.layout.activity_patient_spirometer_info, container, false);
+
+        Button oneDayButton = (Button) view.findViewById(R.id.one_day_button);
+        Button twoDayButton = (Button) view.findViewById(R.id.two_day_button);
+        Button threeDayButton = (Button) view.findViewById(R.id.three_day_button);
+        Button weekButton = (Button) view.findViewById(R.id.one_week_button);
+        graph = (BarChart) view.findViewById((R.id.patient_spirometer_graph));
+        dataListView = (ListView) view.findViewById(R.id.patient_spirometer_table);
+
 
         oneDayButton.setOnClickListener(this);
         twoDayButton.setOnClickListener(this);
         threeDayButton.setOnClickListener(this);
         weekButton.setOnClickListener(this);
 
-        databaseHelper = new DatabaseHelper(this);
+        databaseHelper = new DatabaseHelper(getContext());
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            patientId = intent.getIntExtra("patientId", -1);
-            doctorId = intent.getIntExtra("doctorId", -1);
-        }
         allSpData = new ArrayList<>();
         oneDaySpData = new ArrayList<>();
         twoDaySpData = new ArrayList<>();
@@ -89,41 +96,12 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
 
         barEntryList = new ArrayList<>();
 
-        timeShown = TimeShown.ONEDAY;
+        timeShown = SpirometerFragment.TimeShown.ONEDAY;
 
         createDataLists();
         drawGraph();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.spirometer_info_menu, menu);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                finish();
-                return true;
-            case R.id.patientDetailMenuItem:
-                Intent intent = new Intent(PatientSpirometerInfoActivity.this, PatientInfoActivity.class); // change here
-                intent.putExtra("patientId", patientId);
-                intent.putExtra("doctorId", doctorId);
-                startActivity(intent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        return view;
     }
 
     @Override
@@ -132,22 +110,22 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
         switch (view.getId()) {
             case R.id.one_day_button:
                 Log.d(TAG, "onClick: one day button clicked");
-                timeShown = TimeShown.ONEDAY;
+                timeShown = SpirometerFragment.TimeShown.ONEDAY;
                 barEntryList = oneDaySpData;
                 break;
             case R.id.two_day_button:
                 Log.d(TAG, "onClick: two day button clicked");
-                timeShown = TimeShown.TWODAYS;
+                timeShown = SpirometerFragment.TimeShown.TWODAYS;
                 barEntryList = twoDaySpData;
                 break;
             case R.id.three_day_button:
                 Log.d(TAG, "onClick: three day button clicked");
-                timeShown = TimeShown.THREEDAYS;
+                timeShown = SpirometerFragment.TimeShown.THREEDAYS;
                 barEntryList = threeDaySpData;
                 break;
             case R.id.one_week_button:
                 Log.d(TAG, "onClick: week button clicked");
-                timeShown = TimeShown.ONEWEEK;
+                timeShown = SpirometerFragment.TimeShown.ONEWEEK;
                 barEntryList = oneWeekSpData;
                 break;
         }
@@ -195,8 +173,7 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
         }
         barEntryList = oneDaySpData;
 
-        dataListView = (ListView) findViewById(R.id.patient_spirometer_table);
-        ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(this,
+        ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(getContext(),
                 R.layout.spirometer_info_list_row, R.id.row_date, allSpData) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -217,8 +194,6 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
 
 
     private void drawGraph() {
-        BarChart graph = (BarChart) findViewById((R.id.patient_spirometer_graph));
-
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
 
@@ -234,7 +209,7 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
         x.setLabelRotationAngle(-90);
         x.setDrawGridLines(false);
         x.setDrawAxisLine(true);
-       // x.setDrawLabels(false);
+        // x.setDrawLabels(false);
 
         x.setValueFormatter(new ValueFormatter() {
             @Override
@@ -244,7 +219,7 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
         });
 
 
-                YAxis yleft = graph.getAxisLeft();
+        YAxis yleft = graph.getAxisLeft();
         graph.getAxisRight().setEnabled(false);
 
         yleft.setAxisMinimum(0);
@@ -258,6 +233,3 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity implements 
         ONEDAY, TWODAYS, THREEDAYS, ONEWEEK;
     }
 }
-
-
-
