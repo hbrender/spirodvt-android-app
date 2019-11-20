@@ -126,7 +126,7 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {//implemen
         }
     }
 
-//    @Override
+    //    @Override
 //    public void onClick(View view) {
 //        Log.d(TAG, "onClick: BUTTON CLICK");
 //        switch (view.getId()) {
@@ -154,68 +154,73 @@ public class PatientSpirometerInfoActivity extends AppCompatActivity {//implemen
 //        drawGraph();
 //    }
 //
-//    /*
-//    gets the data for display from the database, sorts it into the different lists for display
-//     */
-//    private void createDataLists() {
-//        Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
-//        allSpData = databaseHelper.getPatinetSpirometerData(patientId);
-//        Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
-//
-//        // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
-//        Calendar now = new GregorianCalendar(2019, 10, 11, 7, 0, 0);
-//        for (IncentiveSpirometerData sp : allSpData) {
-//            Calendar cs = GregorianCalendar.getInstance();
-//            cs.setTime(sp.getStartTime());
-//
-//            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - cs.getTimeInMillis()));
-//            Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
-//            //Log.d(TAG, "createDataLists: now: " + now.toString());
-//            //Log.d(TAG, "createDataLists: time: " + cs.toString());
-//            int offset = (timeDiff / 24) * 14;
-//            if (timeDiff <= 24) {
-//                //Log.d(TAG, "createDataLists: ADDED one day data");
-//                oneDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-//                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-//                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-//                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-//            } else if (timeDiff <= 48) {
-//                //Log.d(TAG, "createDataLists: ADDED TWO day data");
-//                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-//                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-//                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-//            } else if (timeDiff <= 72) {
-//                //Log.d(TAG, "createDataLists: ADDED thREE day data");
-//                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-//                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-//            } else if (timeDiff <= 168) {
-//                //Log.d(TAG, "createDataLists: ADDED week data");
-//                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-//            }
-//        }
-//        barEntryList = oneDaySpData;
-//
-//        dataListView = (ListView) findViewById(R.id.patient_spirometer_table);
-//        ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(this,
-//                R.layout.spirometer_info_list_row, R.id.row_date, allSpData) {
-//            @Override
-//            public View getView(int position, View convertView, ViewGroup parent) {
-//                View view = super.getView(position, convertView, parent);
-//                TextView date = (TextView) view.findViewById(R.id.row_date);
-//                TextView time = (TextView) view.findViewById(R.id.row_time);
-//                TextView breaths = (TextView) view.findViewById(R.id.row_breaths_completed);
-//
-//                date.setText(allSpData.get(position).getDate(allSpData.get(position).getStartTime()));
-//                time.setText(allSpData.get(position).getTime(allSpData.get(position).getStartTime()));
-//                breaths.setText(String.valueOf(allSpData.get(position).getInhalationsCompleted()));
-//                return view;
-//            }
-//        };
-//        //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSpData);
-//        dataListView.setAdapter(arrayAdapter);
-//    }
-//
-//
+    /*
+    gets the data for display from the database, sorts it into the different lists for display
+     */
+    private void createDataLists() {
+        Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
+        allSpData = databaseHelper.getPatinetSpirometerData(patientId);
+        Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
+
+        // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
+        Calendar now = new GregorianCalendar(2019, 10, 11, 7, 0, 0);
+        for (IncentiveSpirometerData sp : allSpData) {
+            Calendar cs = GregorianCalendar.getInstance();
+            cs.setTime(sp.getStartTime());
+
+            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - cs.getTimeInMillis()));
+            Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
+            //Log.d(TAG, "createDataLists: now: " + now.toString());
+            //Log.d(TAG, "createDataLists: time: " + cs.toString());
+            int offset = (timeDiff / 24) * 14;
+            if (timeDiff <= 24) {
+                //Log.d(TAG, "createDataLists: ADDED one day data");
+                oneDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 48) {
+                //Log.d(TAG, "createDataLists: ADDED TWO day data");
+                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 72) {
+                //Log.d(TAG, "createDataLists: ADDED thREE day data");
+                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 168) {
+                //Log.d(TAG, "createDataLists: ADDED week data");
+                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+            }
+        }
+        barEntryList = oneDaySpData;
+        /*
+        dataListView = (ListView) findViewById(R.id.patient_spirometer_table);
+        ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(this,
+                R.layout.spirometer_info_list_row, R.id.row_session, allSpData) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView session = (TextView) view.findViewById(R.id.row_session);
+                TextView startTime = (TextView) view.findViewById(R.id.row_start);
+                TextView endTime = (TextView) view.findViewById(R.id.row_end);
+                TextView lungVolume = (TextView) view.findViewById(R.id.row_lung_volume);
+                TextView breathsCompletedRatio = (TextView) view.findViewById(R.id.row_breaths_complete_ratio);
+
+                session.setText(allSpData.get(position).getId());
+                startTime.setText(String.valueOf(allSpData.get(position).getStartTime()));
+                endTime.setText(String.valueOf(allSpData.get(position).getEndTime()));
+                lungVolume.setText(String.valueOf(allSpData.get(position).getLungVolume()));
+                breathsCompletedRatio.setText(String.valueOf(allSpData.get(position).getInhalationsCompleted() / allSpData.get(position).getNumberOfInhalations()));
+                return view;
+            }
+        };
+        //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSpData);
+        dataListView.setAdapter(arrayAdapter);*/
+    }
+
+
+
 //    private void drawGraph() {
 //        BarChart graph = (BarChart) findViewById((R.id.patient_spirometer_graph));
 //
