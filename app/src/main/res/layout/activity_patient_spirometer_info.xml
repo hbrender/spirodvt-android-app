@@ -49,14 +49,47 @@
         android:id="@+id/patient_spirometer_graph"
         />
 
-    <LinearLayout
+    <GridLayout
         android:id="@+id/column_titles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:columnCount="4"
+        android:rowCount="1"
+        android:paddingTop="10dp">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:text="@string/session_label"
+            android:textStyle="bold" />
 
-    </LinearLayout>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="3"
+            android:gravity="center"
+            android:text="@string/time_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:text="@string/lung_volume_label"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:text="@string/completed_ratio_label"
+            android:textStyle="bold" />
+    </GridLayout>
+
 
     <ListView
         android:layout_width="match_parent"

@@ -49,6 +49,11 @@
     <string name="tab_text_1">Spirometer</string>
     <string name="tab_text_2">DVT</string>
 
+    <string name="session_label"><u>Session</u></string>
+    <string name="time_label"><u>Start Time/End Time</u></string>
+    <string name="lung_volume_label"><u>Volume</u></string>
+    <string name="completed_ratio_label"><u>Reps</u></string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
