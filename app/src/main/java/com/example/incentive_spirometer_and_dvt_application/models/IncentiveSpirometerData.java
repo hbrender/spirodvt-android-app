@@ -1,7 +1,7 @@
 package com.example.incentive_spirometer_and_dvt_application.models;
 
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.util.Date;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -11,8 +11,8 @@ import androidx.annotation.NonNull;
 
 public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerData>{
     private int id;
-    private Timestamp startTime;
-    private Timestamp endTime;
+    private Date startTime;
+    private Date endTime;
     //private Timestamp timestamp;
     private int lungVolume; // units = ml
     private int numberOfInhalations;
@@ -23,7 +23,7 @@ public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerD
     }
 
 
-    public IncentiveSpirometerData(int id, Timestamp startTime, Timestamp endTime, int lungVolume, int numberOfInhalations, int inhalationsCompleted) {
+    public IncentiveSpirometerData(int id, Date startTime, Date endTime, int lungVolume, int numberOfInhalations, int inhalationsCompleted) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -41,19 +41,19 @@ public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerD
         this.id = id;
     }
 
-    public Timestamp getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public Timestamp getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Timestamp endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
@@ -81,19 +81,6 @@ public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerD
         this.inhalationsCompleted = inhalationsCompleted;
     }
 
-    public String getDate (Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(timestamp);
-        return (cal.get(Calendar.MONTH) + 1) + " / " + cal.get(Calendar.DAY_OF_MONTH); // months are 0 indexed
-    }
-
-    public String getTime (Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(timestamp);
-
-        return (cal.get(Calendar.HOUR_OF_DAY)) + " : " + String.format("%02d", cal.get(Calendar.MINUTE));
-    }
-
     @Override
     public int compareTo(IncentiveSpirometerData isd) {
         return getStartTime().compareTo(isd.getStartTime());
@@ -102,13 +89,7 @@ public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerD
     @NonNull
     @Override
     public String toString() {
-        Calendar cs = GregorianCalendar.getInstance();
-        cs.setTime(startTime);
-        Calendar ce = GregorianCalendar.getInstance();
-        ce.setTime(endTime);
-        return "start time: " + cs.get(Calendar.HOUR_OF_DAY) + ":"  + String.format(Locale.ENGLISH, "%02d", cs.get(Calendar.MINUTE)) + " "  +
-                " end time: " + ce.get(Calendar.HOUR_OF_DAY) + ":"  + String.format(Locale.ENGLISH, "%02d", ce.get(Calendar.MINUTE)) + " "  +
-                " completed " + inhalationsCompleted;
+        return "start time: " + startTime.toString() + " end time: " + endTime.toString() + " breaths: " + inhalationsCompleted;
     }
 
 

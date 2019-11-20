@@ -31,9 +31,12 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +49,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     private List<BarEntry> oneDaySpData;
     private List<BarEntry> twoDaySpData;
     private List<BarEntry> threeDaySpData;
-    private List<BarEntry> oneWeekSpData;
+    //private List<BarEntry> oneWeekSpData;
     private List<BarEntry> barEntryList;
     private ListView dataListView;
     private BarChart graph;
@@ -76,15 +79,14 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         Button oneDayButton = (Button) view.findViewById(R.id.one_day_button);
         Button twoDayButton = (Button) view.findViewById(R.id.two_day_button);
         Button threeDayButton = (Button) view.findViewById(R.id.three_day_button);
-        Button weekButton = (Button) view.findViewById(R.id.one_week_button);
+        //Button weekButton = (Button) view.findViewById(R.id.one_week_button);
         graph = (BarChart) view.findViewById((R.id.patient_spirometer_graph));
         dataListView = (ListView) view.findViewById(R.id.patient_spirometer_table);
-
 
         oneDayButton.setOnClickListener(this);
         twoDayButton.setOnClickListener(this);
         threeDayButton.setOnClickListener(this);
-        weekButton.setOnClickListener(this);
+        //weekButton.setOnClickListener(this);
 
         databaseHelper = new DatabaseHelper(getContext());
 
@@ -92,7 +94,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         oneDaySpData = new ArrayList<>();
         twoDaySpData = new ArrayList<>();
         threeDaySpData = new ArrayList<>();
-        oneWeekSpData = new ArrayList<>();
+        //oneWeekSpData = new ArrayList<>();
 
         barEntryList = new ArrayList<>();
 
@@ -123,11 +125,11 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 timeShown = SpirometerFragment.TimeShown.THREEDAYS;
                 barEntryList = threeDaySpData;
                 break;
-            case R.id.one_week_button:
-                Log.d(TAG, "onClick: week button clicked");
-                timeShown = SpirometerFragment.TimeShown.ONEWEEK;
-                barEntryList = oneWeekSpData;
-                break;
+//            case R.id.one_week_button:
+//                Log.d(TAG, "onClick: week button clicked");
+//                timeShown = SpirometerFragment.TimeShown.ONEWEEK;
+//                barEntryList = oneWeekSpData;
+//                break;
         }
         drawGraph();
     }
@@ -141,50 +143,55 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
 
         // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
-        Calendar now = new GregorianCalendar(2019, 10, 11, 7, 0, 0);
-        for (IncentiveSpirometerData sp : allSpData) {
-            Calendar cs = GregorianCalendar.getInstance();
-            cs.setTime(sp.getStartTime());
+        // using Gregorian Calendar because Date constructor is deprecated
+         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 9, 7, 0, 0);
 
-            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - cs.getTimeInMillis()));
+        for (int session = 1; session <= allSpData.size(); session++) {
+            IncentiveSpirometerData sp = allSpData.get(session - 1);
+            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
             Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
             //Log.d(TAG, "createDataLists: now: " + now.toString());
             //Log.d(TAG, "createDataLists: time: " + cs.toString());
-            int offset = (timeDiff / 24) * 14;
-            if (timeDiff <= 24) {
+            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*60.0/(double) (TimeUnit.MILLISECONDS.toMinutes(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
+            if (timeDiff <= 24 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED one day data");
-                oneDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY), sp.getInhalationsCompleted()));
-            } else if (timeDiff <= 48) {
+                oneDaySpData.add(new BarEntry(session, inhalation_rate));
+                twoDaySpData.add(new BarEntry(session, inhalation_rate));
+                threeDaySpData.add(new BarEntry(session, inhalation_rate));
+                //oneWeekSpData.add(new BarEntry(session, inhalation_rate));
+            } else if (timeDiff <= 48 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED TWO day data");
-                twoDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-            } else if (timeDiff <= 72) {
+                twoDaySpData.add(new BarEntry(session, inhalation_rate));
+                threeDaySpData.add(new BarEntry(session, inhalation_rate));
+                //oneWeekSpData.add(new BarEntry(session, sp.getInhalationsCompleted()));
+            } else if (timeDiff <= 72 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED thREE day data");
-                threeDaySpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
-            } else if (timeDiff <= 168) {
-                //Log.d(TAG, "createDataLists: ADDED week data");
-                oneWeekSpData.add(new BarEntry(cs.get(Calendar.HOUR_OF_DAY) + offset, sp.getInhalationsCompleted()));
+                threeDaySpData.add(new BarEntry(session, inhalation_rate));
+                //oneWeekSpData.add(new BarEntry(session, sp.getInhalationsCompleted()));
             }
         }
         barEntryList = oneDaySpData;
 
         ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(getContext(),
-                R.layout.spirometer_info_list_row, R.id.row_date, allSpData) {
+                R.layout.spirometer_info_list_row, R.id.row_session, allSpData) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView date = (TextView) view.findViewById(R.id.row_date);
-                TextView time = (TextView) view.findViewById(R.id.row_time);
-                TextView breaths = (TextView) view.findViewById(R.id.row_breaths_completed);
 
-                date.setText(allSpData.get(position).getDate(allSpData.get(position).getStartTime()));
-                time.setText(allSpData.get(position).getTime(allSpData.get(position).getStartTime()));
-                breaths.setText(String.valueOf(allSpData.get(position).getInhalationsCompleted()));
+                TextView session = (TextView) view.findViewById(R.id.row_session);
+                TextView start = (TextView) view.findViewById(R.id.row_start);
+                TextView end = (TextView) view.findViewById(R.id.row_end);
+                TextView lung_volume = (TextView) view.findViewById(R.id.row_lung_volume);
+                TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_breaths_complete_ratio);
+
+                String breath_ratio_string = allSpData.get(position).getInhalationsCompleted() + " / " + allSpData.get(position).getNumberOfInhalations();
+
+                session.setText(String.format("%s",position + 1));
+                start.setText(allSpData.get(position).getStartTime().toString());
+                end.setText(allSpData.get(position).getEndTime().toString());
+                lung_volume.setText(String.format("%s", allSpData.get(position).getLungVolume()));
+                breaths_completed_ratio.setText(breath_ratio_string);
+
                 return view;
             }
         };
@@ -202,7 +209,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         BarData data = new BarData(set);
 
         // will individually label bars in the graph if removed - good for testing bar overlap
-        set.setDrawValues(false);
+        set.setDrawValues(true);
 
         XAxis x = graph.getXAxis();
         x.setPosition(XAxis.XAxisPosition.BOTTOM);

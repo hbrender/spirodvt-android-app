@@ -22,14 +22,15 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
@@ -241,11 +242,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:00:00', '2019-11-8 13:59:59', 2000, 10, 5)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 14:00:00', '2019-11-8 14:59:59', 2000, 10, 4)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 15:00:00', '2019-11-8 15:59:59', 2000, 10, 3)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 2000, 10, 4)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 2000, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 2000, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 2000, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 2000, 10, 1)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 2000, 10, 2)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 2000, 10, 3)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 2000, 10, 4)");
 
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 08:00:00', '2019-11-9 08:59:59', 2000, 10, 5)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 09:00:00', '2019-11-9 09:59:59', 2000, 10, 5)");
@@ -604,14 +605,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "getPatientSpirometer: " + query);
 
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+
         if (c.moveToFirst()){
             do{
+                Date start = null;
+                Date end = null;
+                try {
+                    start = dateFormat.parse(c.getString(c.getColumnIndex(START_TIMESTAMP)));
+                    end = dateFormat.parse(c.getString(c.getColumnIndex(END_TIMESTAMP)));
+                } catch (java.text.ParseException e) {
+                    Log.d(TAG, "getPatinetSpirometerData: ERROR PARSING DATE FROM database");
+                }
+
                 IncentiveSpirometerData spData = new IncentiveSpirometerData();
                 spData.setId(c.getInt(c.getColumnIndex(ID)));
-                spData.setStartTime(Timestamp.valueOf(c.getString(c.getColumnIndex(START_TIMESTAMP))));
-                spData.setEndTime(Timestamp.valueOf(c.getString(c.getColumnIndex(END_TIMESTAMP))));
+                spData.setStartTime(start);
+                spData.setEndTime(end);
                 spData.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
-                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(LUNG_VOLUME))));
+                spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(NUMBER_OF_INHALATIONS))));
                 spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
 
                 spirometerData.add(spData); // you were missing this line
@@ -620,10 +632,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         c.close();
         return spirometerData;
-    }
-
-    public Timestamp convertStringToDate (String st) {
-        return Timestamp.valueOf(st);
     }
 
     // *************************** Incentive Spirometer table CRUD functions ****************************
