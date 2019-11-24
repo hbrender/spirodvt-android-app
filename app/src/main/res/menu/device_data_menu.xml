@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/detailMenuItem"
-        android:icon="@drawable/ic_info_outline_24dp"
+        android:icon="@drawable/ic_info_outline_32dp"
         android:title="Details"
         app:showAsAction="ifRoom" />
 </menu>

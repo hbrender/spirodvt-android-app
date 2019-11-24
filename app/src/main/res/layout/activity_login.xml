@@ -24,7 +24,7 @@
         android:textSize="18sp"
         android:inputType="text"
         android:layout_marginTop="40dp"
-        android:drawableLeft="@drawable/ic_person_outline_24dp"
+        android:drawableLeft="@drawable/ic_person_outline_32dp"
         android:hint="@string/username_prompt"
         android:textColorHint="@color/colorSecondaryText"/>
 
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:inputType="textPassword"
-        android:drawableLeft="@drawable/ic_lock_outline_24dp"
+        android:drawableLeft="@drawable/ic_lock_outline_32dp"
         android:hint="@string/password_prompt"
         android:textColorHint="@color/colorSecondaryText"/>
 
