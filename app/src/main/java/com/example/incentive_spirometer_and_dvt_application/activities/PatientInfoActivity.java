@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
+import com.google.android.material.snackbar.Snackbar;
 
 public class PatientInfoActivity extends AppCompatActivity {
     static final String TAG = "PatientInfoActivity";
@@ -195,6 +197,9 @@ public class PatientInfoActivity extends AppCompatActivity {
                     return false;
                 }
             }
+            GridLayout gridLayout = findViewById(R.id.gridLayout);
+            Snackbar snackbar = Snackbar.make(gridLayout, "Patient Saved", Snackbar.LENGTH_LONG);
+            snackbar.show();
             return true;
         }
         return false;

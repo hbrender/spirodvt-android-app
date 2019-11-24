@@ -8,10 +8,11 @@
     android:layout_height="match_parent">
 
     <GridLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:columnCount="3"
-    android:padding="15dp">
+        android:id="@+id/gridLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnCount="3"
+        android:padding="15dp">
 
     <TextView
         android:id="@+id/patientInfoTextView"

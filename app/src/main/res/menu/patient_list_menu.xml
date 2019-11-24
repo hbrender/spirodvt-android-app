@@ -5,7 +5,7 @@
     <item
         android:id="@+id/addMenuItem"
         android:title="@string/add_patient"
-        android:icon="@drawable/ic_add_circle_outline_32dp"
+        android:icon="@drawable/ic_add_circle_outline_30dp"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/signOutMenuItem"
