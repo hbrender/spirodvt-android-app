@@ -437,7 +437,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void deletePatientById(int patientId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.d(TAG, "deletePatient: " + patientId);
+        Log.d(TAG, "deletePatientById: " + patientId);
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
     }
 
@@ -481,6 +481,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_DOCTOR_PATIENT, null, values);
 
         return result != -1; // if result = -1 data doesn't insert
+    }
+
+    /**
+     * Delete a given doctor patient association
+     * @param patientId the id matching the patient associated with the doctor to delete
+     */
+    public void deleteDoctorPatientById(int patientId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Log.d(TAG, "deleteDoctorPatientById: " + patientId);
+
+
+        db.delete(TABLE_DOCTOR_PATIENT, PATIENT_ID + " = ?", new String[] { String.valueOf(patientId)});
     }
 
     // *************************** Doctor table CRUD functions ****************************

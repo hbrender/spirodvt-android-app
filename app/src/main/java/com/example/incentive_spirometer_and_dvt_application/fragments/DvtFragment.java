@@ -78,7 +78,7 @@ public class DvtFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
-        return inflater.inflate(R.layout.fragment_dvt, container, false);
+        return inflater.inflate(R.layout.activity_patient_dvt_info, container, false);
     }
 
     /*// TODO: Rename method, update argument and hook method into UI event

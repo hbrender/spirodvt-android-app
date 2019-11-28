@@ -26,7 +26,15 @@ import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
-import com.example.incentive_spirometer_and_dvt_application.models.Patient;
+
+/**
+ * Patient list activity of the application
+ * Doctors will be able to see a list of patients they are monitoring. They can selected patients
+ * to get more detail, delete multiple patients from the list at a time, and also sign out or add a
+ * patient to their list.
+ *
+ * @author(s) Hanna Brender
+ */
 
 public class PatientListActivity extends AppCompatActivity {
     static final String TAG = "PatientListActivityTag";
@@ -128,32 +136,6 @@ public class PatientListActivity extends AppCompatActivity {
             }
         });
 
-        // long click listener for deleting patient
-        patientListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final Patient patient = (Patient) parent.getItemAtPosition(position);
-
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientListActivity.this);
-                alertBuilder.setTitle(getString(R.string.delete_patient))
-                        .setMessage(getString(R.string.message_delete_patient) + " " + patient.getFirstName() + " " + patient.getLastName() + "?")
-                        .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // delete patient from database
-                                databaseHelper.deletePatientById(patient.getId());
-                                // TODO: delete from DoctorPatient table
-                                //updatePatientList();
-                                updatePatientListView();
-                            }
-                        })
-                        .setNegativeButton(R.string.no, null);
-                alertBuilder.show();
-
-                return true;
-            }
-        });
-
         // set the listener for entering CAM, user long presses they can select multiple patients
         patientListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         patientListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
@@ -189,8 +171,8 @@ public class PatientListActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // delete all selected patients
                                         for (long id: checkIds) {
+                                            databaseHelper.deleteDoctorPatientById((int) id);
                                             databaseHelper.deletePatientById((int) id);
-                                            // TODO: delete from DoctorPatient table
                                             updatePatientListView();
                                         }
                                     }

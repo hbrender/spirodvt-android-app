@@ -13,8 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.Spinner;
@@ -24,9 +22,16 @@ import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
-import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
 import com.google.android.material.snackbar.Snackbar;
+
+/**
+ * Patient info activity of the application
+ * This screen displays information for a patient including name, age, sex, etc. Also this screen
+ * displays device data.
+ *
+ * @author(s) Hanna Brender
+ */
 
 public class PatientInfoActivity extends AppCompatActivity {
     static final String TAG = "PatientInfoActivity";
@@ -63,20 +68,20 @@ public class PatientInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_info);
 
-        patientIdEditText = (EditText) findViewById(R.id.patientIdEditText);
-        firstNameEditText = (EditText) findViewById(R.id.firstNameEditText);
-        lastNameEditText = (EditText) findViewById(R.id.lastNameEditText);
-        heightFeetEditText = (EditText) findViewById(R.id.heightFeetEditText);
-        heightInchesEditText = (EditText) findViewById(R.id.heightInchesEditText);
-        weightPoundsEditText = (EditText) findViewById(R.id.weightPoundsEditText);
-        ageEditText = (EditText) findViewById(R.id.ageEditText);
-        sexSpinner = (Spinner) findViewById(R.id.sexSpinner);
-        spirometerIdEditText = (EditText) findViewById(R.id.spirometerIdEditText);
-        inhalationsNumIdEditText = (EditText) findViewById(R.id.inhalationsNumIdEditText);
-        lungVolumeEditText = (EditText) findViewById(R.id.lungVolumeEditText);
-        dvtIdEditText = (EditText) findViewById(R.id.dvtIdEditText);
-        repsNumIdEditText = (EditText) findViewById(R.id.repsNumIdEditText);
-        dvtResistanceSpinner = (Spinner) findViewById(R.id.dvtResistanceSpinner);
+        patientIdEditText = findViewById(R.id.patientIdEditText);
+        firstNameEditText = findViewById(R.id.firstNameEditText);
+        lastNameEditText = findViewById(R.id.lastNameEditText);
+        heightFeetEditText = findViewById(R.id.heightFeetEditText);
+        heightInchesEditText = findViewById(R.id.heightInchesEditText);
+        weightPoundsEditText = findViewById(R.id.weightPoundsEditText);
+        ageEditText = findViewById(R.id.ageEditText);
+        sexSpinner = findViewById(R.id.sexSpinner);
+        spirometerIdEditText = findViewById(R.id.spirometerIdEditText);
+        inhalationsNumIdEditText = findViewById(R.id.inhalationsNumIdEditText);
+        lungVolumeEditText = findViewById(R.id.lungVolumeEditText);
+        dvtIdEditText = findViewById(R.id.dvtIdEditText);
+        repsNumIdEditText = findViewById(R.id.repsNumIdEditText);
+        dvtResistanceSpinner = findViewById(R.id.dvtResistanceSpinner);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -86,6 +91,7 @@ public class PatientInfoActivity extends AppCompatActivity {
             patientId = intent.getIntExtra("patientId", -1);
             doctorId = intent.getIntExtra("doctorId", -1);
 
+            // viewing existing patient info rather than creating a new patient
             if (patientId != -1) {
                 Patient patient = databaseHelper.getPatient(patientId);
                 IncentiveSpirometer incentiveSpirometer = databaseHelper.getIncentiveSpirometer(patientId);
@@ -193,12 +199,13 @@ public class PatientInfoActivity extends AppCompatActivity {
                 result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
 
                 if (!result3 || !result4) {
-                    Toast.makeText(this, "SQL Error inserting patient", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "savePatient: SQL Error inserting patient");
                     return false;
                 }
             }
+            // alert that a patient's info has been saved
             GridLayout gridLayout = findViewById(R.id.gridLayout);
-            Snackbar snackbar = Snackbar.make(gridLayout, "Patient Saved", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(gridLayout, getString(R.string.patient_saved), Snackbar.LENGTH_LONG);
             snackbar.show();
             return true;
         }
@@ -342,9 +349,9 @@ public class PatientInfoActivity extends AppCompatActivity {
         dvtResistanceSpinner.setEnabled(false);
     }
 
-        /**
-         * Enables editing of patient information
-         */
+    /**
+     * Enables editing of patient information
+     */
     public void enablePatientEdit() {
         //patientIdEditText.setEnabled(true);
         firstNameEditText.setEnabled(true);

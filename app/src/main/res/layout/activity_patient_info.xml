@@ -148,7 +148,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Incentive Spirometer"
-        android:layout_columnSpan="3"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:textSize="20sp"
         android:layout_marginTop="10dp"

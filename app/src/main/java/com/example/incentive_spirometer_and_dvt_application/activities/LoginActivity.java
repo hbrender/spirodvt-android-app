@@ -1,13 +1,4 @@
 package com.example.incentive_spirometer_and_dvt_application.activities;
-/**
- * Login activity of the application
- * Users will input their username-password combinations and it will be validated with user data from the database
- * Only authorized users will have access to the rest of the application
- *
- * @author(s) Cole deSilva, Isak Bjornson
- * @editor(s) Hanna Brender
- *
- */
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +15,16 @@ import android.widget.Toast;
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.Authenticate;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+
+/**
+ * Login activity of the application
+ * Users will input their username-password combinations and it will be validated with user data from the database
+ * Only authorized users will have access to the rest of the application
+ *
+ * @author(s) Cole deSilva, Isak Bjornson
+ * @editor(s) Hanna Brender
+ *
+ */
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
+                // check if username and password are valid
                 if (checkUsername(username)) {
                     if (checkPassword(username, password)) {
                         Intent intent = new Intent(LoginActivity.this, PatientListActivity.class);

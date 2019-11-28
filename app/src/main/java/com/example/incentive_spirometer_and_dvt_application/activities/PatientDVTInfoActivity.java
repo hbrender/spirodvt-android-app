@@ -11,6 +11,6 @@ public class PatientDVTInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_dvtinformation);
+        setContentView(R.layout.activity_patient_dvt_info);
     }
 }
