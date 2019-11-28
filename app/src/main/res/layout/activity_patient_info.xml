@@ -164,7 +164,7 @@
         android:clickable="true"
         android:visibility="invisible"
         android:onClick="deleteSpirometerButtonClick"
-        android:src="@android:drawable/ic_menu_delete"/>
+        android:src="@drawable/ic_delete_28dp"/>
 
     <TextView
         android:id="@+id/spirometerIdTextView"
@@ -237,7 +237,7 @@
         android:clickable="true"
         android:visibility="invisible"
         android:onClick="deleteDvtButtonClick"
-        android:src="@android:drawable/ic_menu_delete"/>
+        android:src="@drawable/ic_clear_28dp"/>
 
     <TextView
         android:id="@+id/dvtIdTextView"

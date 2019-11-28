@@ -1,11 +1,13 @@
 package com.example.incentive_spirometer_and_dvt_application.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -347,12 +349,15 @@ public class PatientInfoActivity extends AppCompatActivity {
         weightPoundsEditText.setEnabled(false);
         ageEditText.setEnabled(false);
         sexSpinner.setEnabled(false);
+        sexSpinner.setEnabled(false);
         spirometerIdEditText.setEnabled(false);
         inhalationsNumIdEditText.setEnabled(false);
         lungVolumeEditText.setEnabled(false);
         dvtIdEditText.setEnabled(false);
         repsNumIdEditText.setEnabled(false);
         dvtResistanceSpinner.setEnabled(false);
+        deleteSpirometerButton.setVisibility(View.INVISIBLE);
+        deleteDvtButton.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -371,7 +376,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (spirometerIdEditText.getText().toString().length() == 0) {
             spirometerIdEditText.setEnabled(true);
         } else {
-
+            deleteSpirometerButton.setVisibility(View.VISIBLE);
         }
 
         inhalationsNumIdEditText.setEnabled(true);
@@ -380,18 +385,70 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (dvtIdEditText.getText().toString().length() == 0) {
             dvtIdEditText.setEnabled(true);
         } else {
-
+            deleteDvtButton.setVisibility(View.VISIBLE);
         }
         repsNumIdEditText.setEnabled(true);
         dvtResistanceSpinner.setEnabled(true);
     }
 
     public void deleteSpirometerButtonClick(View view) {
-        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientInfoActivity.this);
+        alertBuilder.setTitle(getString(R.string.delete_spirometer))
+                .setMessage(getString(R.string.message_delete_spirometer))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // delete spirometer from database
+                        databaseHelper.deleteSpirometerById(Integer.parseInt(spirometerIdEditText.getText().toString()), patientId);
+
+                        // reset device input
+                        spirometerIdEditText.setText(null);
+                        inhalationsNumIdEditText.setText(null);
+                        lungVolumeEditText.setText(null);
+
+                        // allow for a new device id
+                        spirometerIdEditText.setEnabled(true);
+
+                        // hide delete button
+                        deleteSpirometerButton.setVisibility(View.INVISIBLE);
+
+                        GridLayout gridLayout = findViewById(R.id.gridLayout);
+                        Snackbar snackbar = Snackbar.make(gridLayout, getString(R.string.spirometer_deleted), Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+                })
+                .setNegativeButton(R.string.no, null);
+        alertBuilder.show();
     }
 
     public void deleteDvtButtonClick(View view) {
-        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientInfoActivity.this);
+        alertBuilder.setTitle(getString(R.string.delete_dvt))
+                .setMessage(getString(R.string.message_delete_dvt))
+                .setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // delete dvt from database
+                        databaseHelper.deleteDvtById(Integer.parseInt(dvtIdEditText.getText().toString()), patientId);
+
+                        // reset device input
+                        dvtIdEditText.setText(null);
+                        repsNumIdEditText.setText(null);
+                        dvtResistanceSpinner.setSelection(0);
+
+                        // allow for a new device id
+                        dvtIdEditText.setEnabled(true);
+
+                        // hide delete button
+                        deleteDvtButton.setVisibility(View.INVISIBLE);
+
+                        GridLayout gridLayout = findViewById(R.id.gridLayout);
+                        Snackbar snackbar = Snackbar.make(gridLayout, getString(R.string.dvt_deleted), Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                    }
+                })
+                .setNegativeButton(R.string.no, null);
+        alertBuilder.show();
     }
 
     @Override

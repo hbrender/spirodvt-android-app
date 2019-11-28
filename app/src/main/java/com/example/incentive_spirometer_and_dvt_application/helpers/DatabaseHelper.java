@@ -679,6 +679,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Delete a spirometer device
+     * @param spirometerId the device to delete
+     * @param patientId the patient that has that device
+     */
+    public void deleteSpirometerById(int spirometerId, int patientId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d(TAG, "deleteSpirometerById: Spirometer:" + spirometerId + " Patient:" + patientId);
+
+        ContentValues values = new ContentValues();
+        values.put(INCENTIVE_SPIROMETER_ID, 0);
+
+        int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
+        int deleteDataResult = db.delete(TABLE_INCENTIVE_SPIROMETER_DATA, ID + " = ?", new String[] { String.valueOf(spirometerId)});
+        int deleteDeviceResult = db.delete(TABLE_INCENTIVE_SPIROMETER, ID + " = ?", new String[] { String.valueOf(spirometerId)});
+
+        Log.d(TAG, "deleteSpirometerById: update:" + updateResult + " deleteData:" + deleteDataResult + " deleteDevice:" + deleteDeviceResult);
+    }
+
+    /**
      * Insert a new Incentive Spirometer device
      * @param incentiveSpirometer spirometer object to insert
      * @return -1 if query fails
@@ -813,6 +832,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return db.update(TABLE_DVT, values, ID + " = ?",
                 new String[] { String.valueOf(dvt.getId()) });
+    }
+
+    /**
+     * Delete a DVT device
+     * @param dvtId the device to delete
+     * @param patientId the patient that has that device
+     */
+    public void deleteDvtById(int dvtId, int patientId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.d(TAG, "deleteDvtById: DVT:" + dvtId + " Patient:" + patientId);
+
+        ContentValues values = new ContentValues();
+        values.put(DVT_ID, 0);
+
+        int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
+        int deleteDataResult = db.delete(TABLE_DVT_DATA, ID + " = ?", new String[] { String.valueOf(dvtId)});
+        int deleteDeviceResult = db.delete(TABLE_DVT, ID + " = ?", new String[] { String.valueOf(dvtId)});
+
+        Log.d(TAG, "deleteDvtById: update:" + updateResult + " deleteData:" + deleteDataResult + " deleteDevice:" + deleteDeviceResult);
     }
 }
 

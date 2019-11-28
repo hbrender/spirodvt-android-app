@@ -31,6 +31,10 @@
     <string name="three_day_button_text">3 days</string>
     <string name="week_button_text">week</string>
     <string name="spirometer_graph_title">Spirometry Exercises</string>
+    <string name="session_label"><u>Session</u></string>
+    <string name="time_label"><u>Start Time/End Time</u></string>
+    <string name="lung_volume_label"><u>Volume</u></string>
+    <string name="completed_ratio_label"><u>Reps</u></string>
 
     <!-- Patient info screen strings -->
     <string name="label_save">Save</string>
@@ -48,15 +52,8 @@
     <string name="title_activity_device_info">DeviceInfoActivity</string>
     <string name="tab_text_1">Spirometer</string>
     <string name="tab_text_2">DVT</string>
-
-    <string name="session_label"><u>Session</u></string>
-    <string name="time_label"><u>Start Time/End Time</u></string>
-    <string name="lung_volume_label"><u>Volume</u></string>
-    <string name="completed_ratio_label"><u>Reps</u></string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="patient_saved">Patient Saved</string>
+    <string name="patient_saved">Patient saved</string>
     <string name="incentive_spirometer">Incentive Spirometer</string>
     <string name="device_id">Device ID:</string>
     <string name="unique_id">unique ID</string>
@@ -80,5 +77,13 @@
     <string name="ml">ml.</string>
     <string name="repetitions_nper_hour">Repetitions\nper hour:</string>
     <string name="resistance">Resistance:</string>
+    <string name="delete_spirometer">Delete Incentive Spirometer</string>
+    <string name="message_delete_spirometer">All device data will be permanently deleted. Are you
+        sure you want to delete this patient\'s Incentive Spirometer device? </string>
+    <string name="spirometer_deleted">Incentive Spirometer deleted</string>
+    <string name="delete_dvt">Delete DVT Prevention Device</string>
+    <string name="message_delete_dvt">All device data will be permanently deleted. Are you
+        sure you want to delete this patient\'s DVT Prevention Device? </string>
+    <string name="dvt_deleted">DVT Prevention Device deleted</string>
 
 </resources>
