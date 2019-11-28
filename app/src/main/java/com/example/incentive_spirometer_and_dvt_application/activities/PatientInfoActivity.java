@@ -11,6 +11,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Selection;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -91,6 +94,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         deleteSpirometerButton = findViewById(R.id.deleteSpirometerButton);
         deleteDvtButton = findViewById(R.id.deleteDvtButton);
 
+        //setEditTextListeners();
+
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -107,6 +112,40 @@ public class PatientInfoActivity extends AppCompatActivity {
                 setPatientInfo(patient, incentiveSpirometer, dvt);
             }
         }
+    }
+
+    public void setEditTextListeners() {
+        weightPoundsEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(!s.toString().endsWith("lbs")){
+                    //weightPoundsEditText.setText(weightPoundsEditText.getText() + " lbs");
+                }
+            }
+        });
+
+        weightPoundsEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus && weightPoundsEditText.getText().toString().endsWith("lbs")) {
+                    weightPoundsEditText.setText(weightPoundsEditText.getText().toString().replace(" lbs", ""));
+                } else if (!hasFocus && !weightPoundsEditText.getText().toString().endsWith("lbs")) {
+                    weightPoundsEditText.setText(weightPoundsEditText.getText() + " lbs");
+                } else {
+                    weightPoundsEditText.setText(weightPoundsEditText.getText() + " lbs");
+                }
+            }
+        });
     }
 
     /**

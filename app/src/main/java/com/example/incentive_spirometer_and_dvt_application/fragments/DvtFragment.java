@@ -1,23 +1,14 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
-import com.example.incentive_spirometer_and_dvt_application.activities.PatientInfoActivity;
-import com.example.incentive_spirometer_and_dvt_application.activities.PatientSpirometerInfoActivity;
 
 
 //A simple {@link Fragment} subclass.

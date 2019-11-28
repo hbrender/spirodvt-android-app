@@ -18,8 +18,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.incentive_spirometer_and_dvt_application.activities.PatientListActivity" />
         </activity>
-        <activity android:name=".activities.PatientDVTInfoActivity" />
-        <activity android:name=".activities.PatientSpirometerInfoActivity" />
         <activity android:name=".activities.PatientInfoActivity" />
         <activity android:name=".activities.PatientListActivity" />
         <activity

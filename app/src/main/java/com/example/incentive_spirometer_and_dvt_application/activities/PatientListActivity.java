@@ -171,7 +171,6 @@ public class PatientListActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         // delete all selected patients
                                         for (long id: checkIds) {
-                                            databaseHelper.deleteDoctorPatientById((int) id);
                                             databaseHelper.deletePatientById((int) id);
                                             updatePatientListView();
                                         }

@@ -432,12 +432,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Delete a given patient
+     * Delete a given patient and their devices and their association with their doctor
      * @param patientId the id matching the patient to delete
      */
     public void deletePatientById(int patientId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.d(TAG, "deletePatientById: " + patientId);
+
+        String query1 = "DELETE FROM "
+                + TABLE_INCENTIVE_SPIROMETER_DATA
+                + " WHERE " + ID + " = ("
+                + "SELECT " + INCENTIVE_SPIROMETER_ID
+                + " FROM " + TABLE_PATIENT
+                + " WHERE " + ID + " = " + patientId + ")";
+        String query2 = "DELETE FROM "
+                + TABLE_INCENTIVE_SPIROMETER
+                + " WHERE " + ID + " = ("
+                + "SELECT " + INCENTIVE_SPIROMETER_ID
+                + " FROM " + TABLE_PATIENT
+                + " WHERE " + ID + " = " + patientId + ")";
+        String query3 = "DELETE FROM "
+                + TABLE_DVT_DATA
+                + " WHERE " + ID + " = ("
+                + "SELECT " + DVT_ID
+                + " FROM " + TABLE_PATIENT
+                + " WHERE " + ID + " = " + patientId + ")";
+        String query4 = "DELETE FROM "
+                + TABLE_DVT
+                + " WHERE " + ID + " = ("
+                + "SELECT " + DVT_ID
+                + " FROM " + TABLE_PATIENT
+                + " WHERE " + ID + " = " + patientId + ")";
+
+        Log.d(TAG, "deletePatientById: " + query1);
+        Log.d(TAG, "deletePatientById: " + query2);
+        Log.d(TAG, "deletePatientById: " + query3);
+        Log.d(TAG, "deletePatientById: " + query4);
+
+        db.execSQL(query1);
+        db.execSQL(query2);
+        db.execSQL(query3);
+        db.execSQL(query4);
+        db.delete(TABLE_DOCTOR_PATIENT, PATIENT_ID + " = ?", new String[] { String.valueOf(patientId)});
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
     }
 
@@ -481,19 +516,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_DOCTOR_PATIENT, null, values);
 
         return result != -1; // if result = -1 data doesn't insert
-    }
-
-    /**
-     * Delete a given doctor patient association
-     * @param patientId the id matching the patient associated with the doctor to delete
-     */
-    public void deleteDoctorPatientById(int patientId) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        Log.d(TAG, "deleteDoctorPatientById: " + patientId);
-
-
-        db.delete(TABLE_DOCTOR_PATIENT, PATIENT_ID + " = ?", new String[] { String.valueOf(patientId)});
     }
 
     // *************************** Doctor table CRUD functions ****************************
