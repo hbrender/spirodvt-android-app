@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -53,11 +55,13 @@ public class PatientInfoActivity extends AppCompatActivity {
     EditText spirometerIdEditText;
     EditText inhalationsNumIdEditText;
     EditText lungVolumeEditText;
+    ImageView deleteSpirometerButton;
 
     // DVT Prevention Device components
     EditText dvtIdEditText;
     EditText repsNumIdEditText;
     Spinner dvtResistanceSpinner;
+    ImageView deleteDvtButton;
 
     // Menu components
     MenuItem editMenuItem;
@@ -82,6 +86,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         dvtIdEditText = findViewById(R.id.dvtIdEditText);
         repsNumIdEditText = findViewById(R.id.repsNumIdEditText);
         dvtResistanceSpinner = findViewById(R.id.dvtResistanceSpinner);
+        deleteSpirometerButton = findViewById(R.id.deleteSpirometerButton);
+        deleteDvtButton = findViewById(R.id.deleteDvtButton);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -364,15 +370,28 @@ public class PatientInfoActivity extends AppCompatActivity {
 
         if (spirometerIdEditText.getText().toString().length() == 0) {
             spirometerIdEditText.setEnabled(true);
+        } else {
+
         }
+
         inhalationsNumIdEditText.setEnabled(true);
         lungVolumeEditText.setEnabled(true);
 
         if (dvtIdEditText.getText().toString().length() == 0) {
             dvtIdEditText.setEnabled(true);
+        } else {
+
         }
         repsNumIdEditText.setEnabled(true);
         dvtResistanceSpinner.setEnabled(true);
+    }
+
+    public void deleteSpirometerButtonClick(View view) {
+        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    public void deleteDvtButtonClick(View view) {
+        Toast.makeText(this, "clicked", Toast.LENGTH_SHORT).show();
     }
 
     @Override

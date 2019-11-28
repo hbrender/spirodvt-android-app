@@ -18,7 +18,7 @@
         android:id="@+id/patientInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Patient Information"
+        android:text="@string/patient_information"
         android:layout_columnSpan="3"
         android:layout_gravity="fill_horizontal"
         android:textSize="20sp"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_columnSpan="1"
-            android:text="Patient ID: " />
+            android:text="@string/patient_id" />
 
     <EditText
         android:id="@+id/patientIdEditText"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
-        android:hint="unique number"
+        android:hint="@string/unique_id"
         android:inputType="number" />
 
     <TextView
@@ -45,13 +45,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="First Name:" />
+        android:text="@string/first_name" />
 
     <EditText
         android:id="@+id/firstNameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="name"
+        android:hint="@string/name"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="textPersonName" />
@@ -60,13 +60,13 @@
         android:id="@+id/lastNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Last Name:" />
+        android:text="@string/last_name" />
 
     <EditText
         android:id="@+id/lastNameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="name"
+        android:hint="@string/name"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="textPersonName" />
@@ -76,13 +76,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Height: " />
+        android:text="@string/height" />
 
     <EditText
         android:id="@+id/heightFeetEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="ft."
+        android:hint="@string/ft"
         android:layout_columnSpan="1"
         android:inputType="number" />
 
@@ -90,7 +90,7 @@
         android:id="@+id/heightInchesEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="in."
+        android:hint="@string/in"
         android:layout_columnSpan="1"
         android:inputType="number" />
 
@@ -99,13 +99,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Weight: " />
+        android:text="@string/weight" />
 
     <EditText
         android:id="@+id/weightPoundsEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="lb."
+        android:hint="@string/lb"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="numberDecimal" />
@@ -115,13 +115,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Age: " />
+        android:text="@string/age" />
 
     <EditText
         android:id="@+id/ageEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="years"
+        android:hint="@string/years"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:inputType="number" />
@@ -131,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal"
-        android:text="Sex: " />
+        android:text="@string/sex" />
 
     <Spinner
         android:id="@+id/sexSpinner"
@@ -147,19 +147,31 @@
         android:id="@+id/spirometerInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Incentive Spirometer"
+        android:text="@string/incentive_spirometer"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorPrimary"/>
 
+    <ImageView
+        android:id="@+id/deleteSpirometerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        android:onClick="deleteSpirometerButtonClick"
+        android:src="@android:drawable/ic_menu_delete"/>
+
     <TextView
         android:id="@+id/spirometerIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Device ID: " />
+        android:text="@string/device_id" />
 
     <EditText
         android:id="@+id/spirometerIdEditText"
@@ -167,7 +179,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
-        android:hint="unique ID"
+        android:hint="@string/unique_id"
         android:inputType="number" />
 
     <TextView
@@ -175,7 +187,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Inhalations\nper hour: " />
+        android:text="@string/inhalations_nper_hour" />
 
     <EditText
         android:id="@+id/inhalationsNumIdEditText"
@@ -183,7 +195,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
-        android:hint="number"
+        android:hint="@string/number"
         android:inputType="number" />
 
     <TextView
@@ -191,7 +203,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Lung volume: " />
+        android:text="@string/lung_volume" />
 
     <EditText
         android:id="@+id/lungVolumeEditText"
@@ -199,7 +211,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
-        android:hint="ml."
+        android:hint="@string/ml"
         android:inputType="number" />
 
     <View style="@style/Divider" />
@@ -208,19 +220,31 @@
         android:id="@+id/dvtInfoTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DVT Prevention Device"
-        android:layout_columnSpan="3"
+        android:text="@string/dvt_prevention_device"
+        android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorPrimary"/>
+
+    <ImageView
+        android:id="@+id/deleteDvtButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_columnSpan="1"
+        android:layout_gravity="end"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        android:onClick="deleteDvtButtonClick"
+        android:src="@android:drawable/ic_menu_delete"/>
 
     <TextView
         android:id="@+id/dvtIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Device ID: " />
+        android:text="@string/device_id" />
 
     <EditText
         android:id="@+id/dvtIdEditText"
@@ -228,7 +252,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
-        android:hint="unique ID"
+        android:hint="@string/unique_id"
         android:inputType="number" />
 
     <TextView
@@ -236,7 +260,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Repetitions\nper hour: " />
+        android:text="@string/repetitions_nper_hour" />
 
     <EditText
         android:id="@+id/repsNumIdEditText"
@@ -244,7 +268,7 @@
         android:layout_height="wrap_content"
         android:layout_columnSpan="2"
         android:layout_gravity="fill_horizontal"
-        android:hint="number"
+        android:hint="@string/number"
         android:inputType="number" />
 
     <TextView
@@ -252,7 +276,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="Resistance: " />
+        android:text="@string/resistance" />
 
     <Spinner
         android:id="@+id/dvtResistanceSpinner"

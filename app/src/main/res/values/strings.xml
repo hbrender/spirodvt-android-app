@@ -57,5 +57,28 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="patient_saved">Patient Saved</string>
+    <string name="incentive_spirometer">Incentive Spirometer</string>
+    <string name="device_id">Device ID:</string>
+    <string name="unique_id">unique ID</string>
+    <string name="number">number</string>
+    <string name="dvt_prevention_device">DVT Prevention Device</string>
+    <string name="patient_information">Patient Information</string>
+    <string name="patient_id">Patient ID:</string>
+    <string name="last_name">Last Name:</string>
+    <string name="name">name</string>
+    <string name="first_name">First Name:</string>
+    <string name="height">Height:</string>
+    <string name="ft">ft.</string>
+    <string name="in">in.</string>
+    <string name="weight">Weight:</string>
+    <string name="lb">lb.</string>
+    <string name="age">Age:</string>
+    <string name="years">years</string>
+    <string name="sex">Sex:</string>
+    <string name="inhalations_nper_hour">Inhalations\nper hour:</string>
+    <string name="lung_volume">Lung volume:</string>
+    <string name="ml">ml.</string>
+    <string name="repetitions_nper_hour">Repetitions\nper hour:</string>
+    <string name="resistance">Resistance:</string>
 
 </resources>
