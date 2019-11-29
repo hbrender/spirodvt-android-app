@@ -9,11 +9,17 @@
         app:showAsAction="ifRoom"
         android:tooltipText="@string/label_edit"/>
     <item
+        android:id="@+id/cancelMenuItem"
+        android:title="@string/label_cancel"
+        android:icon="@drawable/ic_cancel_30dp"
+        app:showAsAction="ifRoom"
+        android:visible="false"
+        android:tooltipText="@string/label_cancel" />
+    <item
         android:id="@+id/saveMenuItem"
         android:title="@string/label_save"
         android:icon="@drawable/ic_save_30dp"
         app:showAsAction="ifRoom"
         android:visible="false"
-        android:tooltipText="@string/label_save"
-        android:iconTint="@color/colorAccent" />
+        android:tooltipText="@string/label_save" />
 </menu>

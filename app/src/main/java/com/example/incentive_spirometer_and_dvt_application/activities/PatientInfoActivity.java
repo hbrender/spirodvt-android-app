@@ -71,6 +71,7 @@ public class PatientInfoActivity extends AppCompatActivity {
     // Menu components
     MenuItem editMenuItem;
     MenuItem saveMenuItem;
+    MenuItem cancelMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -177,6 +178,10 @@ public class PatientInfoActivity extends AppCompatActivity {
             spirometerIdEditText.setText(String.valueOf(incentiveSpirometer.getId()));
             inhalationsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
             lungVolumeEditText.setText(String.valueOf(incentiveSpirometer.getLungVolume()));
+        } else {
+            spirometerIdEditText.setText(null);
+            inhalationsNumIdEditText.setText(null);
+            lungVolumeEditText.setText(null);
         }
 
         if (dvt != null) {
@@ -193,6 +198,10 @@ public class PatientInfoActivity extends AppCompatActivity {
                 default:
                     dvtResistanceSpinner.setSelection(2);
             }
+        } else {
+            dvtIdEditText.setText(null);
+            repsNumIdEditText.setText(null);
+            dvtResistanceSpinner.setSelection(0);
         }
 
         disablePatientEdit();
@@ -497,22 +506,13 @@ public class PatientInfoActivity extends AppCompatActivity {
 
         editMenuItem = menu.findItem(R.id.editMenuItem);
         saveMenuItem = menu.findItem(R.id.saveMenuItem);
+        cancelMenuItem = menu.findItem(R.id.cancelMenuItem);
 
         if (patientId == -1) {
             editMenuItem.setVisible(false);
             saveMenuItem.setVisible(true);
+            //cancelMenuItem.setVisible(true);
         }
-
-        // set menu item icon color
-        Drawable drawable = menu.findItem(R.id.editMenuItem).getIcon();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
-        menu.findItem(R.id.editMenuItem).setIcon(drawable);
-
-        drawable = menu.findItem(R.id.saveMenuItem).getIcon();
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, ContextCompat.getColor(this,R.color.colorAccent));
-        menu.findItem(R.id.saveMenuItem).setIcon(drawable);
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -529,17 +529,34 @@ public class PatientInfoActivity extends AppCompatActivity {
                 enablePatientEdit();
                 editMenuItem.setVisible(false);
                 saveMenuItem.setVisible(true);
+                cancelMenuItem.setVisible(true);
                 return true;
             case R.id.saveMenuItem:
                 // check if patient info can be saved with no errors
                 if (savePatient()) {
                     editMenuItem.setVisible(true);
                     saveMenuItem.setVisible(false);
+                    cancelMenuItem.setVisible(false);
 
                     // update name in toolbar if it was changed in the patient info activity
                     Intent intent = new Intent();
                     setResult(Activity.RESULT_OK, intent);
                 }
+                return true;
+            case R.id.cancelMenuItem:
+                // if editing existing patient info, cancel any changes made
+                if (patientId != -1) {
+                    Patient patient = databaseHelper.getPatient(patientId);
+                    IncentiveSpirometer incentiveSpirometer = databaseHelper.getIncentiveSpirometer(patientId);
+                    Dvt dvt = databaseHelper.getDvt(patientId);
+                    setPatientInfo(patient, incentiveSpirometer, dvt);
+                }
+
+                editMenuItem.setVisible(true);
+                saveMenuItem.setVisible(false);
+                cancelMenuItem.setVisible(false);
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

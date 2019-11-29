@@ -39,6 +39,7 @@
     <!-- Patient info screen strings -->
     <string name="label_save">Save</string>
     <string name="label_edit">Edit</string>
+    <string name="label_cancel">Cancel</string>
     <string-array name="sex_array">
         <item>Female</item>
         <item>Male</item>
