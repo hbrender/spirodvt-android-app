@@ -95,8 +95,6 @@ public class PatientInfoActivity extends AppCompatActivity {
         deleteSpirometerButton = findViewById(R.id.deleteSpirometerButton);
         deleteDvtButton = findViewById(R.id.deleteDvtButton);
 
-        //setEditTextListeners();
-
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -113,40 +111,6 @@ public class PatientInfoActivity extends AppCompatActivity {
                 setPatientInfo(patient, incentiveSpirometer, dvt);
             }
         }
-    }
-
-    public void setEditTextListeners() {
-        weightPoundsEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(!s.toString().endsWith("lbs")){
-                    //weightPoundsEditText.setText(weightPoundsEditText.getText() + " lbs");
-                }
-            }
-        });
-
-        weightPoundsEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus && weightPoundsEditText.getText().toString().endsWith("lbs")) {
-                    weightPoundsEditText.setText(weightPoundsEditText.getText().toString().replace(" lbs", ""));
-                } else if (!hasFocus && !weightPoundsEditText.getText().toString().endsWith("lbs")) {
-                    weightPoundsEditText.setText(weightPoundsEditText.getText() + " lbs");
-                } else {
-                    weightPoundsEditText.setText(weightPoundsEditText.getText() + " lbs");
-                }
-            }
-        });
     }
 
     /**
@@ -303,7 +267,14 @@ public class PatientInfoActivity extends AppCompatActivity {
             hasInputErrors = true;
         }
 
-        if (spirometerIdEditText.getText().length() != 0) {
+        if (spirometerIdEditText.getText().length() != 0
+                || inhalationsNumIdEditText.getText().length() != 0
+                || lungVolumeEditText.getText().length() != 0) {
+
+            if (spirometerIdEditText.getText().length() == 0) {
+                spirometerIdEditText.setError("Enter a unique id");
+                hasInputErrors = true;
+            }
             if (inhalationsNumIdEditText.getText().length() == 0) {
                 inhalationsNumIdEditText.setError("Enter number");
                 hasInputErrors = true;
@@ -314,7 +285,13 @@ public class PatientInfoActivity extends AppCompatActivity {
             }
         }
 
-        if (dvtIdEditText.getText().length() != 0) {
+        if (dvtIdEditText.getText().length() != 0
+                || repsNumIdEditText.getText().length() != 0) {
+
+            if (dvtIdEditText.getText().length() == 0) {
+                dvtIdEditText.setError("Enter a unique id");
+                hasInputErrors = true;
+            }
             if (repsNumIdEditText.getText().length() == 0) {
                 repsNumIdEditText.setError("Enter number");
                 hasInputErrors = true;
@@ -511,7 +488,6 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (patientId == -1) {
             editMenuItem.setVisible(false);
             saveMenuItem.setVisible(true);
-            //cancelMenuItem.setVisible(true);
         }
 
         return super.onCreateOptionsMenu(menu);
