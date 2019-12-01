@@ -134,7 +134,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
         // using Gregorian Calendar because Date constructor is deprecated
-         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 9, 7, 0, 0);
+         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
 
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
@@ -142,7 +142,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
             Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
             //Log.d(TAG, "createDataLists: now: " + now.toString());
             //Log.d(TAG, "createDataLists: time: " + cs.toString());
-            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*60.0/(double) (TimeUnit.MILLISECONDS.toMinutes(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
+            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
             if (timeDiff <= 24 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED one day data");
                 oneDaySpData.add(new BarEntry(session, inhalation_rate));
