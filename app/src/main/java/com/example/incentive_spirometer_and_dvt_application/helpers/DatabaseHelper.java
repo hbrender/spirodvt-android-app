@@ -640,7 +640,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "getPatientSpirometer: " + query);
 
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
         if (c.moveToFirst()){
             do{

@@ -130,6 +130,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     private void createDataLists() {
         Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
         allSpData = databaseHelper.getPatinetSpirometerData(patientId);
+        for (IncentiveSpirometerData sp: allSpData) {
+            Log.d(TAG, "createDataLists: sp data entry:" + sp);;
+        }
         Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
 
         // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
