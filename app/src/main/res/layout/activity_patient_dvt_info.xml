@@ -77,8 +77,9 @@
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:gravity="center"
-            android:text="@string/resistance"
-            android:textStyle="bold" />
+            android:text="@string/resistance_on_table"
+            android:textStyle="bold"
+            android:textSize="13sp"/>
 
         <TextView
             android:layout_width="0dp"

@@ -35,6 +35,7 @@
     <string name="time_label"><u>Start Time/End Time</u></string>
     <string name="lung_volume_label"><u>Volume</u></string>
     <string name="completed_ratio_label"><u>Reps</u></string>
+    <string name="resistance_on_table"><u>Resistance</u></string>
 
     <!-- Patient info screen strings -->
     <string name="label_save">Save</string>
