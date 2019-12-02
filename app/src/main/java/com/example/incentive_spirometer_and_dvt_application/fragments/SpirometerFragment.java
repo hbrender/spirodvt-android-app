@@ -61,6 +61,22 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
+    public void onStart() {
+        Log.d(TAG, "onStart: ONSTART");
+        super.onStart();
+        createDataLists();
+        drawGraph();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d(TAG, "onResume: ONERESUME");
+        super.onResume();
+        createDataLists();
+        drawGraph();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -82,10 +98,10 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         databaseHelper = new DatabaseHelper(getContext());
 
-        allSpData = new ArrayList<>();
-        oneDaySpData = new ArrayList<>();
-        twoDaySpData = new ArrayList<>();
-        threeDaySpData = new ArrayList<>();
+        //allSpData = new ArrayList<>();
+        //oneDaySpData = new ArrayList<>();
+        //twoDaySpData = new ArrayList<>();
+        //threeDaySpData = new ArrayList<>();
         //oneWeekSpData = new ArrayList<>();
 
         barEntryList = new ArrayList<>();
@@ -130,7 +146,11 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     gets the data for display from the database, sorts it into the different lists for display
      */
     private void createDataLists() {
-        Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
+        allSpData = new ArrayList<>();
+        oneDaySpData = new ArrayList<>();
+        twoDaySpData = new ArrayList<>();
+        threeDaySpData = new ArrayList<>();
+        //Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
         allSpData = databaseHelper.getPatinetSpirometerData(patientId);
         for (IncentiveSpirometerData sp: allSpData) {
             Log.d(TAG, "createDataLists: sp data entry:" + sp);;
@@ -144,7 +164,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
-            Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
+            //Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
             //Log.d(TAG, "createDataLists: now: " + now.toString());
             //Log.d(TAG, "createDataLists: time: " + cs.toString());
             float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
@@ -199,7 +219,6 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
         graph.setTouchEnabled(true);
-
 
         BarDataSet set = new BarDataSet(barEntryList, "BarDataSet");
         BarData data = new BarData(set);
