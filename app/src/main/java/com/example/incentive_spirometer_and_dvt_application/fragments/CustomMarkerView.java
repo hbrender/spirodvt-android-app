@@ -45,8 +45,8 @@ class CustomMarkerView extends MarkerView {
 
         String formatBreaths = "Avg. breaths/hour: " + formatter.format(e.getY());
         String formatSession = "Session: " + format2.format(e.getX());
-        String formatStart = "Start Time: " + dateFormat.format(data.get((int) e.getX()).getStartTime());
-        String formatEnd = "End Time:  " + dateFormat.format(data.get((int) e.getX()).getEndTime());
+        String formatStart = "Start Time: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
+        String formatEnd = "End Time:  " + dateFormat.format(data.get((int) e.getX() - 1).getEndTime());
 
         session.setText(formatSession);
         breathRate.setText(formatBreaths);

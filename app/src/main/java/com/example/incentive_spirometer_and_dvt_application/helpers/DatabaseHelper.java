@@ -10,6 +10,7 @@ package com.example.incentive_spirometer_and_dvt_application.helpers;
 
 import com.example.incentive_spirometer_and_dvt_application.models.Doctor;
 import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
+import com.example.incentive_spirometer_and_dvt_application.models.DvtData;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
@@ -638,7 +639,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
 
-        Log.d(TAG, "getPatientSpirometer: " + query);
+        //Log.d(TAG, "getPatientSpirometer: " + query);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -667,6 +668,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         c.close();
         return spirometerData;
+    }
+
+    // *************************** DVT Data table CRUD functions ****************************
+
+    /**
+     * Get a given patient's dvt data
+     * @param patientId patient to read data from
+     * @return a list of patient dvt exercises
+     */
+    public List<DvtData> getPatinetDvtData(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
+        String query = "SELECT dvtd.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT_DATA
+                + " dvtd WHERE p." + DVT_ID + " = dvtd." + ID
+                + " AND p." + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        List<DvtData> dvtData = new ArrayList<>();
+
+        Log.d(TAG, "getPatientDvt: " + query);
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+        if (c.moveToFirst()){
+            do{
+                Date start = null;
+                Date end = null;
+                try {
+                    start = dateFormat.parse(c.getString(c.getColumnIndex(START_TIMESTAMP)));
+                    end = dateFormat.parse(c.getString(c.getColumnIndex(END_TIMESTAMP)));
+                } catch (java.text.ParseException e) {
+                    Log.d(TAG, "getPatinetDvtData: ERROR PARSING DATE FROM database");
+                }
+
+                DvtData dvtDatapoint = new DvtData();
+                dvtDatapoint.setId(c.getInt(c.getColumnIndex(ID)));
+                dvtDatapoint.setStartTime(start);
+                dvtDatapoint.setEndTime(end);
+                dvtDatapoint.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
+                dvtDatapoint.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
+                dvtDatapoint.setRepsCompleted(c.getInt(c.getColumnIndex(REPS_COMPLETED)));
+
+
+                dvtData.add(dvtDatapoint);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        return dvtData;
     }
 
     // *************************** Incentive Spirometer table CRUD functions ****************************

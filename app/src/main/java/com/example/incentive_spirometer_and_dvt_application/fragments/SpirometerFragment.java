@@ -1,6 +1,5 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -35,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class SpirometerFragment extends Fragment implements View.OnClickListener {
-    static final String TAG = "PatientSpiroInfoAct";
+    static final String TAG = "PatientSpiroInfoFrag";
     private DatabaseHelper databaseHelper;
     private List<IncentiveSpirometerData> allSpData;
     private List<BarEntry> oneDaySpData;
@@ -98,12 +97,6 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         databaseHelper = new DatabaseHelper(getContext());
 
-        //allSpData = new ArrayList<>();
-        //oneDaySpData = new ArrayList<>();
-        //twoDaySpData = new ArrayList<>();
-        //threeDaySpData = new ArrayList<>();
-        //oneWeekSpData = new ArrayList<>();
-
         barEntryList = new ArrayList<>();
 
         timeShown = SpirometerFragment.TimeShown.ONEDAY;
@@ -152,9 +145,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         threeDaySpData = new ArrayList<>();
         //Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
         allSpData = databaseHelper.getPatinetSpirometerData(patientId);
-        for (IncentiveSpirometerData sp: allSpData) {
-            Log.d(TAG, "createDataLists: sp data entry:" + sp);;
-        }
+//        for (IncentiveSpirometerData sp: allSpData) {
+//            Log.d(TAG, "createDataLists: sp data entry:" + sp);;
+//        }
         Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
 
         // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
@@ -164,9 +157,6 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
-            //Log.d(TAG, "createDataLists: TIME DIFF: " + timeDiff);
-            //Log.d(TAG, "createDataLists: now: " + now.toString());
-            //Log.d(TAG, "createDataLists: time: " + cs.toString());
             float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
             if (timeDiff <= 24 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED one day data");

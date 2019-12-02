@@ -2,11 +2,6 @@ package com.example.incentive_spirometer_and_dvt_application.models;
 
 import java.util.Date;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-
 import androidx.annotation.NonNull;
 
 public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerData>{
