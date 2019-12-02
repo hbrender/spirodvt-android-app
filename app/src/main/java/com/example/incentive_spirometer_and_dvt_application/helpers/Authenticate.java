@@ -43,7 +43,6 @@ public class Authenticate {
         for(int i = 0; i < SALT_LENGTH; i++) {
             saltBuilder.append(rand.nextInt(9));
         }
-        Log.d(TAG, "saltIt: " + saltBuilder.toString());
         return saltBuilder.toString();
     }
 
