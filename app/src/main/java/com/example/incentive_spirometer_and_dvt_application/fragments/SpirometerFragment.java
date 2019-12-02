@@ -1,5 +1,6 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,7 @@ import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -196,13 +198,14 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     private void drawGraph() {
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
+        graph.setTouchEnabled(true);
 
 
         BarDataSet set = new BarDataSet(barEntryList, "BarDataSet");
         BarData data = new BarData(set);
 
         // will individually label bars in the graph if removed - good for testing bar overlap
-        set.setDrawValues(true);
+        set.setDrawValues(false);
 
         XAxis x = graph.getXAxis();
         x.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -224,6 +227,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         yleft.setAxisMinimum(0);
         yleft.setAxisMaximum(12);
+
+        IMarker marker = new CustomMarkerView(getContext(), R.layout.graph_labels, allSpData);
+        graph.setMarker(marker);
 
         graph.setData(data);
         graph.invalidate();

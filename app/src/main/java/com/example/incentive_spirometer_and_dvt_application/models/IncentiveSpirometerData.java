@@ -13,7 +13,6 @@ public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerD
     private int id;
     private Date startTime;
     private Date endTime;
-    //private Timestamp timestamp;
     private int lungVolume; // units = ml
     private int numberOfInhalations;
     private int inhalationsCompleted;
