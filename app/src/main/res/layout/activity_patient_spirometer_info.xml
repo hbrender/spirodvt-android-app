@@ -62,7 +62,8 @@
             android:layout_columnWeight="1"
             android:gravity="end"
             android:text="@string/session_label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="13sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -70,7 +71,8 @@
             android:layout_columnWeight="3"
             android:gravity="center"
             android:text="@string/time_label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="13sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -78,7 +80,8 @@
             android:layout_columnWeight="1"
             android:gravity="center"
             android:text="@string/lung_volume_label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="13sp"/>
 
         <TextView
             android:layout_width="0dp"
@@ -86,7 +89,8 @@
             android:layout_columnWeight="1"
             android:gravity="center"
             android:text="@string/completed_ratio_label"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textSize="13sp"/>
     </GridLayout>
 
 

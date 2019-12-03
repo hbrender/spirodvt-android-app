@@ -32,7 +32,7 @@
     <string name="week_button_text">week</string>
     <string name="spirometer_graph_title">Spirometry Exercises</string>
     <string name="session_label"><u>Session</u></string>
-    <string name="time_label"><u>Start Time/End Time</u></string>
+    <string name="time_label"><u>Start / End Time</u></string>
     <string name="lung_volume_label"><u>Volume</u></string>
     <string name="completed_ratio_label"><u>Reps</u></string>
     <string name="resistance_on_table"><u>Resistance</u></string>
