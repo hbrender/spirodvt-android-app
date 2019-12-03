@@ -39,19 +39,6 @@ public class DvtData implements Comparable <DvtData>{
         return startTime;
     }
 
-    public String getStringStartTime() {
-        String strStartTime = startTime.toString();
-        StringBuilder result = new StringBuilder();
-        String[] timeInfo = strStartTime.split("[ ]+");
-
-        result.append(timeInfo[1] + " ");
-        result.append(timeInfo[2] + " ");
-        result.append(timeInfo[3] + " ");
-        result.append("(" + timeInfo[5] + ")");
-
-        return result.toString();
-    }
-
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
@@ -60,21 +47,30 @@ public class DvtData implements Comparable <DvtData>{
         return endTime;
     }
 
-    public String getStringEndTime() {
-        String strEndTime = endTime.toString();
-        StringBuilder result = new StringBuilder();
-        String[] timeInfo = strEndTime.split("[ ]+");
-
-        result.append(timeInfo[1] + " ");
-        result.append(timeInfo[2] + " ");
-        result.append(timeInfo[3] + " ");
-        result.append("(" + timeInfo[5] + ")");
-
-        return result.toString();
-    }
-
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public String getStringTime(String flag) {
+        String strTime = " ";
+        if (flag.equalsIgnoreCase("start")){
+            strTime = startTime.toString();
+        }
+        else if(flag.equalsIgnoreCase("end")){
+            strTime = endTime.toString();
+        }
+
+        StringBuilder result = new StringBuilder();
+        String[] timeInfo = strTime.split("[ ]+");
+
+        result.append(timeInfo[1] + " ");
+        result.append(timeInfo[2] + ", " + timeInfo[5] + "   ");
+
+        String[] noSeconds = timeInfo[3].split("[:]+");
+        result.append(noSeconds[0] + ":");
+        result.append(noSeconds[1]);
+
+        return result.toString();
     }
 
     public String getResistance() {

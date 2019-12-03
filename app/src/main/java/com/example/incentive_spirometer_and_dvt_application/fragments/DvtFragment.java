@@ -193,8 +193,8 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
 
                 session.setText(String.format("%s",position + 1));
-                start.setText(allDvtData.get(position).getStringStartTime());
-                end.setText(allDvtData.get(position).getStringEndTime());
+                start.setText(allDvtData.get(position).getStringTime("start"));
+                end.setText(allDvtData.get(position).getStringTime("end"));
                 resistance.setText(String.format("%s", allDvtData.get(position).getResistance()));
                 breaths_completed_ratio.setText(breath_ratio_string);
 
