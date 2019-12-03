@@ -39,12 +39,38 @@ public class IncentiveSpirometerData implements Comparable <IncentiveSpirometerD
         return startTime;
     }
 
+    public String getStringStartTime() {
+        String strStartTime = startTime.toString();
+        StringBuilder result = new StringBuilder();
+        String[] timeInfo = strStartTime.split("[ ]+");
+
+        result.append(timeInfo[1] + " ");
+        result.append(timeInfo[2] + " ");
+        result.append(timeInfo[3] + " ");
+        result.append("(" + timeInfo[5] + ")");
+
+        return result.toString();
+    }
+
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
     public Date getEndTime() {
         return endTime;
+    }
+
+    public String getStringEndTime() {
+        String strEndTime = endTime.toString();
+        StringBuilder result = new StringBuilder();
+        String[] timeInfo = strEndTime.split("[ ]+");
+
+        result.append(timeInfo[1] + " ");
+        result.append(timeInfo[2] + " ");
+        result.append(timeInfo[3] + " ");
+        result.append("(" + timeInfo[5] + ")");
+
+        return result.toString();
     }
 
     public void setEndTime(Date endTime) {
