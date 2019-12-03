@@ -158,21 +158,21 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
         for (int session = 1; session <= allDvtData.size(); session++) {
             DvtData dvtd = allDvtData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - dvtd.getStartTime().getTime()));
-            float inhalation_rate = (float) ((double)dvtd.getNumberOfReps()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
+            float ex_rate = (float) ((double)dvtd.getRepsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
             if (timeDiff <= 24 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED one day data");
-                oneDayDvtData.add(new BarEntry(session, inhalation_rate));
-                twoDayDvtData.add(new BarEntry(session, inhalation_rate));
-                threeDayDvtData.add(new BarEntry(session, inhalation_rate));
+                oneDayDvtData.add(new BarEntry(session, ex_rate));
+                twoDayDvtData.add(new BarEntry(session, ex_rate));
+                threeDayDvtData.add(new BarEntry(session, ex_rate));
                 //oneWeekSpData.add(new BarEntry(session, inhalation_rate));
             } else if (timeDiff <= 48 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED TWO day data");
-                twoDayDvtData.add(new BarEntry(session, inhalation_rate));
-                threeDayDvtData.add(new BarEntry(session, inhalation_rate));
+                twoDayDvtData.add(new BarEntry(session, ex_rate));
+                threeDayDvtData.add(new BarEntry(session, ex_rate));
                 //oneWeekSpData.add(new BarEntry(session, sp.getInhalationsCompleted()));
             } else if (timeDiff <= 72 && timeDiff > 0) {
                 //Log.d(TAG, "createDataLists: ADDED thREE day data");
-                threeDayDvtData.add(new BarEntry(session, inhalation_rate));
+                threeDayDvtData.add(new BarEntry(session, ex_rate));
                 //oneWeekSpData.add(new BarEntry(session, sp.getInhalationsCompleted()));
             }
         }
