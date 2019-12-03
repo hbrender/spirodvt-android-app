@@ -192,8 +192,8 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 String breath_ratio_string = allSpData.get(position).getInhalationsCompleted() + " / " + allSpData.get(position).getNumberOfInhalations();
 
                 session.setText(String.format("%s",position + 1));
-                start.setText(allSpData.get(position).getStringStartTime());
-                end.setText(allSpData.get(position).getStringEndTime());
+                start.setText(allSpData.get(position).getStringTime("start"));
+                end.setText(allSpData.get(position).getStringTime("end"));
                 lung_volume.setText(String.format("%s", allSpData.get(position).getLungVolume()));
                 breaths_completed_ratio.setText(breath_ratio_string);
 
