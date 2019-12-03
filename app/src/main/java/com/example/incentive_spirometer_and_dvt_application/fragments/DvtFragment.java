@@ -195,7 +195,8 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
                 session.setText(String.format("%s",position + 1));
                 start.setText(allDvtData.get(position).getStringTime("start"));
                 end.setText(allDvtData.get(position).getStringTime("end"));
-                resistance.setText(String.format("%s", allDvtData.get(position).getResistance()));
+                resistance.setText(allDvtData.get(position).getResistance());
+
                 breaths_completed_ratio.setText(breath_ratio_string);
 
                 return view;

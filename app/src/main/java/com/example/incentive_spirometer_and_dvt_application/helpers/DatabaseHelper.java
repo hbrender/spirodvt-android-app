@@ -289,47 +289,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 14:58:00', '2019-11-10 15:57:59', 1500, 10, 10)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 15:58:00', '2019-11-10 16:57:59', 1500, 10, 10)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 10:00:00', '2019-11-10 10:59:59', 1, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 11:00:00', '2019-11-10 11:59:59', 1, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 12:00:00', '2019-11-10 12:59:59', 1, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 13:00:00', '2019-11-10 13:59:59', 1, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 14:00:00', '2019-11-10 14:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 15:00:00', '2019-11-10 15:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 16:00:00', '2019-11-10 16:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 17:00:00', '2019-11-10 17:59:59', 1, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 18:00:00', '2019-11-10 18:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 19:00:00', '2019-11-10 19:59:59', 1, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 20:00:00', '2019-11-10 20:59:59', 1, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 10:00:00', '2019-11-10 10:59:59', 'Easy', 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 11:00:00', '2019-11-10 11:59:59', 'Easy', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 12:00:00', '2019-11-10 12:59:59', 'Medium', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 13:00:00', '2019-11-10 13:59:59', 'Easy', 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 14:00:00', '2019-11-10 14:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 15:00:00', '2019-11-10 15:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 16:00:00', '2019-11-10 16:59:59', 'Hard', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 17:00:00', '2019-11-10 17:59:59', 'Easy', 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 18:00:00', '2019-11-10 18:59:59', 'Hard', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 19:00:00', '2019-11-10 19:59:59', 'Medium', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 20:00:00', '2019-11-10 20:59:59', 'Easy', 10, 5)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 10:00:00', '2019-11-9 10:59:59', 1, 10, 3)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 11:00:00', '2019-11-9 11:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 12:00:00', '2019-11-9 12:59:59', 1, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 13:00:00', '2019-11-9 13:59:59', 1, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 14:00:00', '2019-11-9 14:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 15:00:00', '2019-11-9 15:59:59', 1, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 16:00:00', '2019-11-9 16:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 17:00:00', '2019-11-9 17:59:59', 1, 10, 11)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 18:00:00', '2019-11-9 18:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 19:00:00', '2019-11-9 19:59:59', 1, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 20:00:00', '2019-11-9 20:59:59', 1, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 10:00:00', '2019-11-9 10:59:59', 'Easy', 10, 3)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 11:00:00', '2019-11-9 11:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 12:00:00', '2019-11-9 12:59:59', 'Easy', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 13:00:00', '2019-11-9 13:59:59', 'Easy', 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 14:00:00', '2019-11-9 14:59:59', 'Hard', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 15:00:00', '2019-11-9 15:59:59', 'Medium', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 16:00:00', '2019-11-9 16:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 17:00:00', '2019-11-9 17:59:59', 'Easy', 10, 11)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 18:00:00', '2019-11-9 18:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 19:00:00', '2019-11-9 19:59:59', 'Hard', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 20:00:00', '2019-11-9 20:59:59', 'Easy', 10, 7)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 10:00:00', '2019-11-8 10:59:59', 1, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 11:00:00', '2019-11-8 11:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 12:00:00', '2019-11-8 12:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 13:00:00', '2019-11-8 13:59:59', 1, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 14:00:00', '2019-11-8 14:59:59', 1, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 15:00:00', '2019-11-8 15:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 1, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 1, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 1, 10, 11)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 1, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 10:00:00', '2019-11-8 10:59:59', 'Medium', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 11:00:00', '2019-11-8 11:59:59', 'Easy', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 12:00:00', '2019-11-8 12:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 13:00:00', '2019-11-8 13:59:59', 'Hard', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 14:00:00', '2019-11-8 14:59:59', 'Medium', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 15:00:00', '2019-11-8 15:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 'Easy', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 'Easy', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 'Easy', 10, 11)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 'Hard', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 'Medium', 10, 10)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 16:00:00', '2019-11-8 16:59:59', 1, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 17:00:00', '2019-11-8 17:59:59', 1, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 18:00:00', '2019-11-8 18:59:59', 1, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 19:00:00', '2019-11-8 19:59:59', 1, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 20:00:00', '2019-11-8 20:59:59', 1, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 16:00:00', '2019-11-8 16:59:59', 'Easy', 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 17:00:00', '2019-11-8 17:59:59', 'Medium', 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 18:00:00', '2019-11-8 18:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 19:00:00', '2019-11-8 19:59:59', 'Hard', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 20:00:00', '2019-11-8 20:59:59', 'Easy', 10, 10)");
     }
 
     @Override
