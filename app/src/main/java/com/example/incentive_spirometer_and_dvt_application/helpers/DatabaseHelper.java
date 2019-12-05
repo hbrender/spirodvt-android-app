@@ -371,9 +371,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(INCENTIVE_SPIROMETER_ID, patient.getIncentiveSpirometerId());
         values.put(DVT_ID, patient.getDvtId());
 
-        //values.put(INCENTIVE_SPIROMETER_ID, java.sql.Types.NULL);
-        //values.put(DVT_ID, Types.NULL);
-
         long result = db.insert(TABLE_PATIENT, null, values);
 
         return result != -1;
