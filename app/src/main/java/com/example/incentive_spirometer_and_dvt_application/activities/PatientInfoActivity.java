@@ -78,6 +78,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_patient_info);
 
+        getSupportActionBar().setDisplayShowTitleEnabled(false); // no title
+
         patientIdEditText = findViewById(R.id.patientIdEditText);
         firstNameEditText = findViewById(R.id.firstNameEditText);
         lastNameEditText = findViewById(R.id.lastNameEditText);

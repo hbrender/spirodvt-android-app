@@ -37,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        getSupportActionBar().setDisplayShowTitleEnabled(false); // no title
+
         final EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         final EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
