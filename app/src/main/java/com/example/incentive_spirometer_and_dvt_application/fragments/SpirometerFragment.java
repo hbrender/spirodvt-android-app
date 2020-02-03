@@ -40,6 +40,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     private List<BarEntry> oneDaySpData;
     private List<BarEntry> twoDaySpData;
     private List<BarEntry> threeDaySpData;
+    private Button oneDayButton;
+    private Button twoDayButton;
+    private Button threeDayButton;
     //private List<BarEntry> oneWeekSpData;
     private List<BarEntry> barEntryList;
     private ListView dataListView;
@@ -83,9 +86,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         View view = inflater.inflate(R.layout.activity_patient_spirometer_info, container, false);
 
-        Button oneDayButton = (Button) view.findViewById(R.id.one_day_button);
-        Button twoDayButton = (Button) view.findViewById(R.id.two_day_button);
-        Button threeDayButton = (Button) view.findViewById(R.id.three_day_button);
+        oneDayButton = (Button) view.findViewById(R.id.one_day_button);
+        twoDayButton = (Button) view.findViewById(R.id.two_day_button);
+        threeDayButton = (Button) view.findViewById(R.id.three_day_button);
         //Button weekButton = (Button) view.findViewById(R.id.one_week_button);
         graph = (BarChart) view.findViewById((R.id.patient_spirometer_graph));
         dataListView = (ListView) view.findViewById(R.id.patient_spirometer_table);
@@ -115,16 +118,25 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 Log.d(TAG, "onClick: one day button clicked");
                 timeShown = SpirometerFragment.TimeShown.ONEDAY;
                 barEntryList = oneDaySpData;
+                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
+                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
+                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 break;
             case R.id.two_day_button:
                 Log.d(TAG, "onClick: two day button clicked");
                 timeShown = SpirometerFragment.TimeShown.TWODAYS;
                 barEntryList = twoDaySpData;
+                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
+                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
+                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 break;
             case R.id.three_day_button:
                 Log.d(TAG, "onClick: three day button clicked");
                 timeShown = SpirometerFragment.TimeShown.THREEDAYS;
                 barEntryList = threeDaySpData;
+                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
+                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
+                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 break;
 //            case R.id.one_week_button:
 //                Log.d(TAG, "onClick: week button clicked");
