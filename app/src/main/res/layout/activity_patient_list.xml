@@ -2,24 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/masterLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.PatientListActivity">
 
 
-    <SearchView
-        android:id="@+id/patientSearch"
-        android:hint="@string/search"
+    <LinearLayout
+        android:id="@+id/searchLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_weight=".1"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Enter Patient's Last Name"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/searchSubmit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:onClick="onClick"
+            android:text="Search" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/patientListView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1"
-        />
+        android:layout_weight="5" />
 
 </LinearLayout>

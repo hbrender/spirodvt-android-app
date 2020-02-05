@@ -23,6 +23,7 @@
     <string name="title_incorrect_password">Incorrect Password</string>
     <string name="message_incorrect_password">The password you entered does not exist. Please try again.</string>
     <string name="try_again">Try Again</string>
+    <string name="invalid_search">No patients of that last name. Please try again.</string>
 
 
     <!-- Spirometer info screen strings -->

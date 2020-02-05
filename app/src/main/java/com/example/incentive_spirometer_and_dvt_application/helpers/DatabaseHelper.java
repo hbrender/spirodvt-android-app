@@ -459,6 +459,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return patient;
     }
 
+
+    /**
+     * searches for a particular patient using last name
+     * @param patientLastName
+     * @param doctorId
+     * @return a cursor to the DB entries with the specifies users
+     */
+    public Cursor searchForPatients(String patientLastName, int doctorId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT p.* FROM "
+                + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID
+                + " AND p." + LAST_NAME + " = '" + patientLastName + "' COLLATE NOCASE";
+
+        Log.d(TAG, "searchForPatients: " + query);
+
+        Cursor cursor = db.rawQuery(query, null);
+        Log.d(TAG, "searchForPatients: " + (cursor == null));
+        Log.d(TAG, "searchForPatients: " + cursor.getCount());
+
+        return cursor;
+    }
+
     /**
      * Delete a given patient and their devices and their association with their doctor
      * @param patientId the id matching the patient to delete

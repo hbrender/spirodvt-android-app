@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -20,12 +22,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.google.android.material.snackbar.Snackbar;
 
 /**
  * Patient list activity of the application
@@ -33,7 +39,7 @@ import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelp
  * to get more detail, delete multiple patients from the list at a time, and also sign out or add a
  * patient to their list.
  *
- * @author(s) Hanna Brender
+ * @author(s) Hanna Brender, Cole deSilva
  */
 
 public class PatientListActivity extends AppCompatActivity {
@@ -55,8 +61,35 @@ public class PatientListActivity extends AppCompatActivity {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
 
+        // this chunk of code makes it so the search button is only enabled when there is text in the edit text
+        // otherwise the search button is disabled
+        // when the user erases all text in the edit text, the default getallpatients cursor is used to populate the list view
+        final Button searchSubmit = (Button) findViewById(R.id.searchSubmit);
+        final EditText searchEditText = (EditText) findViewById(R.id.searchEditText);
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String searchInput = searchEditText.getText().toString().trim();
+                searchSubmit.setEnabled(!searchInput.isEmpty());
+
+                if(searchInput.isEmpty()) {
+                    updatePatientListView();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         createPatientsList();
-    }
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -93,6 +126,7 @@ public class PatientListActivity extends AppCompatActivity {
         // set adapter for patient list
         patientListView = (ListView) findViewById(R.id.patientListView);
         Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+
         simpleCursorAdapter = new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_activated_2,
@@ -102,8 +136,8 @@ public class PatientListActivity extends AppCompatActivity {
                 0) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
-
+                // so that if you search the cursor doesnt default to the get all patients cursor
+                Cursor cursor = this.getCursor();
                 View view = super.getView(position, convertView, parent);
 
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
@@ -114,7 +148,6 @@ public class PatientListActivity extends AppCompatActivity {
                             + ", " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
                     text2.setText("ID: " + cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
                 }
-
                 return view;
             }
         };
@@ -191,6 +224,34 @@ public class PatientListActivity extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * on click listener for the search button
+     * @param v the search button
+     */
+    public void onClick(View v) {
+        // only does anything if it's the search button that is pressed
+        if (v.getId() == R.id.searchSubmit) {
+            // gets the edittext input
+            EditText userInput = (EditText) findViewById(R.id.searchEditText);
+            String patientLastName = userInput.getText().toString();
+
+            // searches the database using the input
+            Cursor results = databaseHelper.searchForPatients(patientLastName, doctorId);
+
+            // if the results are not empty then change the cursor and update
+            if (results != null && results.getCount() > 0) {
+                results.moveToFirst();
+                String name = results.getString(results.getColumnIndex("lastName"));
+                simpleCursorAdapter.changeCursor(results);
+            } else { // if the results are empty then use a snackbar to tell user there were no results
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.masterLinearLayout);
+                Snackbar snackbar = Snackbar.make(linearLayout, getString(R.string.invalid_search), Snackbar.LENGTH_LONG);
+                snackbar.show();
+            }
+        }
+    }
+
     /**
      * Updates the adapter and list view
      */
@@ -202,6 +263,7 @@ public class PatientListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume: ");
         updatePatientListView();
     }
 
