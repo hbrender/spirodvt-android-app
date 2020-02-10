@@ -307,7 +307,8 @@ public class PatientInfoActivity extends AppCompatActivity {
      * @return true if unique, false otherwise
      */
     public boolean uniquePatientId() {
-        if(!databaseHelper.patientExists(Integer.parseInt(patientIdEditText.getText().toString()))) {
+        // if patient with the ID doesn't exists in database or not creating a new patient (patientId != -1)
+        if(!databaseHelper.patientExists(Integer.parseInt(patientIdEditText.getText().toString())) || patientId != -1) {
             return true;
         }
 
