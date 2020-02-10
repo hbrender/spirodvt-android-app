@@ -17,9 +17,8 @@ public class DvtData implements Comparable <DvtData>{
 
     }
 
-    public DvtData(int id, Timestamp timestamp, Date startTime, Date endTime, String resistance, int numberOfReps, int repsCompleted) {
+    public DvtData(int id, Date startTime, Date endTime, String resistance, int numberOfReps, int repsCompleted) {
         this.id = id;
-        //this.timestamp = timestamp;
         this.startTime = startTime;
         this.endTime = endTime;
         this.resistance = resistance;

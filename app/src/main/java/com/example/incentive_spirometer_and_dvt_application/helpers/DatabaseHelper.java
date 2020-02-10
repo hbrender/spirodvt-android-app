@@ -721,6 +721,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return spirometerData;
     }
 
+    /**
+     * Insert a new Spirometer Datapoint
+     * @param isd a new datapoint to be added to the incentive spirometer data database
+     */
+    public void insertIncentiveSpirometerData(IncentiveSpirometerData isd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, isd.getId());
+        values.put(START_TIMESTAMP, isd.getStartTime().toString());
+        values.put(END_TIMESTAMP, isd.getEndTime().toString());
+        values.put(LUNG_VOLUME, isd.getLungVolume());
+        values.put(INHALATIONS_COMPLETED, isd.getInhalationsCompleted());
+        values.put(NUMBER_OF_INHALATIONS, isd.getNumberOfInhalations());
+
+        long result = db.insert(TABLE_INCENTIVE_SPIROMETER_DATA, null, values);
+    }
+
+
     // *************************** DVT Data table CRUD functions ****************************
 
     /**
@@ -770,6 +789,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dvtData;
     }
 
+    /**
+     * insert a new DVT datapoint
+     * @param dvtd the datapoint to be added to the table
+     */
+    public void insertDvtData (DvtData dvtd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, dvtd.getId());
+        values.put(START_TIMESTAMP, dvtd.getStartTime().toString());
+        values.put(END_TIMESTAMP, dvtd.getEndTime().toString());
+        values.put(RESISTANCE, dvtd.getResistance());
+        values.put(REPS_COMPLETED, dvtd.getRepsCompleted());
+        values.put(NUMBER_OF_REPS, dvtd.getNumberOfReps());
+
+        long result = db.insert(TABLE_DVT_DATA, null, values);
+
+    }
+
     // *************************** Incentive Spirometer table CRUD functions ****************************
 
     /**
@@ -782,6 +820,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT i.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER + " i"
                 + " WHERE p." + ID + " = " + patientId
                 + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getIncentiveSpirometer: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create incentive spirometer
+            IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+            incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+            incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
+
+            return incentiveSpirometer;
+        }
+        return null;
+    }
+
+    /**
+     * Get incentive spirometer by spirometer id
+     * @param spirometerId id of the desired spriometer
+     * @return data for the desired spirometer
+     */
+    public IncentiveSpirometer getIncentiveSpirometerBySpirometerId (int spirometerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT i.* FROM " + TABLE_INCENTIVE_SPIROMETER + " i"
+                + " WHERE i." + ID + " = " + spirometerId;
 
         Cursor c = db.rawQuery(query, null);
 
@@ -873,6 +939,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(incentiveSpirometer.getId()) });
     }
 
+
     // *************************** Dvt table CRUD functions ****************************
 
     /**
@@ -885,6 +952,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT d.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT + " d"
                 + " WHERE p." + ID + " = " + patientId
                 + " AND p." + DVT_ID + " = d." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getDvt: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create dvt
+            Dvt dvt = new Dvt();
+            dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
+            dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
+
+            return dvt;
+        }
+        return null;
+    }
+
+    /**
+     * return the desired data for a given dvt id
+     * @param dvtId id of the dvt device of interest
+     * @return the full data of the dvt device of interest
+     */
+    public Dvt getDvtByDvtId (int dvtId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT d.* FROM " + TABLE_DVT + " d"
+                + " WHERE d." + ID + " = " + dvtId;
 
         Cursor c = db.rawQuery(query, null);
 
