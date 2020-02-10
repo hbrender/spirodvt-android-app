@@ -1,3 +1,8 @@
+/**
+ * Coded by: Kelsey Lally
+ * Description: creates a graph of patient data as pulled from the database. Also shows a scrollable
+ * table of the same data
+ */
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
 import android.os.Bundle;
@@ -118,6 +123,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 Log.d(TAG, "onClick: one day button clicked");
                 timeShown = SpirometerFragment.TimeShown.ONEDAY;
                 barEntryList = oneDaySpData;
+                //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
@@ -126,6 +132,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 Log.d(TAG, "onClick: two day button clicked");
                 timeShown = SpirometerFragment.TimeShown.TWODAYS;
                 barEntryList = twoDaySpData;
+                //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
@@ -134,6 +141,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 Log.d(TAG, "onClick: three day button clicked");
                 timeShown = SpirometerFragment.TimeShown.THREEDAYS;
                 barEntryList = threeDaySpData;
+                //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
