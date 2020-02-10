@@ -178,8 +178,8 @@ public class PatientInfoActivity extends AppCompatActivity {
      * @return true if able to save patient info with not errors, false otherwise
      */
     public boolean savePatient() {
-        // if no errors in user input
-        if (!hasEmptyInput()) {
+        // if no errors in user input and the patient id is unique
+        if (!hasEmptyInput() && uniquePatientId()) {
             // get info from view components
             Patient patient = getPatientInfo();
             IncentiveSpirometer incentiveSpirometer = getSpirometerInfo();
@@ -300,6 +300,26 @@ public class PatientInfoActivity extends AppCompatActivity {
             }
         }
         return hasInputErrors;
+    }
+
+    /**
+     * Checks that the typed in patient id is unique
+     * @return true if unique, false otherwise
+     */
+    public boolean uniquePatientId() {
+        if(!databaseHelper.patientExists(Integer.parseInt(patientIdEditText.getText().toString()))) {
+            return true;
+        }
+
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientInfoActivity.this);
+        alertBuilder.setTitle(getString(R.string.not_unique_id))
+                .setMessage(getString(R.string.not_unique_id_message))
+                .setPositiveButton(getString(R.string.ok), null);
+        alertBuilder.show();
+
+        patientIdEditText.setError("Enter a unique id");
+
+        return false;
     }
 
     /**

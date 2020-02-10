@@ -459,6 +459,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return patient;
     }
 
+    /**
+     * Check if a patient with a given id exists
+     * @param patientId patient
+     * @return true if patient exists, false otherwise
+     */
+    public boolean patientExists(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "patientExists: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            Log.d(TAG, "uniquePatientId: patient exists true");
+            return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * searches for a particular patient using last name
