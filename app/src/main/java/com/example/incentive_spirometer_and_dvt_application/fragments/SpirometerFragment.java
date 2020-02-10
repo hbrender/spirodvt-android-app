@@ -57,9 +57,6 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     private int patientId;
     private int doctorId;
 
-    private SpirometerFragment.TimeShown timeShown;
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,20 +94,17 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         oneDayButton = (Button) view.findViewById(R.id.one_day_button);
         twoDayButton = (Button) view.findViewById(R.id.two_day_button);
         threeDayButton = (Button) view.findViewById(R.id.three_day_button);
-        //Button weekButton = (Button) view.findViewById(R.id.one_week_button);
         graph = (BarChart) view.findViewById((R.id.patient_spirometer_graph));
         dataListView = (ListView) view.findViewById(R.id.patient_spirometer_table);
 
         oneDayButton.setOnClickListener(this);
         twoDayButton.setOnClickListener(this);
         threeDayButton.setOnClickListener(this);
-        //weekButton.setOnClickListener(this);
 
         databaseHelper = new DatabaseHelper(getContext());
 
         shownEntries = new ArrayList<>();
 
-        timeShown = SpirometerFragment.TimeShown.ONEDAY;
 
         createDataLists();
         drawGraph();
@@ -124,7 +118,6 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         switch (view.getId()) {
             case R.id.one_day_button:
                 Log.d(TAG, "onClick: one day button clicked");
-                timeShown = SpirometerFragment.TimeShown.ONEDAY;
                 setDataWindow(24);
                 //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
@@ -133,7 +126,6 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.two_day_button:
                 Log.d(TAG, "onClick: two day button clicked");
-                timeShown = SpirometerFragment.TimeShown.TWODAYS;
                 setDataWindow(48);
                 //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
@@ -142,18 +134,12 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.three_day_button:
                 Log.d(TAG, "onClick: three day button clicked");
-                timeShown = SpirometerFragment.TimeShown.THREEDAYS;
                 setDataWindow(72);
                 //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 break;
-//            case R.id.one_week_button:
-//                Log.d(TAG, "onClick: week button clicked");
-//                timeShown = SpirometerFragment.TimeShown.ONEWEEK;
-//                shownEntries = oneWeekSpData;
-//                break;
         }
         drawGraph();
     }
@@ -164,7 +150,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     private void createDataLists() {
         allSpData = new ArrayList<>();
         allBarEntries = new ArrayList<>();
-        //Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
+
         allSpData = databaseHelper.getPatinetSpirometerData(patientId);
 
         Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
@@ -259,12 +245,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         IMarker marker = new CustomMarkerView(getContext(), R.layout.graph_labels, allSpData);
         graph.setMarker(marker);
+        graph.setScaleEnabled(false);
 
         graph.setData(data);
         graph.invalidate();
-    }
-
-    enum TimeShown {
-        ONEDAY, TWODAYS, THREEDAYS, ONEWEEK;
     }
 }
