@@ -9,31 +9,11 @@
     tools:context=".activities.PatientListActivity">
 
 
-    <LinearLayout
-        android:id="@+id/searchLayout"
+    <SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".1"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/searchEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="Enter Patient's Last Name"
-            android:inputType="textPersonName" />
-
-        <Button
-            android:id="@+id/searchSubmit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:onClick="onClick"
-            android:text="Search" />
-    </LinearLayout>
+        app:showAsAction="always"/>
 
     <ListView
         android:id="@+id/patientListView"
