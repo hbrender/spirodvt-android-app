@@ -91,5 +91,7 @@
     <string name="dvt_deleted">DVT Prevention Device deleted</string>
     <string name="not_unique_id">Nonunique patient ID</string>
     <string name="not_unique_id_message">A patient with this ID already exists. Please enter a unique patient ID.</string>
+    <string name="not_unique_device_id">Nonunique device ID</string>
+    <string name="not_unique_device_id_message">A device with this ID has already been used by a patient. Please enter a device ID that is unused.</string>
 
 </resources>

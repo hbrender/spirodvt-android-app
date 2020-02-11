@@ -460,6 +460,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Returns the patient's id who has a given incentive spirometer id
+     * @param incentiveSpirometerId
+     * @return patient id
+     */
+    public int getPatientByIncentiveSpriometerId(int incentiveSpirometerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + INCENTIVE_SPIROMETER_ID + " = " + incentiveSpirometerId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getPatientByIncentiveSpriometerId: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            return c.getInt(c.getColumnIndex(ID));
+        }
+        return -1;
+    }
+
+    /**
+     * Returns the patient's id who has a given dvt id
+     * @param dvtId
+     * @return patient id
+     */
+    public int getPatientByDvtId(int dvtId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + DVT_ID + " = " + dvtId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getPatientByDvtId: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            return c.getInt(c.getColumnIndex(ID));
+        }
+        return -1;
+    }
+
+    /**
      * Check if a patient with a given id exists
      * @param patientId patient
      * @return true if patient exists, false otherwise
@@ -938,6 +976,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
 
         if (c != null && c.getCount() > 0) {
+            Log.d(TAG, "incentiveSpirometerExists: true");
             return true;
         }
         return false;

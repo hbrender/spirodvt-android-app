@@ -185,46 +185,63 @@ public class PatientInfoActivity extends AppCompatActivity {
             IncentiveSpirometer incentiveSpirometer = getSpirometerInfo();
             Dvt dvt = getDvtInfo();
 
-            disablePatientEdit(); // change edit texts to non-editable
+            if (incentiveSpirometer != null) {
+                if (databaseHelper.incentiveSpirometerExists(incentiveSpirometer)) {
+                    // make sure device id has not already been used
+                    if (databaseHelper.getPatientByIncentiveSpriometerId(incentiveSpirometer.getId()) != patientId) {
+                        spirometerIdEditText.setError("Enter a unique id");
+
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientInfoActivity.this);
+                        alertBuilder.setTitle(getString(R.string.not_unique_device_id))
+                                .setMessage(getString(R.string.not_unique_device_id_message))
+                                .setPositiveButton(getString(R.string.ok), null);
+                        alertBuilder.show();
+
+                        return false;
+                    } else if (patientId != -1) {
+                        databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
+                    }
+                } else {
+                    databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                }
+            }
+
+            if (dvt != null) {
+                if (databaseHelper.dvtExists(dvt)) {
+                    // make sure device id has not already been used
+                    if (databaseHelper.getPatientByDvtId(dvt.getId()) != patientId) {
+                        dvtIdEditText.setError("Enter a unique id");
+
+                        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PatientInfoActivity.this);
+                        alertBuilder.setTitle(getString(R.string.not_unique_device_id))
+                                .setMessage(getString(R.string.not_unique_device_id_message))
+                                .setPositiveButton(getString(R.string.ok), null);
+                        alertBuilder.show();
+
+                        return false;
+                    } else if (patientId != -1) {
+                        databaseHelper.updateDvt(dvt);
+                    }
+                } else {
+                    databaseHelper.insertDvt(dvt);
+                }
+            }
 
             if (patientId != -1) { // editing existing patient info
-                if (incentiveSpirometer != null) {
-                    // check if need to update existing device or insert new device
-                    if (!databaseHelper.incentiveSpirometerExists(incentiveSpirometer)) {
-                        databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
-                    } else {
-                        int result1 = databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
-                    }
-                }
-
-                if (dvt != null) {
-                    // check if need to update existing device or insert new device
-                    if (!databaseHelper.dvtExists(dvt)) {
-                        databaseHelper.insertDvt(dvt);
-                    } else {
-                        int result2 = databaseHelper.updateDvt(dvt);
-                    }
-                }
-
-                int result3 = databaseHelper.updatePatient(patient);
-            } else {
+                databaseHelper.updatePatient(patient);
+            } else { // creating new patient
                 patientId = patient.getId();
-                boolean result1, result2, result3, result4;
-
-                if (incentiveSpirometer != null) {
-                    result1 = databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
-                }
-                if (dvt != null) {
-                    result2 = databaseHelper.insertDvt(dvt);
-                }
-                result3 = databaseHelper.insertPatient(patient);
-                result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
+                boolean result3 = databaseHelper.insertPatient(patient);
+                boolean result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
 
                 if (!result3 || !result4) {
                     Log.d(TAG, "savePatient: SQL Error inserting patient");
                     return false;
                 }
             }
+
+            disablePatientEdit(); // change edit texts to non-editable
+
             // alert that a patient's info has been saved
             GridLayout gridLayout = findViewById(R.id.gridLayout);
             Snackbar snackbar = Snackbar.make(gridLayout, getString(R.string.patient_saved), Snackbar.LENGTH_LONG);
@@ -550,6 +567,10 @@ public class PatientInfoActivity extends AppCompatActivity {
                     Dvt dvt = databaseHelper.getDvt(patientId);
                     setPatientInfo(patient, incentiveSpirometer, dvt);
                 }
+
+                // remove error messages if user cancels editing
+                spirometerIdEditText.setError(null);
+                dvtIdEditText.setError(null);
 
                 editMenuItem.setVisible(true);
                 saveMenuItem.setVisible(false);
