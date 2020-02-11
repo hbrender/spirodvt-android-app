@@ -278,7 +278,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 19:00:00', '2019-11-10 19:59:59', 2000, 10, 9)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 20:00:00', '2019-11-10 20:59:59', 2000, 10, 10)");
 
-
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 10:58:00', '2019-11-10 11:57:59', 2500, 10, 9)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 11:58:00', '2019-11-10 12:57:59', 2500, 10, 8)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 12:58:00', '2019-11-10 13:57:59', 2500, 10, 7)");
@@ -539,36 +538,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public void getOldPatients(int doctorId) {
+    /**
+     * Returns a list of patients that are old (they have used a device for more than 2 weeks)
+     * @param doctorId
+     * @return list of patient ids
+     */
+    public List<Integer> getOldPatients(int doctorId) {
+        List<Integer> patientIds = new ArrayList<Integer>();
         SQLiteDatabase db = this.getWritableDatabase();
-        /*String query = "SELECT p." + ID
-                + "FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
-                + TABLE_INCENTIVE_SPIROMETER_DATA + " isd"
+        String query = "SELECT p." + ID
+                + ", (julianday(MAX(a." + END_TIMESTAMP + ")) - julianday(MIN(a." + START_TIMESTAMP + "))) AS difference"
+                + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
+                + TABLE_INCENTIVE_SPIROMETER_DATA + " a, " + TABLE_INCENTIVE_SPIROMETER_DATA + " b"
                 + " WHERE dp." + DOCTOR_ID + " = " + doctorId
                 + " AND dp." + PATIENT_ID + " = p." + ID
-                + " AND p." + INCENTIVE_SPIROMETER_ID + " = isd." + ID
-                + " (SELECT min(" + START_TIMESTAMP + ")"
-                + " FROM " + TABLE_INCENTIVE_SPIROMETER_DATA + ")"
-                + " FROM " + TABLE_PATIENT
-                + " WHERE " + ID + " = " + patientId + ")";*/
+                + " AND a." + ID + " = b." + ID
+                + " AND p." + INCENTIVE_SPIROMETER_ID + " = a." + ID
+                + " GROUP BY p." + ID
+                + " HAVING difference > 14";
 
+        Log.d(TAG, "getOldPatients: " + query);
 
-        String query1 = "SELECT MIN(" + START_TIMESTAMP + ")"
-                + " FROM " + TABLE_INCENTIVE_SPIROMETER_DATA;
-
-        Cursor c = db.rawQuery(query1, null);
-
+        Cursor c = db.rawQuery(query, null);
 
         if (c.moveToFirst()) {
             do {
-                Log.d(TAG, "getOldPatients: " + c.getInt(c.getColumnIndex(START_TIMESTAMP)));
+                patientIds.add(c.getInt(c.getColumnIndex(ID)));
             } while (c.moveToNext());
         }
 
-
+        return patientIds;
     }
-
-
 
     /**
      * Delete a given patient and their devices and their association with their doctor

@@ -36,6 +36,8 @@ import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
+
 /**
  * Patient list activity of the application
  * Doctors will be able to see a list of patients they are monitoring. They can selected patients
@@ -64,7 +66,11 @@ public class PatientListActivity extends AppCompatActivity {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
 
-        //databaseHelper.getOldPatients(doctorId);
+        // remove old patients
+        List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
+        for (Integer i : oldPatients) {
+            databaseHelper.deletePatientById(i);
+        }
 
         createPatientsList();
 
