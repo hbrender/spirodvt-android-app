@@ -64,6 +64,8 @@ public class PatientListActivity extends AppCompatActivity {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
 
+        //databaseHelper.getOldPatients(doctorId);
+
         createPatientsList();
 
         final SearchView searchView = findViewById(R.id.searchView);
