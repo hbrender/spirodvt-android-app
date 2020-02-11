@@ -233,19 +233,18 @@ public class PatientListActivity extends AppCompatActivity {
         // only does anything if it's the search button that is pressed
         if (v.getId() == R.id.searchSubmit) {
             // gets the edittext input
-            EditText userInput = (EditText) findViewById(R.id.searchEditText);
-            String patientLastName = userInput.getText().toString();
+            EditText searchEditText = findViewById(R.id.searchEditText);
+            String searchInput = searchEditText.getText().toString();
 
             // searches the database using the input
-            Cursor results = databaseHelper.searchForPatients(patientLastName, doctorId);
+            Cursor results = databaseHelper.getPatientListByKeyword(searchInput, doctorId);
 
             // if the results are not empty then change the cursor and update
             if (results != null && results.getCount() > 0) {
                 results.moveToFirst();
-                String name = results.getString(results.getColumnIndex("lastName"));
                 simpleCursorAdapter.changeCursor(results);
             } else { // if the results are empty then use a snackbar to tell user there were no results
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.masterLinearLayout);
+                LinearLayout linearLayout = findViewById(R.id.masterLinearLayout);
                 Snackbar snackbar = Snackbar.make(linearLayout, getString(R.string.invalid_search), Snackbar.LENGTH_LONG);
                 snackbar.show();
             }
