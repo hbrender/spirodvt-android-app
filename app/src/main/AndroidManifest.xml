@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.incentive_spirometer_and_dvt_application">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_spiro_dvt"
@@ -9,6 +12,7 @@
         android:roundIcon="@mipmap/ic_spiro_dvt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.BluetoothTestActivity"></activity>
         <activity
             android:name=".activities.DeviceDataActivity"
             android:label="@string/title_activity_device_info"

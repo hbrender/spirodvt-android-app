@@ -462,20 +462,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * searches for a particular patient using last name
-     * @param patientLastName
+     * @param patientId
      * @param doctorId
      * @return a cursor to the DB entries with the specifies users
      */
-    public Cursor searchForPatients(String patientLastName, int doctorId) {
+    public Cursor searchForPatient(int patientId, int doctorId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT p.* FROM "
                 + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
                 + " WHERE dp." + DOCTOR_ID + " = " + doctorId
                 + " AND dp." + PATIENT_ID + " = p." + ID
-                + " AND p." + LAST_NAME + " = '" + patientLastName + "' COLLATE NOCASE";
+                + " AND p." + ID + " = '" + patientId + "'";
 
         Log.d(TAG, "searchForPatients: " + query);
-
         Cursor cursor = db.rawQuery(query, null);
         Log.d(TAG, "searchForPatients: " + (cursor == null));
         Log.d(TAG, "searchForPatients: " + cursor.getCount());
