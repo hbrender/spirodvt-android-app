@@ -236,33 +236,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(95, 1, 10)");
 
         // 3 days
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 08:00:00', '2019-11-8 08:59:59', 2000, 10, 3)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 09:00:00', '2019-11-8 09:59:59', 2000, 10, 4)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 10:00:00', '2019-11-8 10:59:59', 2000, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 11:00:00', '2019-11-8 11:59:59', 2000, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 12:00:00', '2019-11-8 12:59:59', 2000, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 13:00:00', '2019-11-8 13:59:59', 2000, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 14:00:00', '2019-11-8 14:59:59', 2000, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 15:00:00', '2019-11-8 15:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 2000, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 08:00:00', '2019-11-08 08:59:59', 2000, 10, 3)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 09:00:00', '2019-11-08 09:59:59', 2000, 10, 4)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 10:00:00', '2019-11-08 10:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 11:00:00', '2019-11-08 11:59:59', 2000, 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 12:00:00', '2019-11-08 12:59:59', 2000, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 13:00:00', '2019-11-08 13:59:59', 2000, 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 14:00:00', '2019-11-08 14:59:59', 2000, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 15:00:00', '2019-11-08 15:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 16:00:00', '2019-11-08 16:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 17:00:00', '2019-11-08 17:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 18:00:00', '2019-11-08 18:59:59', 2000, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 19:00:00', '2019-11-08 19:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 20:00:00', '2019-11-08 20:59:59', 2000, 10, 10)");
 
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 08:00:00', '2019-11-9 08:59:59', 2000, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 09:00:00', '2019-11-9 09:59:59', 2000, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 10:00:00', '2019-11-9 10:59:59', 2000, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 11:00:00', '2019-11-9 11:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 12:00:00', '2019-11-9 12:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 13:00:00', '2019-11-9 13:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 14:00:00', '2019-11-9 14:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 15:00:00', '2019-11-9 15:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 16:00:00', '2019-11-9 16:59:59', 2000, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 17:00:00', '2019-11-9 17:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 18:00:00', '2019-11-9 18:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 19:00:00', '2019-11-9 19:59:59', 2000, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-9 20:00:00', '2019-11-9 20:59:59', 2000, 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 08:00:00', '2019-11-09 08:59:59', 2000, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 09:00:00', '2019-11-09 09:59:59', 2000, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 10:00:00', '2019-11-09 10:59:59', 2000, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 11:00:00', '2019-11-09 11:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 12:00:00', '2019-11-09 12:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 13:00:00', '2019-11-09 13:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 14:00:00', '2019-11-09 14:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 15:00:00', '2019-11-09 15:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 16:00:00', '2019-11-09 16:59:59', 2000, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 17:00:00', '2019-11-09 17:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 18:00:00', '2019-11-09 18:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 19:00:00', '2019-11-09 19:59:59', 2000, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-09 20:00:00', '2019-11-09 20:59:59', 2000, 10, 6)");
 
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 08:00:00', '2019-11-10 08:59:59', 2000, 10, 6)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 09:00:00', '2019-11-10 09:59:59', 2000, 10, 10)");
@@ -278,17 +278,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 19:00:00', '2019-11-10 19:59:59', 2000, 10, 9)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-10 20:00:00', '2019-11-10 20:59:59', 2000, 10, 10)");
 
-
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 10:58:00', '2019-11-10 11:57:59', 2500, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 11:58:00', '2019-11-10 12:57:59', 2500, 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 12:58:00', '2019-11-10 13:57:59', 2500, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-8 13:58:00', '2019-11-10 14:57:59', 2500, 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 10:58:00', '2019-11-10 11:57:59', 1500, 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 11:58:00', '2019-11-10 12:57:59', 1500, 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 12:58:00', '2019-11-10 13:57:59', 1500, 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 13:58:00', '2019-11-10 14:57:59', 1500, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 14:58:00', '2019-11-10 15:57:59', 1500, 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-8 15:58:00', '2019-11-10 16:57:59', 1500, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 10:58:00', '2019-11-10 11:57:59', 2500, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 11:58:00', '2019-11-10 12:57:59', 2500, 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 12:58:00', '2019-11-10 13:57:59', 2500, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(11, '2019-11-08 13:58:00', '2019-11-10 14:57:59', 2500, 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-08 10:58:00', '2019-11-10 11:57:59', 1500, 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-08 11:58:00', '2019-11-10 12:57:59', 1500, 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-08 12:58:00', '2019-11-10 13:57:59', 1500, 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-08 13:58:00', '2019-11-10 14:57:59', 1500, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-08 14:58:00', '2019-11-10 15:57:59', 1500, 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(12, '2019-11-08 15:58:00', '2019-11-10 16:57:59', 1500, 10, 10)");
 
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 10:00:00', '2019-11-10 10:59:59', 'Easy', 10, 5)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 11:00:00', '2019-11-10 11:59:59', 'Easy', 10, 6)");
@@ -302,35 +301,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 19:00:00', '2019-11-10 19:59:59', 'Medium', 10, 6)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-10 20:00:00', '2019-11-10 20:59:59', 'Easy', 10, 5)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 10:00:00', '2019-11-9 10:59:59', 'Easy', 10, 3)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 11:00:00', '2019-11-9 11:59:59', 'Medium', 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 12:00:00', '2019-11-9 12:59:59', 'Easy', 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 13:00:00', '2019-11-9 13:59:59', 'Easy', 10, 7)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 14:00:00', '2019-11-9 14:59:59', 'Hard', 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 15:00:00', '2019-11-9 15:59:59', 'Medium', 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 16:00:00', '2019-11-9 16:59:59', 'Medium', 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 17:00:00', '2019-11-9 17:59:59', 'Easy', 10, 11)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 18:00:00', '2019-11-9 18:59:59', 'Easy', 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 19:00:00', '2019-11-9 19:59:59', 'Hard', 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-9 20:00:00', '2019-11-9 20:59:59', 'Easy', 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 10:00:00', '2019-11-09 10:59:59', 'Easy', 10, 3)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 11:00:00', '2019-11-09 11:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 12:00:00', '2019-11-09 12:59:59', 'Easy', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 13:00:00', '2019-11-09 13:59:59', 'Easy', 10, 7)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 14:00:00', '2019-11-09 14:59:59', 'Hard', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 15:00:00', '2019-11-09 15:59:59', 'Medium', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 16:00:00', '2019-11-09 16:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 17:00:00', '2019-11-09 17:59:59', 'Easy', 10, 11)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 18:00:00', '2019-11-09 18:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 19:00:00', '2019-11-09 19:59:59', 'Hard', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-09 20:00:00', '2019-11-09 20:59:59', 'Easy', 10, 7)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 10:00:00', '2019-11-8 10:59:59', 'Medium', 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 11:00:00', '2019-11-8 11:59:59', 'Easy', 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 12:00:00', '2019-11-8 12:59:59', 'Easy', 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 13:00:00', '2019-11-8 13:59:59', 'Hard', 10, 6)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 14:00:00', '2019-11-8 14:59:59', 'Medium', 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 15:00:00', '2019-11-8 15:59:59', 'Medium', 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 16:00:00', '2019-11-8 16:59:59', 'Easy', 10, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 17:00:00', '2019-11-8 17:59:59', 'Easy', 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 18:00:00', '2019-11-8 18:59:59', 'Easy', 10, 11)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 19:00:00', '2019-11-8 19:59:59', 'Hard', 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-8 20:00:00', '2019-11-8 20:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 10:00:00', '2019-11-08 10:59:59', 'Medium', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 11:00:00', '2019-11-08 11:59:59', 'Easy', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 12:00:00', '2019-11-08 12:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 13:00:00', '2019-11-08 13:59:59', 'Hard', 10, 6)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 14:00:00', '2019-11-08 14:59:59', 'Medium', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 15:00:00', '2019-11-08 15:59:59', 'Medium', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 16:00:00', '2019-11-08 16:59:59', 'Easy', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 17:00:00', '2019-11-08 17:59:59', 'Easy', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 18:00:00', '2019-11-08 18:59:59', 'Easy', 10, 11)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 19:00:00', '2019-11-08 19:59:59', 'Hard', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2019-11-08 20:00:00', '2019-11-08 20:59:59', 'Medium', 10, 10)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 16:00:00', '2019-11-8 16:59:59', 'Easy', 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 17:00:00', '2019-11-8 17:59:59', 'Medium', 10, 5)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 18:00:00', '2019-11-8 18:59:59', 'Easy', 10, 8)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 19:00:00', '2019-11-8 19:59:59', 'Hard', 10, 9)");
-        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 20:00:00', '2019-11-8 20:59:59', 'Easy', 10, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 16:00:00', '2019-11-08 16:59:59', 'Easy', 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 17:00:00', '2019-11-08 17:59:59', 'Medium', 10, 5)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 18:00:00', '2019-11-08 18:59:59', 'Easy', 10, 8)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 19:00:00', '2019-11-08 19:59:59', 'Hard', 10, 9)");
+        db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(91, '2019-11-10 20:00:00', '2019-11-08 20:59:59', 'Easy', 10, 10)");
     }
 
     @Override
@@ -459,27 +458,116 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return patient;
     }
 
+    /**
+     * Returns the patient's id who has a given incentive spirometer id
+     * @param incentiveSpirometerId
+     * @return patient id
+     */
+    public int getPatientByIncentiveSpriometerId(int incentiveSpirometerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + INCENTIVE_SPIROMETER_ID + " = " + incentiveSpirometerId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getPatientByIncentiveSpriometerId: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            return c.getInt(c.getColumnIndex(ID));
+        }
+        return -1;
+    }
 
     /**
-     * searches for a particular patient using last name
-     * @param patientId
+     * Returns the patient's id who has a given dvt id
+     * @param dvtId
+     * @return patient id
+     */
+    public int getPatientByDvtId(int dvtId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + DVT_ID + " = " + dvtId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getPatientByDvtId: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            return c.getInt(c.getColumnIndex(ID));
+        }
+        return -1;
+    }
+
+    /**
+     * Check if a patient with a given id exists
+     * @param patientId patient
+     * @return true if patient exists, false otherwise
+     */
+    public boolean patientExists(int patientId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "patientExists: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Searches for a particular patient using a key word
+     * @param searchKey
      * @param doctorId
      * @return a cursor to the DB entries with the specifies users
      */
-    public Cursor searchForPatient(int patientId, int doctorId) {
+    public Cursor getPatientListByKeyword(String searchKey, int doctorId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT p.* FROM "
+        String query =  "SELECT p.* FROM "
                 + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
                 + " WHERE dp." + DOCTOR_ID + " = " + doctorId
                 + " AND dp." + PATIENT_ID + " = p." + ID
-                + " AND p." + ID + " = '" + patientId + "'";
+                + " AND (p." +  ID + "  LIKE  '" + searchKey + "%'" +
+                " OR p." + LAST_NAME + " LIKE '" + searchKey + "%'" +
+                " OR p." + FIRST_NAME + " LIKE '" + searchKey + "%')";
 
-        Log.d(TAG, "searchForPatients: " + query);
+        Log.d(TAG, "getPatientListByKeyword: " + query);
+
         Cursor cursor = db.rawQuery(query, null);
-        Log.d(TAG, "searchForPatients: " + (cursor == null));
-        Log.d(TAG, "searchForPatients: " + cursor.getCount());
 
         return cursor;
+    }
+
+    /**
+     * Returns a list of patients that are old (they have used a device for more than 2 weeks)
+     * @param doctorId
+     * @return list of patient ids
+     */
+    public List<Integer> getOldPatients(int doctorId) {
+        List<Integer> patientIds = new ArrayList<Integer>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT p." + ID
+                + ", (julianday(MAX(a." + END_TIMESTAMP + ")) - julianday(MIN(a." + START_TIMESTAMP + "))) AS difference"
+                + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
+                + TABLE_INCENTIVE_SPIROMETER_DATA + " a, " + TABLE_INCENTIVE_SPIROMETER_DATA + " b"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID
+                + " AND a." + ID + " = b." + ID
+                + " AND p." + INCENTIVE_SPIROMETER_ID + " = a." + ID
+                + " GROUP BY p." + ID
+                + " HAVING difference > 14";
+
+        Log.d(TAG, "getOldPatients: " + query);
+
+        Cursor c = db.rawQuery(query, null);
+
+        if (c.moveToFirst()) {
+            do {
+                patientIds.add(c.getInt(c.getColumnIndex(ID)));
+            } while (c.moveToNext());
+        }
+
+        return patientIds;
     }
 
     /**
@@ -720,6 +808,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return spirometerData;
     }
 
+    /**
+     * Insert a new Spirometer Datapoint
+     * @param isd a new datapoint to be added to the incentive spirometer data database
+     */
+    public void insertIncentiveSpirometerData(IncentiveSpirometerData isd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, isd.getId());
+        values.put(START_TIMESTAMP, isd.getStartTime().toString());
+        values.put(END_TIMESTAMP, isd.getEndTime().toString());
+        values.put(LUNG_VOLUME, isd.getLungVolume());
+        values.put(INHALATIONS_COMPLETED, isd.getInhalationsCompleted());
+        values.put(NUMBER_OF_INHALATIONS, isd.getNumberOfInhalations());
+
+        long result = db.insert(TABLE_INCENTIVE_SPIROMETER_DATA, null, values);
+    }
+
+
     // *************************** DVT Data table CRUD functions ****************************
 
     /**
@@ -769,6 +876,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return dvtData;
     }
 
+    /**
+     * insert a new DVT datapoint
+     * @param dvtd the datapoint to be added to the table
+     */
+    public void insertDvtData (DvtData dvtd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ID, dvtd.getId());
+        values.put(START_TIMESTAMP, dvtd.getStartTime().toString());
+        values.put(END_TIMESTAMP, dvtd.getEndTime().toString());
+        values.put(RESISTANCE, dvtd.getResistance());
+        values.put(REPS_COMPLETED, dvtd.getRepsCompleted());
+        values.put(NUMBER_OF_REPS, dvtd.getNumberOfReps());
+
+        long result = db.insert(TABLE_DVT_DATA, null, values);
+
+    }
+
     // *************************** Incentive Spirometer table CRUD functions ****************************
 
     /**
@@ -781,6 +907,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT i.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER + " i"
                 + " WHERE p." + ID + " = " + patientId
                 + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getIncentiveSpirometer: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create incentive spirometer
+            IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+            incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+            incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
+
+            return incentiveSpirometer;
+        }
+        return null;
+    }
+
+    /**
+     * Get incentive spirometer by spirometer id
+     * @param spirometerId id of the desired spriometer
+     * @return data for the desired spirometer
+     */
+    public IncentiveSpirometer getIncentiveSpirometerBySpirometerId (int spirometerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT i.* FROM " + TABLE_INCENTIVE_SPIROMETER + " i"
+                + " WHERE i." + ID + " = " + spirometerId;
 
         Cursor c = db.rawQuery(query, null);
 
@@ -851,6 +1005,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
 
         if (c != null && c.getCount() > 0) {
+            Log.d(TAG, "incentiveSpirometerExists: true");
             return true;
         }
         return false;
@@ -872,6 +1027,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(incentiveSpirometer.getId()) });
     }
 
+
     // *************************** Dvt table CRUD functions ****************************
 
     /**
@@ -884,6 +1040,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT d.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT + " d"
                 + " WHERE p." + ID + " = " + patientId
                 + " AND p." + DVT_ID + " = d." + ID;
+
+        Cursor c = db.rawQuery(query, null);
+
+        Log.d(TAG, "getDvt: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create dvt
+            Dvt dvt = new Dvt();
+            dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
+            dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
+
+            return dvt;
+        }
+        return null;
+    }
+
+    /**
+     * return the desired data for a given dvt id
+     * @param dvtId id of the dvt device of interest
+     * @return the full data of the dvt device of interest
+     */
+    public Dvt getDvtByDvtId (int dvtId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT d.* FROM " + TABLE_DVT + " d"
+                + " WHERE d." + ID + " = " + dvtId;
 
         Cursor c = db.rawQuery(query, null);
 

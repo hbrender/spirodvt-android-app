@@ -17,6 +17,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class dvt_graph_labels extends MarkerView{
     private TextView session;
@@ -42,13 +43,14 @@ public class dvt_graph_labels extends MarkerView{
             NumberFormat format2 = new DecimalFormat("#0");
             DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
-            String formatBreaths = "Avg. exercise/hour: " + formatter.format(e.getY());
+            DvtData dvtd = data.get((int) e.getX() - 1);
+            String formatExercises = "Avg. exercise/hour: " + formatter.format((double) dvtd.getRepsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
             String formatSession = "Session: " + format2.format(e.getX());
             String formatStart = "Start Time: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
             String formatEnd = "End Time:  " + dateFormat.format(data.get((int) e.getX() - 1).getEndTime());
 
             session.setText(formatSession);
-            breathRate.setText(formatBreaths);
+            breathRate.setText(formatExercises);
             start.setText(formatStart);
             end.setText(formatEnd);
 

@@ -24,14 +24,19 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 /**
  * Patient list activity of the application
@@ -61,34 +66,47 @@ public class PatientListActivity extends AppCompatActivity {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
 
-        // this chunk of code makes it so the search button is only enabled when there is text in the edit text
-        // otherwise the search button is disabled
-        // when the user erases all text in the edit text, the default getallpatients cursor is used to populate the list view
-        final Button searchSubmit = (Button) findViewById(R.id.searchSubmit);
-        final EditText searchEditText = (EditText) findViewById(R.id.searchEditText);
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String searchInput = searchEditText.getText().toString().trim();
-                searchSubmit.setEnabled(!searchInput.isEmpty());
-
-                if(searchInput.isEmpty()) {
-                    updatePatientListView();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        // remove old patients
+        List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
+        for (Integer i : oldPatients) {
+            databaseHelper.deletePatientById(i);
+        }
 
         createPatientsList();
+
+        final SearchView searchView = findViewById(R.id.searchView);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // searches the database using the search input
+                Cursor results = databaseHelper.getPatientListByKeyword(query, doctorId);
+
+                // if the results are not empty then change the cursor and update
+                if (results != null && results.getCount() > 0) {
+                    results.moveToFirst();
+                    simpleCursorAdapter.changeCursor(results);
+                } else { // if the results are empty then use a snackbar to tell user there were no results
+                    LinearLayout linearLayout = findViewById(R.id.masterLinearLayout);
+                    Snackbar snackbar = Snackbar.make(linearLayout, getString(R.string.invalid_search), Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                // revert to full patient list when search bar is closed
+                updatePatientListView();
+                return false;
+            }
+        });
 }
 
     @Override
@@ -222,34 +240,6 @@ public class PatientListActivity extends AppCompatActivity {
             public void onDestroyActionMode(ActionMode mode) {
             }
         });
-    }
-
-
-    /**
-     * on click listener for the search button
-     * @param v the search button
-     */
-    public void onClick(View v) {
-        // only does anything if it's the search button that is pressed
-        if (v.getId() == R.id.searchSubmit) {
-            // gets the edittext input
-            EditText userInput = (EditText) findViewById(R.id.searchEditText);
-            int patientId = Integer.parseInt(userInput.getText().toString());
-
-            // searches the database using the input
-            Cursor results = databaseHelper.searchForPatient(patientId, doctorId);
-
-            // if the results are not empty then change the cursor and update
-            if (results != null && results.getCount() > 0) {
-                results.moveToFirst();
-                //String name = results.getString(results.getColumnIndex("lastName"));
-                simpleCursorAdapter.changeCursor(results);
-            } else { // if the results are empty then use a snackbar to tell user there were no results
-                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.masterLinearLayout);
-                Snackbar snackbar = Snackbar.make(linearLayout, getString(R.string.invalid_search), Snackbar.LENGTH_LONG);
-                snackbar.show();
-            }
-        }
     }
 
     /**

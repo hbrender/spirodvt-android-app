@@ -1,6 +1,8 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
 import android.content.Context;
+import java.util.concurrent.TimeUnit;
+//import android.icu.util.TimeUnit;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
@@ -43,7 +45,8 @@ class CustomMarkerView extends MarkerView {
         NumberFormat format2 = new DecimalFormat("#0");
         DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
-        String formatBreaths = "Avg. breaths/hour: " + formatter.format(e.getY());
+        IncentiveSpirometerData sp = data.get((int) e.getX() - 1);
+        String formatBreaths = "Avg. breaths/hour: " + formatter.format((double) sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
         String formatSession = "Session: " + format2.format(e.getX());
         String formatStart = "Start Time: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
         String formatEnd = "End Time:  " + dateFormat.format(data.get((int) e.getX() - 1).getEndTime());

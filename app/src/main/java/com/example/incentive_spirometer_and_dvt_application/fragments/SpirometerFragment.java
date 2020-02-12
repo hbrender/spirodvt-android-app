@@ -1,3 +1,8 @@
+/**
+ * Coded by: Kelsey Lally
+ * Description: creates a graph of patient data as pulled from the database. Also shows a scrollable
+ * table of the same data
+ */
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
 import android.os.Bundle;
@@ -36,21 +41,21 @@ import java.util.concurrent.TimeUnit;
 public class SpirometerFragment extends Fragment implements View.OnClickListener {
     static final String TAG = "PatientSpiroInfoFrag";
     private DatabaseHelper databaseHelper;
+
     private List<IncentiveSpirometerData> allSpData;
-    private List<BarEntry> oneDaySpData;
-    private List<BarEntry> twoDaySpData;
-    private List<BarEntry> threeDaySpData;
+    private List<BarEntry> allBarEntries;
+
     private Button oneDayButton;
     private Button twoDayButton;
     private Button threeDayButton;
-    //private List<BarEntry> oneWeekSpData;
-    private List<BarEntry> barEntryList;
-    private ListView dataListView;
+
+    private List<BarEntry> shownEntries;
     private BarChart graph;
+
+    private ListView dataListView;
+
     private int patientId;
     private int doctorId;
-    private SpirometerFragment.TimeShown timeShown;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,20 +94,17 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         oneDayButton = (Button) view.findViewById(R.id.one_day_button);
         twoDayButton = (Button) view.findViewById(R.id.two_day_button);
         threeDayButton = (Button) view.findViewById(R.id.three_day_button);
-        //Button weekButton = (Button) view.findViewById(R.id.one_week_button);
         graph = (BarChart) view.findViewById((R.id.patient_spirometer_graph));
         dataListView = (ListView) view.findViewById(R.id.patient_spirometer_table);
 
         oneDayButton.setOnClickListener(this);
         twoDayButton.setOnClickListener(this);
         threeDayButton.setOnClickListener(this);
-        //weekButton.setOnClickListener(this);
 
         databaseHelper = new DatabaseHelper(getContext());
 
-        barEntryList = new ArrayList<>();
+        shownEntries = new ArrayList<>();
 
-        timeShown = SpirometerFragment.TimeShown.ONEDAY;
 
         createDataLists();
         drawGraph();
@@ -116,33 +118,28 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         switch (view.getId()) {
             case R.id.one_day_button:
                 Log.d(TAG, "onClick: one day button clicked");
-                timeShown = SpirometerFragment.TimeShown.ONEDAY;
-                barEntryList = oneDaySpData;
+                setDataWindow(24);
+                //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 break;
             case R.id.two_day_button:
                 Log.d(TAG, "onClick: two day button clicked");
-                timeShown = SpirometerFragment.TimeShown.TWODAYS;
-                barEntryList = twoDaySpData;
+                setDataWindow(48);
+                //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 break;
             case R.id.three_day_button:
                 Log.d(TAG, "onClick: three day button clicked");
-                timeShown = SpirometerFragment.TimeShown.THREEDAYS;
-                barEntryList = threeDaySpData;
+                setDataWindow(72);
+                //Updates colors of the buttons to reflect button press
                 oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
                 threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
                 break;
-//            case R.id.one_week_button:
-//                Log.d(TAG, "onClick: week button clicked");
-//                timeShown = SpirometerFragment.TimeShown.ONEWEEK;
-//                barEntryList = oneWeekSpData;
-//                break;
         }
         drawGraph();
     }
@@ -152,42 +149,19 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
      */
     private void createDataLists() {
         allSpData = new ArrayList<>();
-        oneDaySpData = new ArrayList<>();
-        twoDaySpData = new ArrayList<>();
-        threeDaySpData = new ArrayList<>();
-        //Log.d(TAG, "createDataList: Patient ID before call: " + patientId);
-        allSpData = databaseHelper.getPatinetSpirometerData(patientId);
-//        for (IncentiveSpirometerData sp: allSpData) {
-//            Log.d(TAG, "createDataLists: sp data entry:" + sp);;
-//        }
-        Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
+        allBarEntries = new ArrayList<>();
 
-        // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
-        // using Gregorian Calendar because Date constructor is deprecated
-         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
+        allSpData = databaseHelper.getPatinetSpirometerData(patientId);
+
+        Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
 
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
-            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
             float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
-            if (timeDiff <= 24 && timeDiff > 0) {
-                //Log.d(TAG, "createDataLists: ADDED one day data");
-                oneDaySpData.add(new BarEntry(session, inhalation_rate));
-                twoDaySpData.add(new BarEntry(session, inhalation_rate));
-                threeDaySpData.add(new BarEntry(session, inhalation_rate));
-                //oneWeekSpData.add(new BarEntry(session, inhalation_rate));
-            } else if (timeDiff <= 48 && timeDiff > 0) {
-                //Log.d(TAG, "createDataLists: ADDED TWO day data");
-                twoDaySpData.add(new BarEntry(session, inhalation_rate));
-                threeDaySpData.add(new BarEntry(session, inhalation_rate));
-                //oneWeekSpData.add(new BarEntry(session, sp.getInhalationsCompleted()));
-            } else if (timeDiff <= 72 && timeDiff > 0) {
-                //Log.d(TAG, "createDataLists: ADDED thREE day data");
-                threeDaySpData.add(new BarEntry(session, inhalation_rate));
-                //oneWeekSpData.add(new BarEntry(session, sp.getInhalationsCompleted()));
-            }
+            allBarEntries.add(new BarEntry(session, new float[] {inhalation_rate, sp.getNumberOfInhalations() - inhalation_rate}));
         }
-        barEntryList = oneDaySpData;
+
+        setDataWindow(24);
 
         ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(getContext(),
                 R.layout.spirometer_info_list_row, R.id.row_session, allSpData) {
@@ -212,17 +186,37 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 return view;
             }
         };
-        //arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSpData);
         dataListView.setAdapter(arrayAdapter);
     }
 
+    // sets the amount of data that will be shown on the graph
+    // hoursToShow: the number of past hours the user would like to see, for example, if the user
+    // would like to see data from the past day this number should be 24
+    private void setDataWindow(int hoursToShow) {
+        shownEntries.clear();
+        // TODO change to current time once we are making current testing data
+        Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
+        for (int session = 1; session <= allSpData.size(); session++) {
+            IncentiveSpirometerData sp = allSpData.get(session - 1);
+            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
+            if (timeDiff < hoursToShow) {
+                shownEntries.add(allBarEntries.get(session - 1));
+            }
+        }
+    }
 
+    // draws the features of the graph, including removing the description and legend, setting
+    // touch selection to enabled, setting the data set to the graph, and setting all labels
+    // visible for the graph and bars on the graph
     private void drawGraph() {
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
         graph.setTouchEnabled(true);
 
-        BarDataSet set = new BarDataSet(barEntryList, "BarDataSet");
+        BarDataSet set = new BarDataSet(shownEntries, "BarDataSet");
+        int completedColor = getResources().getColor(R.color.colorAccent);
+        int uncompleteColor = getResources().getColor(R.color.colorPrimaryLight);
+        set.setColors(completedColor, uncompleteColor);
         BarData data = new BarData(set);
 
         // will individually label bars in the graph if removed - good for testing bar overlap
@@ -251,12 +245,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         IMarker marker = new CustomMarkerView(getContext(), R.layout.graph_labels, allSpData);
         graph.setMarker(marker);
+        graph.setScaleEnabled(false);
 
         graph.setData(data);
         graph.invalidate();
-    }
-
-    enum TimeShown {
-        ONEDAY, TWODAYS, THREEDAYS, ONEWEEK;
     }
 }
