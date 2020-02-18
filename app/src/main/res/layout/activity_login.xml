@@ -68,13 +68,10 @@
         android:layout_marginTop="10dp"
         android:textColor="@color/colorPrimary"/>
 
-<<<<<<< HEAD
-=======
     <Button
         android:id="@+id/btTestButton"
         android:layout_gravity="center|top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BTTestButton" />
->>>>>>> 967f0667b0321e1d66a9d50de1cf7500c77ef07a
 </GridLayout>

@@ -12,11 +12,9 @@
         android:roundIcon="@mipmap/ic_spiro_dvt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
+
         <activity android:name=".activities.CreateAccountActivity"></activity>
-=======
         <activity android:name=".activities.BluetoothTestActivity"></activity>
->>>>>>> 967f0667b0321e1d66a9d50de1cf7500c77ef07a
         <activity
             android:name=".activities.DeviceDataActivity"
             android:label="@string/title_activity_device_info"
