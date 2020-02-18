@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_spiro_dvt_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".activities.CreateAccountActivity"></activity>
         <activity
             android:name=".activities.DeviceDataActivity"
             android:label="@string/title_activity_device_info"

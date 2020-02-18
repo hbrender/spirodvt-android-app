@@ -6,8 +6,16 @@
     <string name="username_prompt">Username</string>
     <string name="password_prompt">Password</string>
     <string name="login_button">Login</string>
-    <string name="forgot_username">Forgot Username?</string>
-    <string name="forgot_password">Forgot Password?</string>
+    <string name="create_account"><u>Create Account</u></string>
+    <string name="forgot_password"><u>Forgot Password?</u></string>
+
+    <!-- Create Account Strings -->
+    <string name="create_account_title">Create Account</string>
+    <string name="new_password_prompt">New password</string>
+    <string name="reenter_password_prompt">Re-enter password</string>
+    <string name="create_account_button">Create Account</string>
+    <string name="account_already_exists">Account already exists</string>
+    <string name="account_already_exists_message">A account with this username already exists. Please enter a unique username.</string>
 
     <!-- Patient list screen strings -->
     <string name="search">Search</string>

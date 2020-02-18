@@ -107,6 +107,11 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void createAccountOnClick(View view) {
+        Intent intent = new Intent(LoginActivity.this, CreateAccountActivity.class);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onStop() {
