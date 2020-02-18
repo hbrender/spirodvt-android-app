@@ -67,10 +67,10 @@ public class PatientListActivity extends AppCompatActivity {
         }
 
         // remove old patients
-        List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
-        for (Integer i : oldPatients) {
-            databaseHelper.deletePatientById(i);
-        }
+        //List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
+        //for (Integer i : oldPatients) {
+        //    databaseHelper.deletePatientById(i);
+        //}
 
         createPatientsList();
 

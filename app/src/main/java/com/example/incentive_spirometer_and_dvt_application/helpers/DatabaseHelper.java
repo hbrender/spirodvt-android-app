@@ -535,15 +535,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns a list of patients that are old (they have used a device for more than 2 weeks)
+     * Returns a list of patients that are old (they have used both device for more than 2 weeks)
      * @param doctorId
      * @return list of patient ids
      */
     public List<Integer> getOldPatients(int doctorId) {
-        List<Integer> patientIds = new ArrayList<Integer>();
+        List<Integer> spiroPatientIds = new ArrayList<Integer>();
+        List<Integer> dvtPatientIds = new ArrayList<Integer>();
+        List<Integer> oldPatientIds = new ArrayList<Integer>();
+
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT p." + ID
-                + ", (julianday(MAX(a." + END_TIMESTAMP + ")) - julianday(MIN(a." + START_TIMESTAMP + "))) AS difference"
+        String query1 = "SELECT p." + ID
+                + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
                 + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
                 + TABLE_INCENTIVE_SPIROMETER_DATA + " a, " + TABLE_INCENTIVE_SPIROMETER_DATA + " b"
                 + " WHERE dp." + DOCTOR_ID + " = " + doctorId
@@ -553,17 +556,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " GROUP BY p." + ID
                 + " HAVING difference > 14";
 
-        Log.d(TAG, "getOldPatients: " + query);
+        String query2 = "SELECT p." + ID
+                + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
+                + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
+                + TABLE_DVT_DATA + " a, " + TABLE_DVT_DATA + " b"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID
+                + " AND a." + ID + " = b." + ID
+                + " AND p." + DVT_ID + " = a." + ID
+                + " GROUP BY p." + ID
+                + " HAVING difference > 14";
 
-        Cursor c = db.rawQuery(query, null);
 
-        if (c.moveToFirst()) {
+        Log.d(TAG, "getOldPatients: " + query1);
+        Log.d(TAG, "getOldPatients: " + query2);
+
+        Cursor c1 = db.rawQuery(query1, null);
+        Cursor c2 = db.rawQuery(query1, null);
+
+        if (c1.moveToFirst()) {
             do {
-                patientIds.add(c.getInt(c.getColumnIndex(ID)));
-            } while (c.moveToNext());
+                spiroPatientIds.add(c1.getInt(c1.getColumnIndex(ID)));
+            } while (c1.moveToNext());
+        }
+        if (c2.moveToFirst()) {
+            do {
+                dvtPatientIds.add(c2.getInt(c2.getColumnIndex(ID)));
+            } while (c2.moveToNext());
         }
 
-        return patientIds;
+        if (spiroPatientIds.isEmpty()) {
+            return dvtPatientIds;
+        }
+
+        for (Integer id : spiroPatientIds){
+            if (dvtPatientIds.contains(id) || dvtPatientIds.isEmpty())
+                oldPatientIds.add(id);
+        }
+
+        return oldPatientIds;
     }
 
     /**
