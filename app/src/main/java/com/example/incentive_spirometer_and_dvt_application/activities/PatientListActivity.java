@@ -145,6 +145,9 @@ public class PatientListActivity extends AppCompatActivity {
         patientListView = (ListView) findViewById(R.id.patientListView);
         Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
 
+        TextView emptyText = (TextView)findViewById(R.id.emptyPatientList);
+        patientListView.setEmptyView(emptyText);
+
         simpleCursorAdapter = new SimpleCursorAdapter(
                 this,
                 android.R.layout.simple_list_item_activated_2,
