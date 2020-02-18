@@ -6,6 +6,8 @@ import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpir
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 
 import android.content.Context;
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,6 +20,7 @@ public class CSVReader {
     public void readInSpirometerData (File spCsvFile, Context context) {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(spCsvFile));
+            Log.d("CSVREADER ERROR: ", "readInSpirometerData: " + spCsvFile);
             int deviceId = Integer.parseInt(csvReader.readLine().split(",")[0]);
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
             String[] startArray = csvReader.readLine().split(",");
@@ -33,7 +36,7 @@ public class CSVReader {
             db.insertIncentiveSpirometerData(isd);
 
         } catch (java.io.FileNotFoundException e) {
-            System.out.println("File not found: " + e.getStackTrace().toString());
+            System.out.println("File not found: " + spCsvFile.getAbsolutePath());
         } catch (java.io.IOException f) {
             System.out.println("error in input file: " + f.getStackTrace().toString());
         }
