@@ -942,10 +942,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertDvtData (DvtData dvtd) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTime = dvtd.getStartTime();
+        String formattedStartTime = format.format(startTime);
+        Date endTime = dvtd.getEndTime();
+        String formattedEndTime = format.format(endTime);
+
         ContentValues values = new ContentValues();
         values.put(ID, dvtd.getId());
-        values.put(START_TIMESTAMP, dvtd.getStartTime().toString());
-        values.put(END_TIMESTAMP, dvtd.getEndTime().toString());
+        values.put(START_TIMESTAMP, formattedStartTime);
+        values.put(END_TIMESTAMP, formattedEndTime);
         values.put(RESISTANCE, dvtd.getResistance());
         values.put(REPS_COMPLETED, dvtd.getRepsCompleted());
         values.put(NUMBER_OF_REPS, dvtd.getNumberOfReps());
