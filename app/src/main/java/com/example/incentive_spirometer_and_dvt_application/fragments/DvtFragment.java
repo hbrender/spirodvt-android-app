@@ -146,7 +146,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
         allDvtData = databaseHelper.getPatinetDvtData(patientId);
 
         for (DvtData dvtd: allDvtData) {
-            Log.d(TAG, "createDataLists: DVT data entry:" + dvtd);;
+            //Log.d(TAG, "createDataLists: DVT data entry:" + dvtd);;
         }
 
         Collections.sort(allDvtData, Collections.<DvtData>reverseOrder());

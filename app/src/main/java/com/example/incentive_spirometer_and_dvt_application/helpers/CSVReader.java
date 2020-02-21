@@ -15,13 +15,20 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import static androidx.constraintlayout.widget.Constraints.TAG;
+
 public class CSVReader {
 
     public void readInSpirometerData (File spCsvFile, Context context) {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(spCsvFile));
             Log.d("CSVREADER ERROR: ", "readInSpirometerData: " + spCsvFile);
-            int deviceId = Integer.parseInt(csvReader.readLine().split(",")[0]);
+            String testline1 = csvReader.readLine().split(",")[0];
+//            String testline2 = csvReader.readLine();
+//            String testline3 = csvReader.readLine();
+//            String testline4 = csvReader.readLine();
+            Log.d(TAG, "readInSpirometerData: " + testline1);
+            int deviceId = Integer.parseInt("10");
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
             String[] startArray = csvReader.readLine().split(",");
             String[] endArray = csvReader.readLine().split(",");
@@ -67,7 +74,9 @@ public class CSVReader {
     }
 
     public Date convertArrayToDate(String[] array) {
-        String stringDate = array[0] + "/" + array[1] + "/" + array[2] + " " + String.format("%02d", array[3]) + ":" + String.format("%02d", array[4]);
+
+        String stringDate = addZerosToString(array[0]) + "/" + addZerosToString(array[1]) + "/" + addZerosToString(array[2]) + " " + addZerosToString(array[3]) + ":" + addZerosToString(array[4]);
+        Log.d(TAG, "convertArrayToDate: " + stringDate);
         Date date = new Date();
         try {
             date = new SimpleDateFormat("dd/MM/yyy HH:mm").parse(stringDate);
@@ -75,5 +84,10 @@ public class CSVReader {
             System.out.println("error parsing date: " + e.getStackTrace().toString());
         }
         return date;
+    }
+
+    public String addZerosToString (String string) {
+        int solution = Integer.parseInt(string);
+        return String.format("%02d", solution);
     }
 }

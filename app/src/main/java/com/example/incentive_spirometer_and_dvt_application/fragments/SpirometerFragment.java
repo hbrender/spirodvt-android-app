@@ -82,13 +82,16 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         Log.d(TAG, "onResume: ONERESUME");
         super.onResume();
 
-//        CSVReader csvReader = new CSVReader();
-//        File file = new File(getContext().getFilesDir(), "testcsv.csv");
-//        csvReader.readInSpirometerData(file, getContext());
+        createDataLists();
+        drawGraph();
 
+        CSVReader csvReader = new CSVReader();
+        File file = new File(getContext().getFilesDir(), "testcsv2.csv");
+        csvReader.readInSpirometerData(file, getContext());
 
         createDataLists();
         drawGraph();
+
     }
 
     @Override
@@ -208,8 +211,11 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
+            //Log.d(TAG, "setDataWindow: The timediff is " + timeDiff);
+            //Log.d(TAG, "setDataWindow: the hours to show is " + hoursToShow);
             if (timeDiff < hoursToShow) {
                 shownEntries.add(allBarEntries.get(session - 1));
+                //Log.d(TAG, "setDataWindow: SHOWTHIS");
             }
         }
     }

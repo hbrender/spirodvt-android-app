@@ -867,10 +867,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertIncentiveSpirometerData(IncentiveSpirometerData isd) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTime = isd.getStartTime();
+        String formattedStartTime = format.format(startTime);
+        Date endTime = isd.getEndTime();
+        String formattedEndTime = format.format(endTime);
+
+
         ContentValues values = new ContentValues();
         values.put(ID, isd.getId());
-        values.put(START_TIMESTAMP, isd.getStartTime().toString());
-        values.put(END_TIMESTAMP, isd.getEndTime().toString());
+        values.put(START_TIMESTAMP, formattedStartTime);
+        values.put(END_TIMESTAMP, formattedEndTime);
         values.put(LUNG_VOLUME, isd.getLungVolume());
         values.put(INHALATIONS_COMPLETED, isd.getInhalationsCompleted());
         values.put(NUMBER_OF_INHALATIONS, isd.getNumberOfInhalations());
