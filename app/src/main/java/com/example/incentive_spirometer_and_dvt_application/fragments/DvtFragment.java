@@ -216,7 +216,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
 
         BarDataSet set = new BarDataSet(shownEntries, "BarDataSet");
         int completedColor = getResources().getColor(R.color.colorAccent);
-        int uncompleteColor = getResources().getColor(R.color.colorPrimaryLight);
+        int uncompleteColor = getResources().getColor(R.color.colorEmptyBar);
         set.setColors(completedColor, uncompleteColor);
         BarData data = new BarData(set);
 

@@ -24,9 +24,7 @@ public class CSVReader {
             BufferedReader csvReader = new BufferedReader(new FileReader(spCsvFile));
             Log.d("CSVREADER ERROR: ", "readInSpirometerData: " + spCsvFile);
             String testline1 = csvReader.readLine().split(",")[0];
-//            String testline2 = csvReader.readLine();
-//            String testline3 = csvReader.readLine();
-//            String testline4 = csvReader.readLine();
+
             Log.d(TAG, "readInSpirometerData: " + testline1);
             int deviceId = Integer.parseInt("10");
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
@@ -79,7 +77,7 @@ public class CSVReader {
         Log.d(TAG, "convertArrayToDate: " + stringDate);
         Date date = new Date();
         try {
-            date = new SimpleDateFormat("dd/MM/yyy HH:mm").parse(stringDate);
+            date = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(stringDate);
         } catch (java.text.ParseException e) {
             System.out.println("error parsing date: " + e.getStackTrace().toString());
         }
