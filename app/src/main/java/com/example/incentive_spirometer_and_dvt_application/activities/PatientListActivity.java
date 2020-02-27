@@ -67,10 +67,10 @@ public class PatientListActivity extends AppCompatActivity {
         }
 
         // remove old patients
-        List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
-        for (Integer i : oldPatients) {
-            databaseHelper.deletePatientById(i);
-        }
+        //List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
+        //for (Integer i : oldPatients) {
+        //    databaseHelper.deletePatientById(i);
+        //}
 
         createPatientsList();
 
@@ -144,6 +144,9 @@ public class PatientListActivity extends AppCompatActivity {
         // set adapter for patient list
         patientListView = (ListView) findViewById(R.id.patientListView);
         Cursor cursor = databaseHelper.getAllPatientsCursor(doctorId);
+
+        TextView emptyText = (TextView)findViewById(R.id.emptyPatientList);
+        patientListView.setEmptyView(emptyText);
 
         simpleCursorAdapter = new SimpleCursorAdapter(
                 this,

@@ -146,7 +146,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
         allDvtData = databaseHelper.getPatinetDvtData(patientId);
 
         for (DvtData dvtd: allDvtData) {
-            Log.d(TAG, "createDataLists: DVT data entry:" + dvtd);;
+            //Log.d(TAG, "createDataLists: DVT data entry:" + dvtd);;
         }
 
         Collections.sort(allDvtData, Collections.<DvtData>reverseOrder());
@@ -216,7 +216,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
 
         BarDataSet set = new BarDataSet(shownEntries, "BarDataSet");
         int completedColor = getResources().getColor(R.color.colorAccent);
-        int uncompleteColor = getResources().getColor(R.color.colorPrimaryLight);
+        int uncompleteColor = getResources().getColor(R.color.colorEmptyBar);
         set.setColors(completedColor, uncompleteColor);
         BarData data = new BarData(set);
 

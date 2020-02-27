@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.incentive_spirometer_and_dvt_application">
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_spiro_dvt"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_spiro_dvt_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+<<<<<<< HEAD
+        <activity android:name=".activities.CreateAccountActivity"></activity>
+=======
+        <activity android:name=".activities.BluetoothTestActivity"></activity>
+>>>>>>> 967f0667b0321e1d66a9d50de1cf7500c77ef07a
+        <activity
+            android:name=".activities.DeviceDataActivity"
+            android:label="@string/title_activity_device_info"
+            android:parentActivityName=".activities.PatientListActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.incentive_spirometer_and_dvt_application.activities.PatientListActivity" />
+        </activity>
+        <activity android:name=".activities.PatientInfoActivity" />
+        <activity android:name=".activities.PatientListActivity" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.example.incentive_spirometer_and_dvt_application.helpers.CSVReader;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
@@ -30,6 +31,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -79,8 +81,17 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     public void onResume() {
         Log.d(TAG, "onResume: ONERESUME");
         super.onResume();
+
         createDataLists();
         drawGraph();
+
+        CSVReader csvReader = new CSVReader();
+        File file = new File(getContext().getFilesDir(), "testcsv2.csv");
+        csvReader.readInSpirometerData(file, getContext());
+
+        createDataLists();
+        drawGraph();
+
     }
 
     @Override
@@ -153,7 +164,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         allSpData = databaseHelper.getPatinetSpirometerData(patientId);
 
-        Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
+        Collections.sort(allSpData);//, Collections.<IncentiveSpirometerData>reverseOrder());
 
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
@@ -167,6 +178,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 R.layout.spirometer_info_list_row, R.id.row_session, allSpData) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                Collections.sort(allSpData, Collections.<IncentiveSpirometerData>reverseOrder());
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
@@ -177,7 +189,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
                 String breath_ratio_string = allSpData.get(position).getInhalationsCompleted() + " / " + allSpData.get(position).getNumberOfInhalations();
 
-                session.setText(String.format("%s",position + 1));
+                session.setText(String.format("%s",allSpData.size() - position));
                 start.setText(allSpData.get(position).getStringTime("start"));
                 end.setText(allSpData.get(position).getStringTime("end"));
                 lung_volume.setText(String.format("%s", allSpData.get(position).getLungVolume()));
@@ -199,8 +211,11 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
+            //Log.d(TAG, "setDataWindow: The timediff is " + timeDiff);
+            //Log.d(TAG, "setDataWindow: the hours to show is " + hoursToShow);
             if (timeDiff < hoursToShow) {
                 shownEntries.add(allBarEntries.get(session - 1));
+                //Log.d(TAG, "setDataWindow: SHOWTHIS");
             }
         }
     }
@@ -215,7 +230,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         BarDataSet set = new BarDataSet(shownEntries, "BarDataSet");
         int completedColor = getResources().getColor(R.color.colorAccent);
-        int uncompleteColor = getResources().getColor(R.color.colorPrimaryLight);
+        int uncompleteColor = getResources().getColor(R.color.colorEmptyBar);
         set.setColors(completedColor, uncompleteColor);
         BarData data = new BarData(set);
 
@@ -236,12 +251,11 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
             }
         });
 
-
         YAxis yleft = graph.getAxisLeft();
         graph.getAxisRight().setEnabled(false);
 
         yleft.setAxisMinimum(0);
-        yleft.setAxisMaximum(12);
+        //yleft.setAxisMaximum(12);
 
         IMarker marker = new CustomMarkerView(getContext(), R.layout.graph_labels, allSpData);
         graph.setMarker(marker);

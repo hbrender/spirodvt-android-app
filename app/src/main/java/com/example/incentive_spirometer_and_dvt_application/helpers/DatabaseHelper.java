@@ -123,7 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Doctor table create statement
     private static final String CREATE_TABLE_DOCTOR = "CREATE TABLE " + TABLE_DOCTOR + "("
-            + ID + " INTEGER PRIMARY KEY,"
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + USERNAME + " TEXT UNIQUE)";
 
     // Patient table create statement
@@ -138,10 +138,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + SEX + " TEXT,"
             + INCENTIVE_SPIROMETER_ID + " INTEGER,"
             + DVT_ID + " INTEGER)";
-            //+ "FOREIGN KEY(" + INCENTIVE_SPIROMETER_ID + ") REFERENCES "
-            //+ TABLE_INCENTIVE_SPIROMETER + "(" + ID + "),"
-            //+ "FOREIGN KEY(" + DVT_ID + ") REFERENCES "
-            //+ TABLE_DVT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_DOCTOR_PATIENT = "CREATE TABLE " + TABLE_DOCTOR_PATIENT + "("
             + DOCTOR_ID + " INTEGER,"
@@ -151,7 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + " FOREIGN KEY(" + PATIENT_ID + ") REFERENCES " + TABLE_PATIENT + "(" + ID + "))";
 
     private static final String CREATE_TABLE_LOGIN = "CREATE TABLE " + TABLE_LOGIN + "("
-            + ID + " INTEGER PRIMARY KEY,"
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
             + USERNAME + " TEXT UNIQUE,"
             + SALT + " TEXT,"
             + HASHED_PASSWORD + " TEXT,"
@@ -539,15 +535,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Returns a list of patients that are old (they have used a device for more than 2 weeks)
+     * Returns a list of patients that are old (they have used both device for more than 2 weeks)
      * @param doctorId
      * @return list of patient ids
      */
     public List<Integer> getOldPatients(int doctorId) {
-        List<Integer> patientIds = new ArrayList<Integer>();
+        List<Integer> spiroPatientIds = new ArrayList<Integer>();
+        List<Integer> dvtPatientIds = new ArrayList<Integer>();
+        List<Integer> oldPatientIds = new ArrayList<Integer>();
+
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "SELECT p." + ID
-                + ", (julianday(MAX(a." + END_TIMESTAMP + ")) - julianday(MIN(a." + START_TIMESTAMP + "))) AS difference"
+        String query1 = "SELECT p." + ID
+                + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
                 + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
                 + TABLE_INCENTIVE_SPIROMETER_DATA + " a, " + TABLE_INCENTIVE_SPIROMETER_DATA + " b"
                 + " WHERE dp." + DOCTOR_ID + " = " + doctorId
@@ -557,17 +556,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " GROUP BY p." + ID
                 + " HAVING difference > 14";
 
-        Log.d(TAG, "getOldPatients: " + query);
+        String query2 = "SELECT p." + ID
+                + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
+                + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
+                + TABLE_DVT_DATA + " a, " + TABLE_DVT_DATA + " b"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID
+                + " AND a." + ID + " = b." + ID
+                + " AND p." + DVT_ID + " = a." + ID
+                + " GROUP BY p." + ID
+                + " HAVING difference > 14";
 
-        Cursor c = db.rawQuery(query, null);
 
-        if (c.moveToFirst()) {
+        Log.d(TAG, "getOldPatients: " + query1);
+        Log.d(TAG, "getOldPatients: " + query2);
+
+        Cursor c1 = db.rawQuery(query1, null);
+        Cursor c2 = db.rawQuery(query1, null);
+
+        if (c1.moveToFirst()) {
             do {
-                patientIds.add(c.getInt(c.getColumnIndex(ID)));
-            } while (c.moveToNext());
+                spiroPatientIds.add(c1.getInt(c1.getColumnIndex(ID)));
+            } while (c1.moveToNext());
+        }
+        if (c2.moveToFirst()) {
+            do {
+                dvtPatientIds.add(c2.getInt(c2.getColumnIndex(ID)));
+            } while (c2.moveToNext());
         }
 
-        return patientIds;
+        if (spiroPatientIds.isEmpty()) {
+            return dvtPatientIds;
+        }
+
+        for (Integer id : spiroPatientIds){
+            if (dvtPatientIds.contains(id) || dvtPatientIds.isEmpty())
+                oldPatientIds.add(id);
+        }
+
+        return oldPatientIds;
     }
 
     /**
@@ -661,27 +688,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /**
      * inserts a doctor(user) into the database
-     * @param doctor
-     * @return result if data was inserted or not *see comment after return statement*
+     * @param username
+     * @return the new doctor id
      */
-    public boolean insertDoctor(Doctor doctor){
-
+    public int insertDoctor(String username){
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.beginTransaction();
-        try {
-            ContentValues values = new ContentValues();
-            values.put(ID, doctor.getId());
-            values.put(USERNAME, doctor.getUsername());
-            db.insert(TABLE_DOCTOR, null, values);
-            db.setTransactionSuccessful();
-            return true;
-        } catch (SQLiteException e) {
-            return false;
-            //Error in between database transaction
-        } finally {
-            db.endTransaction();
-        }
+        ContentValues values = new ContentValues();
+        values.put(USERNAME, username);
+
+        return (int) db.insert(TABLE_DOCTOR, null, values);
+    }
+
+    /**
+     * inserts a login into the database
+     * @param username
+     */
+    public boolean insertLogin(String username, String salt, String hashedPassword){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(USERNAME, username);
+        values.put(SALT, salt);
+        values.put(HASHED_PASSWORD, hashedPassword);
+
+        long result = db.insert(TABLE_LOGIN, null, values);
+
+        return result != -1; // if result = -1 data doesn't insert
     }
 
     public int getDoctorId(String username) {
@@ -698,6 +731,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             } while (c.moveToNext());
         }
         return doctorId;
+    }
+
+    /**
+     * Checks if a doctor with a certain username exists
+     * @param username
+     * @return true if exists, false otherwise
+     */
+    public boolean doctorExists(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_DOCTOR + " WHERE " + USERNAME + " = '" + username + "'";
+        Log.d(TAG, "doctorExists: " + query);
+
+        Cursor c = db.rawQuery(query, null);
+
+        if (c != null && c.getCount() > 0) {
+            return true;
+        }
+        return false;
     }
 
     // *************************** Login table CRUD functions ****************************
@@ -815,10 +867,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertIncentiveSpirometerData(IncentiveSpirometerData isd) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTime = isd.getStartTime();
+        String formattedStartTime = format.format(startTime);
+        Date endTime = isd.getEndTime();
+        String formattedEndTime = format.format(endTime);
+
+
         ContentValues values = new ContentValues();
         values.put(ID, isd.getId());
-        values.put(START_TIMESTAMP, isd.getStartTime().toString());
-        values.put(END_TIMESTAMP, isd.getEndTime().toString());
+        values.put(START_TIMESTAMP, formattedStartTime);
+        values.put(END_TIMESTAMP, formattedEndTime);
         values.put(LUNG_VOLUME, isd.getLungVolume());
         values.put(INHALATIONS_COMPLETED, isd.getInhalationsCompleted());
         values.put(NUMBER_OF_INHALATIONS, isd.getNumberOfInhalations());
@@ -883,10 +942,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertDvtData (DvtData dvtd) {
         SQLiteDatabase db = this.getWritableDatabase();
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startTime = dvtd.getStartTime();
+        String formattedStartTime = format.format(startTime);
+        Date endTime = dvtd.getEndTime();
+        String formattedEndTime = format.format(endTime);
+
         ContentValues values = new ContentValues();
         values.put(ID, dvtd.getId());
-        values.put(START_TIMESTAMP, dvtd.getStartTime().toString());
-        values.put(END_TIMESTAMP, dvtd.getEndTime().toString());
+        values.put(START_TIMESTAMP, formattedStartTime);
+        values.put(END_TIMESTAMP, formattedEndTime);
         values.put(RESISTANCE, dvtd.getResistance());
         values.put(REPS_COMPLETED, dvtd.getRepsCompleted());
         values.put(NUMBER_OF_REPS, dvtd.getNumberOfReps());
