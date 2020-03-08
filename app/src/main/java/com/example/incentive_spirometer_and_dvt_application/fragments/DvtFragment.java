@@ -166,6 +166,8 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
                 R.layout.dvt_info_list_row, R.id.row_session, allDvtData) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                Collections.sort(allDvtData, Collections.<DvtData>reverseOrder());
+
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
@@ -176,7 +178,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
 
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
 
-                session.setText(String.format("%s",position + 1));
+                session.setText(String.format(String.format("%s",allDvtData.size() - position)));
                 start.setText(allDvtData.get(position).getStringTime("start"));
                 end.setText(allDvtData.get(position).getStringTime("end"));
                 resistance.setText(allDvtData.get(position).getResistance());
