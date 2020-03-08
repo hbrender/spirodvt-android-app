@@ -205,6 +205,14 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
     // hoursToShow: the number of past hours the user would like to see, for example, if the user
     // would like to see data from the past day this number should be 24
     private void setDataWindow(int hoursToShow) {
+        Collections.sort(allSpData);//, Collections.<IncentiveSpirometerData>reverseOrder());
+
+        for (int session = 1; session <= allSpData.size(); session++) {
+            IncentiveSpirometerData sp = allSpData.get(session - 1);
+            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
+            allBarEntries.add(new BarEntry(session, new float[] {inhalation_rate, sp.getNumberOfInhalations() - inhalation_rate}));
+        }
+
         shownEntries.clear();
         // TODO change to current time once we are making current testing data
         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
