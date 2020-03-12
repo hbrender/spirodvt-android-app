@@ -149,7 +149,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
             //Log.d(TAG, "createDataLists: DVT data entry:" + dvtd);;
         }
 
-        Collections.sort(allDvtData, Collections.<DvtData>reverseOrder());
+        Collections.sort(allDvtData);
 
         // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
@@ -166,6 +166,8 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
                 R.layout.dvt_info_list_row, R.id.row_session, allDvtData) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
+                Collections.sort(allDvtData, Collections.<DvtData>reverseOrder());
+
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
@@ -176,7 +178,7 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
 
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
 
-                session.setText(String.format("%s",position + 1));
+                session.setText(String.format(String.format("%s",allDvtData.size() - position)));
                 start.setText(allDvtData.get(position).getStringTime("start"));
                 end.setText(allDvtData.get(position).getStringTime("end"));
                 resistance.setText(allDvtData.get(position).getResistance());
@@ -194,6 +196,14 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
     // hoursToShow: the number of past hours the user would like to see, for example, if the user
     // would like to see data from the past day this number should be 24
     private void setDataWindow(int hoursToShow) {
+        Collections.sort(allDvtData);
+
+        for (int session = 1; session <= allDvtData.size(); session++) {
+            DvtData dvtd = allDvtData.get(session - 1);
+            float ex_rate = (float) ((double)dvtd.getRepsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
+            allBarEntries.add(new BarEntry(session, new float[] {ex_rate, dvtd.getNumberOfReps() - dvtd.getRepsCompleted()}));
+        }
+
         shownEntries.clear();
         // TODO change to current time once we are making current testing data
         Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
