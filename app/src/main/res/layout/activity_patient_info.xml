@@ -81,25 +81,27 @@
         android:layout_columnSpan="1"
         android:text="@string/height" />
 
-    <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
-        android:id="@+id/heightFeetEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        app:suffix="@string/ft"
-        android:layout_columnSpan="1"
-        android:textColor="@color/text_colors"
-        android:inputType="number" />
+        <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
+            android:id="@+id/heightFeetEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="1"
+            android:layout_gravity="fill_horizontal"
+            android:inputType="number"
+            android:maxLength="2"
+            android:textColor="@color/text_colors"
+            app:suffix="@string/ft" />
 
-    <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
-        android:id="@+id/heightInchesEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_horizontal"
-        app:suffix="@string/in"
-        android:layout_columnSpan="1"
-        android:textColor="@color/text_colors"
-        android:inputType="number" />
+        <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
+            android:id="@+id/heightInchesEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="1"
+            android:layout_gravity="fill_horizontal"
+            android:inputType="number|numberDecimal"
+            android:maxLength="5"
+            android:textColor="@color/text_colors"
+            app:suffix="@string/in" />
 
     <TextView
         android:id="@+id/weightTextView"
@@ -108,15 +110,16 @@
         android:layout_columnSpan="1"
         android:text="@string/weight" />
 
-    <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
-        android:id="@+id/weightPoundsEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:inputType="numberDecimal"
-        android:textColor="@color/text_colors"
-        app:suffix=" lbs"/>
+        <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
+            android:id="@+id/weightPoundsEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:inputType="numberDecimal"
+            android:maxLength="7"
+            android:textColor="@color/text_colors"
+            app:suffix=" lbs" />
 
     <TextView
         android:id="@+id/ageTextView"
@@ -125,15 +128,16 @@
         android:layout_columnSpan="1"
         android:text="@string/age" />
 
-    <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
-        android:id="@+id/ageEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:suffix="@string/years"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:textColor="@color/text_colors"
-        android:inputType="number" />
+        <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
+            android:id="@+id/ageEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:inputType="number"
+            android:maxLength="3"
+            android:textColor="@color/text_colors"
+            app:suffix="@string/years" />
 
     <TextView
         android:id="@+id/sexTextView"
@@ -200,15 +204,16 @@
         android:layout_columnSpan="1"
         android:text="@string/inhalations_nper_hour" />
 
-    <EditText
-        android:id="@+id/inhalationsNumIdEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:hint="@string/number"
-        android:textColor="@color/text_colors"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/inhalationsNumIdEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:hint="@string/number"
+            android:inputType="number"
+            android:maxLength="2"
+            android:textColor="@color/text_colors" />
 
     <TextView
         android:id="@+id/lungVolumeTextView"
@@ -217,15 +222,16 @@
         android:layout_columnSpan="1"
         android:text="@string/lung_volume" />
 
-    <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
-        android:id="@+id/lungVolumeEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        app:suffix="@string/ml"
-        android:textColor="@color/text_colors"
-        android:inputType="number" />
+        <com.tobiasschuerg.prefixsuffix.PrefixSuffixEditText
+            android:id="@+id/lungVolumeEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:inputType="number"
+            android:maxLength="4"
+            android:textColor="@color/text_colors"
+            app:suffix="@string/ml" />
 
     <View style="@style/Divider" />
 
@@ -276,15 +282,16 @@
         android:layout_columnSpan="1"
         android:text="@string/repetitions_nper_hour" />
 
-    <EditText
-        android:id="@+id/repsNumIdEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:hint="@string/number"
-        android:textColor="@color/text_colors"
-        android:inputType="number" />
+        <EditText
+            android:id="@+id/repsNumIdEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:hint="@string/number"
+            android:inputType="number"
+            android:maxLength="2"
+            android:textColor="@color/text_colors" />
 
     <TextView
         android:id="@+id/resistanceTextView"
