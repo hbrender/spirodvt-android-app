@@ -373,54 +373,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
-    /**
-     * Get all patients that a given doctor has
-     * @param doctorId Doctor's ID
-     * @return list of patients that the doctor has
-     */
-    public List<Patient> getAllPatients(int doctorId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT p.* FROM "
-                + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
-                + " AND dp." + PATIENT_ID + " = p." + ID;
-        Cursor c = db.rawQuery(query, null);
-
-        List<Patient> patientList = new ArrayList<>();
-
-        // create list of patients
-        if (c.moveToFirst()) {
-            do {
-                Patient patient = new Patient();
-                patient.setId(c.getInt(c.getColumnIndex(ID)));
-                patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
-                patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
-                patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
-                patient.setHeightInches(c.getDouble(c.getColumnIndex(HEIGHT_INCHES)));
-                patient.setWeight(c.getDouble(c.getColumnIndex(WEIGHT)));
-                patient.setAge(c.getInt(c.getColumnIndex(AGE)));
-                patient.setSex(c.getString(c.getColumnIndex(SEX)));
-                patient.setIncentiveSpirometerId(c.getInt(c.getColumnIndex(INCENTIVE_SPIROMETER_ID)));
-                patient.setDvtId(c.getInt(c.getColumnIndex(DVT_ID)));
-
-                patientList.add(patient);
-            } while (c.moveToNext());
-        }
-
-        c.close();
-        return patientList;
-    }
-
     public Cursor getAllPatientsCursor(int doctorId) {
         SQLiteDatabase db = getReadableDatabase();
+
         String query = "SELECT p.* FROM "
                 + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " WHERE dp." + DOCTOR_ID + " = ?"
                 + " AND dp." + PATIENT_ID + " = p." + ID;
 
         Log.d(TAG, "getAllPatientsCursor: " + query);
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(doctorId)});
 
         return cursor;
     }
@@ -432,9 +395,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Patient getPatient(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
-
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
         Log.d(TAG, "getPatient: "+ query);
 
         if (c != null && c.getCount() > 0)
@@ -463,8 +425,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public int getPatientByIncentiveSpriometerId(int incentiveSpirometerId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + INCENTIVE_SPIROMETER_ID + " = " + incentiveSpirometerId;
-        Cursor c = db.rawQuery(query, null);
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + INCENTIVE_SPIROMETER_ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(incentiveSpirometerId)});
 
         Log.d(TAG, "getPatientByIncentiveSpriometerId: "+ query);
 
@@ -482,8 +444,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public int getPatientByDvtId(int dvtId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + DVT_ID + " = " + dvtId;
-        Cursor c = db.rawQuery(query, null);
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + DVT_ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(dvtId)});
 
         Log.d(TAG, "getPatientByDvtId: "+ query);
 
@@ -501,8 +463,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public boolean patientExists(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
 
         Log.d(TAG, "patientExists: "+ query);
 
@@ -521,17 +483,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Cursor getPatientListByKeyword(String searchKey, int doctorId) {
         SQLiteDatabase db = this.getReadableDatabase();
+
         String query =  "SELECT p.* FROM "
                 + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " WHERE dp." + DOCTOR_ID + " = ?"
                 + " AND dp." + PATIENT_ID + " = p." + ID
-                + " AND (p." +  ID + "  LIKE  '" + searchKey + "%'" +
-                " OR p." + LAST_NAME + " LIKE '" + searchKey + "%'" +
-                " OR p." + FIRST_NAME + " LIKE '" + searchKey + "%')";
+                + " AND (p." +  ID + "  LIKE  ?" +
+                " OR p." + LAST_NAME + " LIKE ?" +
+                " OR p." + FIRST_NAME + " LIKE ? )";
 
         Log.d(TAG, "getPatientListByKeyword: " + query);
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(doctorId), searchKey + "%", searchKey + "%", searchKey + "%"});
 
         return cursor;
     }
@@ -547,7 +510,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
                 + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
                 + TABLE_INCENTIVE_SPIROMETER_DATA + " a, " + TABLE_INCENTIVE_SPIROMETER_DATA + " b"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " WHERE dp." + DOCTOR_ID + " = ?"
                 + " AND dp." + PATIENT_ID + " = p." + ID
                 + " AND a." + ID + " = b." + ID
                 + " AND p." + INCENTIVE_SPIROMETER_ID + " = a." + ID
@@ -558,7 +521,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
                 + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
                 + TABLE_DVT_DATA + " a, " + TABLE_DVT_DATA + " b"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " WHERE dp." + DOCTOR_ID + " = ?"
                 + " AND dp." + PATIENT_ID + " = p." + ID
                 + " AND a." + ID + " = b." + ID
                 + " AND p." + DVT_ID + " = a." + ID
@@ -567,27 +530,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String query3 = "SELECT p." + ID
                 + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
-                + TABLE_INCENTIVE_SPIROMETER_DATA + " i"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + TABLE_INCENTIVE_SPIROMETER + " i"
+                + " WHERE dp." + DOCTOR_ID + " = ?"
                 + " AND dp." + PATIENT_ID + " = p." + ID
                 + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
 
         String query4 = "SELECT p." + ID
                 + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
-                + TABLE_DVT_DATA + " d"
-                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + TABLE_DVT + " d"
+                + " WHERE dp." + DOCTOR_ID + " = ?"
                 + " AND dp." + PATIENT_ID + " = p." + ID
-                + " AND p." + INCENTIVE_SPIROMETER_ID + " = d." + ID;
+                + " AND p." + DVT_ID + " = d." + ID;
 
         Log.d(TAG, "getOldPatients: " + query1);
         Log.d(TAG, "getOldPatients: " + query2);
         Log.d(TAG, "getOldPatients: " + query3);
         Log.d(TAG, "getOldPatients: " + query4);
 
-        Cursor c1 = db.rawQuery(query1, null);
-        Cursor c2 = db.rawQuery(query2, null);
-        Cursor c3 = db.rawQuery(query1, null);
-        Cursor c4 = db.rawQuery(query2, null);
+        Cursor c1 = db.rawQuery(query1, new String[]{String.valueOf(doctorId)});
+        Cursor c2 = db.rawQuery(query2, new String[]{String.valueOf(doctorId)});
+        Cursor c3 = db.rawQuery(query3, new String[]{String.valueOf(doctorId)});
+        Cursor c4 = db.rawQuery(query4, new String[]{String.valueOf(doctorId)});
 
         List<Integer> oldSpiroPatientIds = new ArrayList<Integer>();
         List<Integer> oldDvtPatientIds = new ArrayList<Integer>();
@@ -650,35 +613,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " WHERE " + ID + " = ("
                 + "SELECT " + INCENTIVE_SPIROMETER_ID
                 + " FROM " + TABLE_PATIENT
-                + " WHERE " + ID + " = " + patientId + ")";
+                + " WHERE " + ID + " = ?)";
         String query2 = "DELETE FROM "
                 + TABLE_INCENTIVE_SPIROMETER
                 + " WHERE " + ID + " = ("
                 + "SELECT " + INCENTIVE_SPIROMETER_ID
                 + " FROM " + TABLE_PATIENT
-                + " WHERE " + ID + " = " + patientId + ")";
+                + " WHERE " + ID + " = ?)";
         String query3 = "DELETE FROM "
                 + TABLE_DVT_DATA
                 + " WHERE " + ID + " = ("
                 + "SELECT " + DVT_ID
                 + " FROM " + TABLE_PATIENT
-                + " WHERE " + ID + " = " + patientId + ")";
+                + " WHERE " + ID + " = ?)";
         String query4 = "DELETE FROM "
                 + TABLE_DVT
                 + " WHERE " + ID + " = ("
                 + "SELECT " + DVT_ID
                 + " FROM " + TABLE_PATIENT
-                + " WHERE " + ID + " = " + patientId + ")";
+                + " WHERE " + ID + " = ?)";
 
         Log.d(TAG, "deletePatientById: " + query1);
         Log.d(TAG, "deletePatientById: " + query2);
         Log.d(TAG, "deletePatientById: " + query3);
         Log.d(TAG, "deletePatientById: " + query4);
 
-        db.execSQL(query1);
-        db.execSQL(query2);
-        db.execSQL(query3);
-        db.execSQL(query4);
+        db.execSQL(query1, new String[] { String.valueOf(patientId)});
+        db.execSQL(query2, new String[] { String.valueOf(patientId)});
+        db.execSQL(query3, new String[] { String.valueOf(patientId)});
+        db.execSQL(query4, new String[] { String.valueOf(patientId)});
         db.delete(TABLE_DOCTOR_PATIENT, PATIENT_ID + " = ?", new String[] { String.valueOf(patientId)});
         db.delete(TABLE_PATIENT, ID + " = ?", new String[] { String.valueOf(patientId)});
     }
@@ -761,8 +724,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public int getDoctorId(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT " + ID + " FROM " + TABLE_DOCTOR
-                + " WHERE " + USERNAME + " = '" + username + "'";
-        Cursor c = db.rawQuery(query, null);
+                + " WHERE " + USERNAME + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{username});
+
+        Log.d(TAG, "getDoctorId: " + query);
 
         int doctorId = -1;
 
@@ -782,10 +747,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean doctorExists(String username) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_DOCTOR + " WHERE " + USERNAME + " = '" + username + "'";
-        Log.d(TAG, "doctorExists: " + query);
+        String query = "SELECT * FROM " + TABLE_DOCTOR + " WHERE " + USERNAME + " = ?";
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{username});
 
         if (c != null && c.getCount() > 0) {
             return true;
@@ -803,8 +767,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String[] getLoginInformation(String username) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + SALT + ", " + HASHED_PASSWORD + " FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = '" + username + "';  ";
-        Cursor c = db.rawQuery(query, null);
+        String query = "SELECT " + SALT + ", " + HASHED_PASSWORD + " FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{username});
 
         String[] results = new String[2];
         if (c != null && c.moveToFirst()) {
@@ -824,11 +788,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean isRealUser(String username) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT COUNT(*) FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = '" + username + "';";
+        String query = "SELECT COUNT(*) FROM " + TABLE_LOGIN + " WHERE " + USERNAME + " = ?";
 
         try {
 
-            Cursor c = db.rawQuery(query, null);
+            Cursor c = db.rawQuery(query, new String[]{username});
             int empty = 0;
             if(c != null && c.moveToFirst()) {
 
@@ -865,12 +829,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
         String query = "SELECT isd.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER_DATA
                 + " isd WHERE p." + INCENTIVE_SPIROMETER_ID + " = isd." + ID
-                + " AND p." + ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
+                + " AND p." + ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
 
         List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
-
-        //Log.d(TAG, "getPatientSpirometer: " + query);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -939,8 +901,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
         String query = "SELECT dvtd.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT_DATA
                 + " dvtd WHERE p." + DVT_ID + " = dvtd." + ID
-                + " AND p." + ID + " = " + patientId;
-        Cursor c = db.rawQuery(query, null);
+                + " AND p." + ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
 
         List<DvtData> dvtData = new ArrayList<>();
 
@@ -1011,10 +973,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public IncentiveSpirometer getIncentiveSpirometer(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT i.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER + " i"
-                + " WHERE p." + ID + " = " + patientId
+                + " WHERE p." + ID + " = ?"
                 + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
 
         Log.d(TAG, "getIncentiveSpirometer: "+ query);
 
@@ -1040,11 +1002,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public IncentiveSpirometer getIncentiveSpirometerBySpirometerId (int spirometerId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT i.* FROM " + TABLE_INCENTIVE_SPIROMETER + " i"
-                + " WHERE i." + ID + " = " + spirometerId;
+                + " WHERE i." + ID + " = ?";
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(spirometerId)});
 
-        Log.d(TAG, "getIncentiveSpirometer: "+ query);
+        Log.d(TAG, "getIncentiveSpirometerBySpirometerId: "+ query);
 
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
@@ -1105,10 +1067,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean incentiveSpirometerExists(IncentiveSpirometer incentiveSpirometer) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER + " WHERE " + ID + " = " + incentiveSpirometer.getId();
+        String query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER + " WHERE " + ID + " = ?";
         Log.d(TAG, "incentiveSpirometerExists: " + query);
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(incentiveSpirometer.getId())});
 
         if (c != null && c.getCount() > 0) {
             Log.d(TAG, "incentiveSpirometerExists: true");
@@ -1144,10 +1106,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Dvt getDvt(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT d.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT + " d"
-                + " WHERE p." + ID + " = " + patientId
+                + " WHERE p." + ID + " = ?"
                 + " AND p." + DVT_ID + " = d." + ID;
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
 
         Log.d(TAG, "getDvt: "+ query);
 
@@ -1173,9 +1135,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Dvt getDvtByDvtId (int dvtId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT d.* FROM " + TABLE_DVT + " d"
-                + " WHERE d." + ID + " = " + dvtId;
+                + " WHERE d." + ID + " = ?";
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(dvtId)});
 
         Log.d(TAG, "getDvt: "+ query);
 
@@ -1219,10 +1181,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean dvtExists(Dvt dvt) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_DVT + " WHERE " + ID + " = " + dvt.getId();
+        String query = "SELECT * FROM " + TABLE_DVT + " WHERE " + ID + " = ?";
         Log.d(TAG, "dvtExists: " + query);
 
-        Cursor c = db.rawQuery(query, null);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(dvt.getId())});
 
         if (c != null && c.getCount() > 0) {
             return true;

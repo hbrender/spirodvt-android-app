@@ -66,12 +66,6 @@ public class PatientListActivity extends AppCompatActivity {
             doctorId = intent.getIntExtra("doctorId", -1);
         }
 
-        // remove old patients
-        /*List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
-        for (Integer i : oldPatients) {
-            databaseHelper.deletePatientById(i);
-        }*/
-
         createPatientsList();
 
         final SearchView searchView = findViewById(R.id.searchView);
@@ -256,6 +250,13 @@ public class PatientListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // remove old patients
+        /*List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
+        for (Integer i : oldPatients) {
+            databaseHelper.deletePatientById(i);
+        }*/
+
         Log.d(TAG, "onResume: ");
         updatePatientListView();
     }
