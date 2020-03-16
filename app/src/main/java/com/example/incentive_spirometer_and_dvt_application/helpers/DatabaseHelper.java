@@ -30,6 +30,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -540,10 +542,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @return list of patient ids
      */
     public List<Integer> getOldPatients(int doctorId) {
-        List<Integer> spiroPatientIds = new ArrayList<Integer>();
-        List<Integer> dvtPatientIds = new ArrayList<Integer>();
-        List<Integer> oldPatientIds = new ArrayList<Integer>();
-
         SQLiteDatabase db = this.getWritableDatabase();
         String query1 = "SELECT p." + ID
                 + ", (julianday(MAX('now')) - julianday(MAX(a." + END_TIMESTAMP + "))) AS difference"
@@ -567,31 +565,74 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " GROUP BY p." + ID
                 + " HAVING difference > 14";
 
+        String query3 = "SELECT p." + ID
+                + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
+                + TABLE_INCENTIVE_SPIROMETER_DATA + " i"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID
+                + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
+
+        String query4 = "SELECT p." + ID
+                + " FROM " + TABLE_PATIENT + " p, " + TABLE_DOCTOR_PATIENT + " dp, "
+                + TABLE_DVT_DATA + " d"
+                + " WHERE dp." + DOCTOR_ID + " = " + doctorId
+                + " AND dp." + PATIENT_ID + " = p." + ID
+                + " AND p." + INCENTIVE_SPIROMETER_ID + " = d." + ID;
 
         Log.d(TAG, "getOldPatients: " + query1);
         Log.d(TAG, "getOldPatients: " + query2);
+        Log.d(TAG, "getOldPatients: " + query3);
+        Log.d(TAG, "getOldPatients: " + query4);
 
         Cursor c1 = db.rawQuery(query1, null);
-        Cursor c2 = db.rawQuery(query1, null);
+        Cursor c2 = db.rawQuery(query2, null);
+        Cursor c3 = db.rawQuery(query1, null);
+        Cursor c4 = db.rawQuery(query2, null);
+
+        List<Integer> oldSpiroPatientIds = new ArrayList<Integer>();
+        List<Integer> oldDvtPatientIds = new ArrayList<Integer>();
+        List<Integer> oldPatientIds = new ArrayList<Integer>();
+
+        // map of patient id to how many devices they are using (either 1 or 2)
+        HashMap<Integer, Integer> patientIds = new HashMap<Integer, Integer>();
 
         if (c1.moveToFirst()) {
             do {
-                spiroPatientIds.add(c1.getInt(c1.getColumnIndex(ID)));
+                oldSpiroPatientIds.add(c1.getInt(c1.getColumnIndex(ID)));
             } while (c1.moveToNext());
         }
         if (c2.moveToFirst()) {
             do {
-                dvtPatientIds.add(c2.getInt(c2.getColumnIndex(ID)));
+                oldDvtPatientIds.add(c2.getInt(c2.getColumnIndex(ID)));
             } while (c2.moveToNext());
         }
-
-        if (spiroPatientIds.isEmpty()) {
-            return dvtPatientIds;
+        if (c3.moveToFirst()) {
+            do {
+                if (!patientIds.containsKey(c3.getInt(c3.getColumnIndex(ID)))) {
+                    patientIds.put(c3.getInt(c3.getColumnIndex(ID)), 1);
+                } else {
+                    patientIds.put(c3.getInt(c3.getColumnIndex(ID)), 2);
+                }
+            } while (c3.moveToNext());
+        }
+        if (c4.moveToFirst()) {
+            do {
+                if (!patientIds.containsKey(c4.getInt(c4.getColumnIndex(ID)))) {
+                    patientIds.put(c4.getInt(c4.getColumnIndex(ID)), 1);
+                } else {
+                    patientIds.put(c4.getInt(c4.getColumnIndex(ID)), 2);
+                }
+            } while (c4.moveToNext());
         }
 
-        for (Integer id : spiroPatientIds){
-            if (dvtPatientIds.contains(id) || dvtPatientIds.isEmpty())
+        for (Integer id : patientIds.keySet()) {
+            if (patientIds.get(id) == 1 && oldSpiroPatientIds.contains(id)) {
                 oldPatientIds.add(id);
+            } else if (patientIds.get(id) == 1 && oldDvtPatientIds.contains(id)) {
+                oldPatientIds.add(id);
+            } else if (patientIds.get(id) == 2 && oldSpiroPatientIds.contains(id) && oldDvtPatientIds.contains(id)) {
+                oldPatientIds.add(id);
+            }
         }
 
         return oldPatientIds;
