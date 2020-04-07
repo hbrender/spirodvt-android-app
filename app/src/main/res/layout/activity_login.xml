@@ -24,22 +24,24 @@
         android:id="@+id/usernameEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:inputType="text"
         android:layout_marginTop="5dp"
         android:drawableLeft="@drawable/ic_person_outline_24dp"
         android:hint="@string/username_prompt"
-        android:textColorHint="@color/colorSecondaryText"/>
+        android:inputType="text"
+        android:maxLength="15"
+        android:textColorHint="@color/colorSecondaryText"
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:inputType="textPassword"
         android:drawableLeft="@drawable/ic_lock_outline_24dp"
         android:hint="@string/password_prompt"
-        android:textColorHint="@color/colorSecondaryText"/>
+        android:inputType="textPassword"
+        android:maxLength="15"
+        android:textColorHint="@color/colorSecondaryText"
+        android:textSize="18sp" />
 
     <Button
         android:id="@+id/loginButton"
