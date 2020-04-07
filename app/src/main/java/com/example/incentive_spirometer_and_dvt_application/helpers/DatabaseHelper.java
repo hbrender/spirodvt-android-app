@@ -39,7 +39,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "spirometerDvtApp";
-    private static DatabaseHelper staticInstance;
     private SQLiteDatabase defaultDB = null;
 
     // Table names
@@ -83,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // DoctorPatient table column names
     private static final String DOCTOR_ID = "doctorId";
-    private static final String PATIENT_ID = "patientId";
+    public static final String PATIENT_ID = "patientId";
 
     // Login table column names
     private static final String SALT = "salt";
@@ -130,7 +129,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Patient table create statement
     private static final String CREATE_TABLE_PATIENT = "CREATE TABLE " + TABLE_PATIENT + "("
-            + ID + " INTEGER PRIMARY KEY,"
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + PATIENT_ID + " TEXT,"
             + FIRST_NAME + " TEXT,"
             + LAST_NAME + " TEXT,"
             + HEIGHT_FEET + " INTEGER,"
@@ -203,12 +203,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DOCTOR + " VALUES(1, 'doctor1')");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR + " VALUES(2, 'doctor2')");
 
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, 'John', 'Johnson', 5, 10, 145, 76, 'Male', 10, 90)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 11, 91)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'Sean', 'Wilson', 6, 3, 190, 59, 'Other', 12, 92)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, 'Allen', 'Fred', 5, 4, 155, 37, 'Male', 13, 93)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 14, 94)");
-        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 15, 95)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(1, '9862WDF7300X781', 'John', 'Johnson', 5, 10, 145, 76, 'Male', 10, 90)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(2, '00AFDHSJ873DJH1', 'Lucy', 'Riley', 5, 7, 0, 270, 'Female', 11, 91)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(3, 'XY92736829HG800', 'Sean', 'Wilson', 6, 3, 190, 59, 'Other', 12, 92)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(4, '1234567890ABCDE', 'Allen', 'Fred', 5, 4, 155, 37, 'Male', 13, 93)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(5, 'XXXXXXXXXXXXXXX', 'Sammy', 'Martinez', 5, 6, 200, 81, 'Female', 14, 94)");
+        db.execSQL("INSERT INTO " + TABLE_PATIENT + " VALUES(6, 'ZZZZZZZZZZZZZZZ', 'Nicole', 'Meyers', 5, 11, 140, 22, 'Female', 15, 95)");
 
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,1)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(1,2)");
@@ -358,6 +358,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(ID, patient.getId());
+        values.put(PATIENT_ID, patient.getPatientId());
         values.put(FIRST_NAME, patient.getFirstName());
         values.put(LAST_NAME, patient.getLastName());
         values.put(HEIGHT_FEET, patient.getHeightFeet());
@@ -405,6 +406,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // create patient
         Patient patient = new Patient();
         patient.setId(c.getInt(c.getColumnIndex(ID)));
+        patient.setPatientId(c.getString(c.getColumnIndex(PATIENT_ID)));
         patient.setFirstName(c.getString(c.getColumnIndex(FIRST_NAME)));
         patient.setLastName(c.getString(c.getColumnIndex(LAST_NAME)));
         patient.setHeightFeet(c.getInt(c.getColumnIndex(HEIGHT_FEET)));
@@ -461,10 +463,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      * @param patientId patient
      * @return true if patient exists, false otherwise
      */
-    public boolean patientExists(int patientId) {
+    public boolean patientExists(String patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + ID + " = ?";
-        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + PATIENT_ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{patientId});
 
         Log.d(TAG, "patientExists: "+ query);
 
@@ -655,6 +657,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(PATIENT_ID, patient.getPatientId());
         values.put(FIRST_NAME, patient.getFirstName());
         values.put(LAST_NAME, patient.getLastName());
         values.put(HEIGHT_FEET, patient.getHeightFeet());

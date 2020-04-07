@@ -120,7 +120,7 @@ public class PatientInfoActivity extends AppCompatActivity {
      * @param patient has the information to set
      */
     public void setPatientInfo(Patient patient, IncentiveSpirometer incentiveSpirometer, Dvt dvt) {
-        patientIdEditText.setText(String.valueOf(patient.getId()));
+        patientIdEditText.setText(patient.getPatientId());
         firstNameEditText.setText(patient.getFirstName());
         lastNameEditText.setText(patient.getLastName());
         heightFeetEditText.setText(String.valueOf(patient.getHeightFeet()));
@@ -325,7 +325,7 @@ public class PatientInfoActivity extends AppCompatActivity {
      */
     public boolean uniquePatientId() {
         // if patient with the ID doesn't exists in database or not creating a new patient (patientId != -1)
-        if(!databaseHelper.patientExists(Integer.parseInt(patientIdEditText.getText().toString())) || patientId != -1) {
+        if(!databaseHelper.patientExists(patientIdEditText.getText().toString()) || patientId != -1) {
             return true;
         }
 
@@ -347,7 +347,7 @@ public class PatientInfoActivity extends AppCompatActivity {
     public Patient getPatientInfo() {
         Patient patient = new Patient();
 
-        patient.setId(Integer.parseInt(patientIdEditText.getText().toString()));
+        patient.setPatientId(patientIdEditText.getText().toString());
         patient.setFirstName(firstNameEditText.getText().toString());
         patient.setLastName(lastNameEditText.getText().toString());
         patient.setHeightFeet(Integer.parseInt(heightFeetEditText.getText().toString()));
