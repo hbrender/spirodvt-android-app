@@ -237,7 +237,16 @@
             android:textColor="@color/text_colors"
             app:suffix="@string/ml" />
 
-    <View style="@style/Divider" />
+        <Button
+            android:id="@+id/connectSpiroButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="3"
+            android:layout_gravity="fill_horizontal"
+            android:onClick="connectDev"
+            android:text="Connect Spirometer" />
+
+        <View style="@style/Divider" />
 
     <TextView
         android:id="@+id/dvtInfoTextView"
@@ -312,6 +321,15 @@
         android:layout_columnSpan="2"
         android:textColor="@color/text_colors"
         android:layout_gravity="fill_horizontal" />
+
+        <Button
+            android:id="@+id/connectDVTButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="3"
+            android:layout_gravity="fill_horizontal"
+            android:onClick="connectDev"
+            android:text="Connect DVT" />
 
 </GridLayout>
 </ScrollView>
