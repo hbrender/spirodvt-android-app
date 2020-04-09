@@ -2,6 +2,7 @@ package com.example.incentive_spirometer_and_dvt_application.models;
 
 public class Patient {
     private int id;
+    private String patientId;
     private String firstName;
     private String lastName;
     private int heightFeet; // units = ft.
@@ -16,8 +17,9 @@ public class Patient {
 
     }
 
-    public Patient(int id, String firstName, String lastName, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId) {
+    public Patient(int id, String patientId, String firstName, String lastName, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId) {
         this.id = id;
+        this.patientId = patientId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.heightFeet = heightFeet;
@@ -35,6 +37,14 @@ public class Patient {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(String patientId) {
+        this.patientId = patientId;
     }
 
     public String getFirstName() {

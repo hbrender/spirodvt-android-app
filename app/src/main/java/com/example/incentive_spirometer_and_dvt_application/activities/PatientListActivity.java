@@ -161,7 +161,7 @@ public class PatientListActivity extends AppCompatActivity {
                 if (cursor.moveToPosition(position)) {
                     text1.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.LAST_NAME))
                             + ", " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
-                    text2.setText("ID: " + cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
+                    text2.setText("ID: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.PATIENT_ID)));
                 }
                 return view;
             }

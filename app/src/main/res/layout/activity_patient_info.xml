@@ -31,15 +31,16 @@
         android:layout_columnSpan="1"
         android:text="@string/patient_id" />
 
-    <EditText
-        android:id="@+id/patientIdEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:hint="@string/unique_id"
-        android:inputType="number"
-        android:textColor="@color/text_colors" />
+        <EditText
+            android:id="@+id/patientIdEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:hint="@string/unique_id"
+            android:inputType="text"
+            android:maxLength="15"
+            android:textColor="@color/text_colors" />
 
     <TextView
         android:id="@+id/firstNameTextView"
