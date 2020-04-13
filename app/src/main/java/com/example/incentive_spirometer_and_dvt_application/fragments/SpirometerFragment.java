@@ -54,6 +54,7 @@ public class SpirometerFragment extends Fragment{
     private BarChart graph;
 
     private ListView dataListView;
+    private int numOfDaysInt;
 
     private int patientId;
     private int doctorId;
@@ -117,7 +118,7 @@ public class SpirometerFragment extends Fragment{
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String numOfDays = parent.getItemAtPosition(position).toString();
-                int numOfDaysInt = Integer.parseInt(numOfDays);
+                numOfDaysInt = Integer.parseInt(numOfDays);
                 setDataWindow(24 * numOfDaysInt);
                 drawGraph();
             }
@@ -198,7 +199,7 @@ public class SpirometerFragment extends Fragment{
 
         shownEntries.clear();
         // TODO change to current time once we are making current testing data
-        Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
+        Calendar now = new GregorianCalendar();
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
@@ -208,6 +209,9 @@ public class SpirometerFragment extends Fragment{
                 shownEntries.add(allBarEntries.get(session - 1));
                 //Log.d(TAG, "setDataWindow: SHOWTHIS");
             }
+        }
+        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
+            shownEntries.add(new BarEntry(session, 0));
         }
     }
 

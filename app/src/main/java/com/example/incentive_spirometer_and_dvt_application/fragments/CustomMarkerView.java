@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.MarkerView;
@@ -44,19 +45,25 @@ class CustomMarkerView extends MarkerView {
         NumberFormat format2 = new DecimalFormat("#0");
         DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
-        IncentiveSpirometerData sp = data.get(data.size() - (int) e.getX());
-        String formatBreaths = "Breaths: " + sp.getInhalationsCompleted();
-        String formatSession = "Session: " + format2.format(e.getX());
-        String formatStart = "Start Time: " + dateFormat.format(sp.getStartTime());
-        String formatEnd = "End Time:  " + dateFormat.format(sp.getEndTime());
+        IncentiveSpirometerData sp;
+        try{
+            sp = data.get(data.size() - (int) e.getX());
+            String formatBreaths = "Breaths: " + sp.getInhalationsCompleted();
+            String formatSession = "Session: " + format2.format(e.getX());
+            String formatStart = "Start Time: " + dateFormat.format(sp.getStartTime());
+            String formatEnd = "End Time:  " + dateFormat.format(sp.getEndTime());
 
-        session.setText(formatSession);
-        breathRate.setText(formatBreaths);
-        start.setText(formatStart);
-        end.setText(formatEnd);
+            session.setText(formatSession);
+            breathRate.setText(formatBreaths);
+            start.setText(formatStart);
+            end.setText(formatEnd);
 
-        // this will perform necessary layouting
-        super.refreshContent(e, highlight);
+            // this will perform necessary layouting
+            super.refreshContent(e, highlight);
+        } catch (java.lang.ArrayIndexOutOfBoundsException error){
+
+        }
+
     }
     private MPPointF mOffset;
     @Override
