@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
@@ -34,16 +36,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class DvtFragment extends Fragment implements View.OnClickListener {
+public class DvtFragment extends Fragment{
     static final String TAG = "PatientDvtInfoFragment";
     private DatabaseHelper databaseHelper;
 
     private List<DvtData> allDvtData;
     private List<BarEntry> allBarEntries;
 
-    private Button oneDayButton;
-    private Button twoDayButton;
-    private Button threeDayButton;
+    private Spinner dataWindowSpinner;
 
     private BarChart graph;
     private List<BarEntry> shownEntries;
@@ -87,15 +87,33 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.activity_patient_dvt_info, container, false);
 
-        oneDayButton = (Button) view.findViewById(R.id.one_day_button);
-        twoDayButton = (Button) view.findViewById(R.id.two_day_button);
-        threeDayButton = (Button) view.findViewById(R.id.three_day_button);
+        dataWindowSpinner = (Spinner) view.findViewById(R.id.dataWindowSpinner);
+        ArrayList<String> numOfDays = new ArrayList<>();
+        numOfDays.add("1");
+        numOfDays.add("2");
+        numOfDays.add("3");
+        numOfDays.add("4");
+        numOfDays.add("5");
+        numOfDays.add("6");
+        numOfDays.add("7");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, numOfDays);//this.getContext(), android.R.layout.simple_spinner_dropdown_item, );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataWindowSpinner.setAdapter(arrayAdapter);
+        dataWindowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String numOfDays = parent.getItemAtPosition(position).toString();
+                int numOfDaysInt = Integer.parseInt(numOfDays);
+                setDataWindow(24 * numOfDaysInt);
+                drawGraph();
+            }
+            @Override
+            public void onNothingSelected(AdapterView <?> parent) {
+            }
+        });
+
         graph = (BarChart) view.findViewById((R.id.patient_dvt_graph));
         dataListView = (ListView) view.findViewById(R.id.patient_dvt_table);
-
-        oneDayButton.setOnClickListener(this);
-        twoDayButton.setOnClickListener(this);
-        threeDayButton.setOnClickListener(this);
 
         databaseHelper = new DatabaseHelper(getContext());
 
@@ -105,35 +123,6 @@ public class DvtFragment extends Fragment implements View.OnClickListener {
         drawGraph();
 
         return view;
-    }
-
-    @Override
-    public void onClick(View view) {
-        Log.d(TAG, "onClick: BUTTON CLICK");
-        switch (view.getId()) {
-            case R.id.one_day_button:
-                Log.d(TAG, "onClick: one day button clicked");
-                setDataWindow(24);
-                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
-                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                break;
-            case R.id.two_day_button:
-                Log.d(TAG, "onClick: two day button clicked");
-                setDataWindow(48);
-                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
-                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                break;
-            case R.id.three_day_button:
-                Log.d(TAG, "onClick: three day button clicked");
-                setDataWindow(72);
-                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
-                break;
-        }
-        drawGraph();
     }
 
     /*

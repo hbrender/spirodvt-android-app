@@ -7,41 +7,36 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/dvtInfoButtons"
+        android:id="@+id/spirometerInfoSpinnerArea"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:padding="20dp">
 
-        <Button
-            android:id="@+id/one_day_button"
-            android:text="@string/one_day_button_text"
-            android:layout_weight="1"
-            android:layout_width="0dp"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorAccent"/>
-        <Button
-            android:id="@+id/two_day_button"
-            android:text="@string/two_day_button_text"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimaryLight"/>
-        <Button
-            android:id="@+id/three_day_button"
-            android:text="@string/three_day_button_text"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimaryLight"/>
+            android:text="@string/spinner_preamble_show_data_for_past"
+            android:textSize="16sp"
+            />
 
-        <!--<Button
-            android:id="@+id/one_week_button"
-            android:text="@string/week_button_text"
+        <Spinner
+            android:id="@+id/dataWindowSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:prompt="@string/default_spinner_prompt"
             android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
-            -->
+            android:layout_gravity="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:textSize="16sp"
+            android:text="@string/spinner_post_days"
+            />
 
     </LinearLayout>
 

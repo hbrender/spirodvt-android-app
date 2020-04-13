@@ -37,6 +37,9 @@
 
 
     <!-- Spirometer info screen strings -->
+    <string name="default_spinner_prompt">select data window</string>
+    <string name="spinner_preamble_show_data_for_past">Show data for the past</string>
+    <string name="spinner_post_days">days</string>
     <string name="one_day_button_text">1 day</string>
     <string name="two_day_button_text">2 days</string>
     <string name="three_day_button_text">3 days</string>
