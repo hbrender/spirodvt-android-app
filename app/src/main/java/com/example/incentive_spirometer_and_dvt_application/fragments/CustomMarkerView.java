@@ -41,12 +41,11 @@ class CustomMarkerView extends MarkerView {
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        NumberFormat formatter = new DecimalFormat("#0.00");
         NumberFormat format2 = new DecimalFormat("#0");
         DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
         IncentiveSpirometerData sp = data.get(data.size() - (int) e.getX());
-        String formatBreaths = "Avg. breaths/hour: " + formatter.format((double) sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
+        String formatBreaths = "Breaths: " + sp.getInhalationsCompleted();
         String formatSession = "Session: " + format2.format(e.getX());
         String formatStart = "Start Time: " + dateFormat.format(sp.getStartTime());
         String formatEnd = "End Time:  " + dateFormat.format(sp.getEndTime());
