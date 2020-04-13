@@ -44,6 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:id="@+id/patient_spirometer_graph"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         />
 
     <GridLayout

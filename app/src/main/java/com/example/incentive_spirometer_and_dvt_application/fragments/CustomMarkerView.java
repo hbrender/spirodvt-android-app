@@ -65,12 +65,14 @@ class CustomMarkerView extends MarkerView {
         }
 
     }
+
     private MPPointF mOffset;
     @Override
     public MPPointF getOffset() {
         if(mOffset == null) {
+            //if ( > data.size() / 2)
             // center the marker horizontally and vertically
-            mOffset = new MPPointF(-(getWidth() / 2), -getHeight());
+            mOffset = new MPPointF(-(getWidth() / 2) - 90, - getHeight());
         }
         return mOffset;
     }
