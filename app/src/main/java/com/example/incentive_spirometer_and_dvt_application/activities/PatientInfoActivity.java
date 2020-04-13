@@ -433,6 +433,8 @@ public class PatientInfoActivity extends AppCompatActivity {
         dvtResistanceSpinner.setEnabled(false);
         deleteSpirometerButton.setVisibility(View.INVISIBLE);
         deleteDvtButton.setVisibility(View.INVISIBLE);
+        connectSpiroButton.setVisibility(View.GONE);
+        connectDVTButton.setVisibility(View.GONE);
     }
 
     /**
@@ -449,8 +451,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         sexSpinner.setEnabled(true);
 
         if (spirometerIdEditText.getText().toString().length() == 0) {
-            spirometerIdEditText.setEnabled(true);
+            spirometerIdEditText.setEnabled(false);
+            connectSpiroButton.setVisibility(View.VISIBLE);
         } else {
+            connectSpiroButton.setVisibility(View.GONE);
             deleteSpirometerButton.setVisibility(View.VISIBLE);
         }
 
@@ -458,8 +462,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         lungVolumeEditText.setEnabled(true);
 
         if (dvtIdEditText.getText().toString().length() == 0) {
-            dvtIdEditText.setEnabled(true);
+            connectDVTButton.setVisibility(View.VISIBLE);
+            dvtIdEditText.setEnabled(false);
         } else {
+            connectDVTButton.setVisibility(View.GONE);
             deleteDvtButton.setVisibility(View.VISIBLE);
         }
         repsNumIdEditText.setEnabled(true);
