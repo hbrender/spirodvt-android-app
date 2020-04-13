@@ -42,15 +42,6 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         final EditText passwordEditText = (EditText) findViewById(R.id.passwordEditText);
 
-//        Button btHelper = (Button) findViewById(R.id.btTestButton);
-//        btHelper.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(LoginActivity.this, BluetoothTestActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-
         Button loginButt = (Button) findViewById(R.id.loginButton);
         loginButt.setOnClickListener(new View.OnClickListener() {
 

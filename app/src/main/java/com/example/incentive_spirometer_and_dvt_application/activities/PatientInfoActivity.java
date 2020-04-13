@@ -1,6 +1,7 @@
 package com.example.incentive_spirometer_and_dvt_application.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -42,6 +44,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class PatientInfoActivity extends AppCompatActivity {
     static final String TAG = "PatientInfoActivity";
+    static final int CONNECT_REQUEST_CODE = 0;
     DatabaseHelper databaseHelper = new DatabaseHelper(this);
     int patientId;
     int doctorId;
@@ -61,12 +64,14 @@ public class PatientInfoActivity extends AppCompatActivity {
     EditText inhalationsNumIdEditText;
     EditText lungVolumeEditText;
     ImageView deleteSpirometerButton;
+    Button connectSpiroButton;
 
     // DVT Prevention Device components
     EditText dvtIdEditText;
     EditText repsNumIdEditText;
     Spinner dvtResistanceSpinner;
     ImageView deleteDvtButton;
+    Button connectDVTButton;
 
     // Menu components
     MenuItem editMenuItem;
@@ -96,6 +101,9 @@ public class PatientInfoActivity extends AppCompatActivity {
         dvtResistanceSpinner = findViewById(R.id.dvtResistanceSpinner);
         deleteSpirometerButton = findViewById(R.id.deleteSpirometerButton);
         deleteDvtButton = findViewById(R.id.deleteDvtButton);
+
+        connectSpiroButton = findViewById(R.id.connectSpiroButton);
+        connectDVTButton = findViewById(R.id.connectDVTButton);
 
         // back menu item
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -144,6 +152,7 @@ public class PatientInfoActivity extends AppCompatActivity {
             spirometerIdEditText.setText(String.valueOf(incentiveSpirometer.getId()));
             inhalationsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
             lungVolumeEditText.setText(String.valueOf(incentiveSpirometer.getLungVolume()));
+            connectSpiroButton.setVisibility(View.GONE);
         } else {
             spirometerIdEditText.setText(null);
             inhalationsNumIdEditText.setText(null);
@@ -164,6 +173,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                 default:
                     dvtResistanceSpinner.setSelection(2);
             }
+            connectDVTButton.setVisibility(View.GONE);
         } else {
             dvtIdEditText.setText(null);
             repsNumIdEditText.setText(null);
@@ -579,6 +589,49 @@ public class PatientInfoActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void connectDev(View v){
+        Button view = (Button) v;
+        Intent intent = new Intent(this, ConnectDevice.class);
+
+        if(view.getId() == R.id.connectSpiroButton){
+            intent.putExtra("isSpiro", true);
+        }
+        else if (view.getId() == R.id.connectDVTButton){
+            intent.putExtra("isSpiro", false);
+        }
+        startActivityForResult(intent, CONNECT_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: result has been gotten");
+        Log.d(TAG, "onActivityResult: " + (data == null));
+        if(data != null){
+            if(requestCode == CONNECT_REQUEST_CODE && resultCode == RESULT_OK){
+                boolean isSpiroResult = data.getBooleanExtra("isSpiro", true);
+                int tempId = data.getIntExtra("idThingy", 0);
+                Log.d(TAG, "onActivityResult: " + tempId + " " + isSpiroResult);
+
+                if(isSpiroResult && tempId != 0){
+                    spirometerIdEditText.setText(tempId+"");
+                    connectSpiroButton.setVisibility(View.GONE);
+                    spirometerIdEditText.setEnabled(false);
+                }
+                else if(!isSpiroResult && tempId != 0){
+                    dvtIdEditText.setText(tempId+"");
+                    connectDVTButton.setVisibility(View.GONE);
+                    dvtIdEditText.setEnabled(false);
+                }
+
+            }
+            else if(requestCode == CONNECT_REQUEST_CODE && resultCode == RESULT_CANCELED){
+                GridLayout layout = findViewById(R.id.gridLayout);
+                Snackbar.make(layout,"no ID found", Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 

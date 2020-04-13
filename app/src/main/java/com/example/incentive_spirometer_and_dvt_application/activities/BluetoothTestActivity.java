@@ -36,6 +36,8 @@ public class BluetoothTestActivity extends AppCompatActivity {
     private static String uniqueID;
     private static final String PREFERRED_UNIQUE_ID = "PREF_UNIQUE_ID";
 
+    private static boolean isSpiro;
+
     BluetoothAdapter btAdapter;
     Button enableDisableDiscoverable;
     Button startAcceptThread;
@@ -58,6 +60,11 @@ public class BluetoothTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth_test);
         uniqueID = id(BluetoothTestActivity.this);
+
+        Intent intent = getIntent();
+        if(intent != null){
+            isSpiro = intent.getBooleanExtra("isSpiro", true);
+        }
 
         Log.d(TAG, "onCreate: UUID is " + uniqueID);
 
@@ -294,8 +301,6 @@ public class BluetoothTestActivity extends AppCompatActivity {
             }
         }
     };
-
-
 
 
     /**
