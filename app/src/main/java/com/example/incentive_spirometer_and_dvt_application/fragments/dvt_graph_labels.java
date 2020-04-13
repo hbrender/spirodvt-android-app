@@ -61,7 +61,7 @@ public class dvt_graph_labels extends MarkerView{
         public MPPointF getOffset() {
             if(mOffset == null) {
                 // center the marker horizontally and vertically
-                mOffset = new MPPointF(-(getWidth() / 2), -getHeight());
+                mOffset = new MPPointF(-(getWidth() / 2) - 90, -getHeight());
             }
             return mOffset;
         }

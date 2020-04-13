@@ -198,7 +198,6 @@ public class SpirometerFragment extends Fragment{
         }
 
         shownEntries.clear();
-        // TODO change to current time once we are making current testing data
         Calendar now = new GregorianCalendar();
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
