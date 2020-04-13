@@ -613,15 +613,15 @@ public class PatientInfoActivity extends AppCompatActivity {
         if(data != null){
             if(requestCode == CONNECT_REQUEST_CODE && resultCode == RESULT_OK){
                 boolean isSpiroResult = data.getBooleanExtra("isSpiro", true);
-                int tempId = data.getIntExtra("idThingy", 0);
+                String tempId = data.getStringExtra("idThingy");
                 Log.d(TAG, "onActivityResult: " + tempId + " " + isSpiroResult);
 
-                if(isSpiroResult && tempId != 0){
+                if(isSpiroResult && !tempId.equals("none")){
                     spirometerIdEditText.setText(tempId+"");
                     connectSpiroButton.setVisibility(View.GONE);
                     spirometerIdEditText.setEnabled(false);
                 }
-                else if(!isSpiroResult && tempId != 0){
+                else if(!isSpiroResult && !tempId.equals("none")){
                     dvtIdEditText.setText(tempId+"");
                     connectDVTButton.setVisibility(View.GONE);
                     dvtIdEditText.setEnabled(false);

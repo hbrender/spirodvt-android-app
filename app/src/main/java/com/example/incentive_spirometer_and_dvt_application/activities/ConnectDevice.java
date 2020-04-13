@@ -304,7 +304,7 @@ public class ConnectDevice extends AppCompatActivity {
                     String[] deviceId = new String(readBuff, 0, msg.arg1).split("\\n");
 
                     try{
-                        int tempId = Integer.parseInt(deviceId[0].trim());
+                        String tempId = deviceId[0].trim();
                         bluetoothThread.endConnectThread();
                         bluetoothThread.endConnectedThread();
 
@@ -321,6 +321,7 @@ public class ConnectDevice extends AppCompatActivity {
                         e.printStackTrace();
 
                         Intent returnIntent = new Intent();
+                        returnIntent.putExtra("idThingy", "none");
                         setResult(RESULT_CANCELED, returnIntent);
                         finish();
                     }
