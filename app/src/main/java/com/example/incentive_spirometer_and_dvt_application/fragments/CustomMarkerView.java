@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.MarkerView;
@@ -41,30 +42,37 @@ class CustomMarkerView extends MarkerView {
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
-        NumberFormat formatter = new DecimalFormat("#0.00");
         NumberFormat format2 = new DecimalFormat("#0");
         DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
-        IncentiveSpirometerData sp = data.get(data.size() - (int) e.getX());
-        String formatBreaths = "Avg. breaths/hour: " + formatter.format((double) sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
-        String formatSession = "Session: " + format2.format(e.getX());
-        String formatStart = "Start Time: " + dateFormat.format(sp.getStartTime());
-        String formatEnd = "End Time:  " + dateFormat.format(sp.getEndTime());
+        IncentiveSpirometerData sp;
+        try{
+            sp = data.get(data.size() - (int) e.getX());
+            String formatBreaths = "Breaths: " + sp.getInhalationsCompleted();
+            String formatSession = "Session: " + format2.format(e.getX());
+            String formatStart = "Start Time: " + dateFormat.format(sp.getStartTime());
+            String formatEnd = "End Time:  " + dateFormat.format(sp.getEndTime());
 
-        session.setText(formatSession);
-        breathRate.setText(formatBreaths);
-        start.setText(formatStart);
-        end.setText(formatEnd);
+            session.setText(formatSession);
+            breathRate.setText(formatBreaths);
+            start.setText(formatStart);
+            end.setText(formatEnd);
 
-        // this will perform necessary layouting
-        super.refreshContent(e, highlight);
+            // this will perform necessary layouting
+            super.refreshContent(e, highlight);
+        } catch (java.lang.ArrayIndexOutOfBoundsException error){
+
+        }
+
     }
+
     private MPPointF mOffset;
     @Override
     public MPPointF getOffset() {
         if(mOffset == null) {
+            //if ( > data.size() / 2)
             // center the marker horizontally and vertically
-            mOffset = new MPPointF(-(getWidth() / 2), -getHeight());
+            mOffset = new MPPointF(-(getWidth() / 2) - 90, - getHeight());
         }
         return mOffset;
     }

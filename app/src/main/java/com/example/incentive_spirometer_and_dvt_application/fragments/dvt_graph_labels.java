@@ -39,12 +39,11 @@ public class dvt_graph_labels extends MarkerView{
         // content (user-interface)
         @Override
         public void refreshContent(Entry e, Highlight highlight) {
-            NumberFormat formatter = new DecimalFormat("#0.00");
             NumberFormat format2 = new DecimalFormat("#0");
             DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.US);
 
             DvtData dvtd = data.get((int) e.getX() - 1);
-            String formatExercises = "Avg. exercise/hour: " + formatter.format((double) dvtd.getRepsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
+            String formatExercises = "Exercises: " + dvtd.getRepsCompleted();
             String formatSession = "Session: " + format2.format(e.getX());
             String formatStart = "Start Time: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
             String formatEnd = "End Time:  " + dateFormat.format(data.get((int) e.getX() - 1).getEndTime());

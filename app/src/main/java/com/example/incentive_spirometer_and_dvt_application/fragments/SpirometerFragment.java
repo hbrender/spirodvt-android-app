@@ -13,9 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
@@ -40,21 +41,20 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class SpirometerFragment extends Fragment implements View.OnClickListener {
+public class SpirometerFragment extends Fragment{
     static final String TAG = "PatientSpiroInfoFrag";
     private DatabaseHelper databaseHelper;
 
     private List<IncentiveSpirometerData> allSpData;
     private List<BarEntry> allBarEntries;
 
-    private Button oneDayButton;
-    private Button twoDayButton;
-    private Button threeDayButton;
+    private Spinner dataWindowSpinner;
 
     private List<BarEntry> shownEntries;
     private BarChart graph;
 
     private ListView dataListView;
+    private int numOfDaysInt;
 
     private int patientId;
     private int doctorId;
@@ -102,57 +102,42 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         View view = inflater.inflate(R.layout.activity_patient_spirometer_info, container, false);
 
-        oneDayButton = (Button) view.findViewById(R.id.one_day_button);
-        twoDayButton = (Button) view.findViewById(R.id.two_day_button);
-        threeDayButton = (Button) view.findViewById(R.id.three_day_button);
+        dataWindowSpinner = (Spinner) view.findViewById(R.id.dataWindowSpinner);
+        ArrayList<String> numOfDays = new ArrayList<>();
+        numOfDays.add("1");
+        numOfDays.add("2");
+        numOfDays.add("3");
+        numOfDays.add("4");
+        numOfDays.add("5");
+        numOfDays.add("6");
+        numOfDays.add("7");
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_spinner_dropdown_item, numOfDays);//this.getContext(), android.R.layout.simple_spinner_dropdown_item, );
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataWindowSpinner.setAdapter(arrayAdapter);
+        dataWindowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String numOfDays = parent.getItemAtPosition(position).toString();
+                numOfDaysInt = Integer.parseInt(numOfDays);
+                setDataWindow(24 * numOfDaysInt);
+                drawGraph();
+            }
+            @Override
+            public void onNothingSelected(AdapterView <?> parent) {
+            }
+        });
+
         graph = (BarChart) view.findViewById((R.id.patient_spirometer_graph));
         dataListView = (ListView) view.findViewById(R.id.patient_spirometer_table);
-
-        oneDayButton.setOnClickListener(this);
-        twoDayButton.setOnClickListener(this);
-        threeDayButton.setOnClickListener(this);
 
         databaseHelper = new DatabaseHelper(getContext());
 
         shownEntries = new ArrayList<>();
 
-
         createDataLists();
         drawGraph();
 
         return view;
-    }
-
-    @Override
-    public void onClick(View view) {
-        Log.d(TAG, "onClick: BUTTON CLICK");
-        switch (view.getId()) {
-            case R.id.one_day_button:
-                Log.d(TAG, "onClick: one day button clicked");
-                setDataWindow(24);
-                //Updates colors of the buttons to reflect button press
-                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
-                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                break;
-            case R.id.two_day_button:
-                Log.d(TAG, "onClick: two day button clicked");
-                setDataWindow(48);
-                //Updates colors of the buttons to reflect button press
-                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
-                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                break;
-            case R.id.three_day_button:
-                Log.d(TAG, "onClick: three day button clicked");
-                setDataWindow(72);
-                //Updates colors of the buttons to reflect button press
-                oneDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                twoDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimaryLight));
-                threeDayButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorAccent));
-                break;
-        }
-        drawGraph();
     }
 
     /*
@@ -164,12 +149,11 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         allSpData = databaseHelper.getPatinetSpirometerData(patientId);
 
-        Collections.sort(allSpData);//, Collections.<IncentiveSpirometerData>reverseOrder());
+        Collections.sort(allSpData);
 
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
-            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
-            allBarEntries.add(new BarEntry(session, new float[] {inhalation_rate, sp.getNumberOfInhalations() - inhalation_rate}));
+            allBarEntries.add(new BarEntry(session, new float[] {sp.getInhalationsCompleted(), sp.getNumberOfInhalations() - sp.getInhalationsCompleted()}));
         }
 
         setDataWindow(24);
@@ -215,7 +199,7 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
 
         shownEntries.clear();
         // TODO change to current time once we are making current testing data
-        Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
+        Calendar now = new GregorianCalendar();
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
@@ -225,6 +209,9 @@ public class SpirometerFragment extends Fragment implements View.OnClickListener
                 shownEntries.add(allBarEntries.get(session - 1));
                 //Log.d(TAG, "setDataWindow: SHOWTHIS");
             }
+        }
+        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
+            shownEntries.add(new BarEntry(session, 0));
         }
     }
 
