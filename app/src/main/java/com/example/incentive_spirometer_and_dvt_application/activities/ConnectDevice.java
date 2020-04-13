@@ -106,24 +106,27 @@ public class ConnectDevice extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_device);
 
+        // if the intent coming in is dealing with connecting to a spirometer or  DVT device
         Intent incomingIntent = getIntent();
         if(incomingIntent != null){
             isSpiro = incomingIntent.getBooleanExtra("isSpiro", true);
         }
 
+        // getting global view variables
         listDevices = (Button) findViewById(R.id.listDevices);
         scan = (Button) findViewById(R.id.scanNearby);
         listView = (ListView) findViewById(R.id.listView);
         nearbyDevices = (ListView) findViewById(R.id.nearbyDevices);
-        status = (TextView) findViewById(R.id.status);
         message = (TextView) findViewById(R.id.message);
         baseLayout = (LinearLayout) findViewById(R.id.baseLayout);
 
+        // registering receivers so we can get callbacks from the bluetooth thread
         IntentFilter foundIntentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(nearbyReceiver, foundIntentFilter);
         IntentFilter bondIntentFilter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(bondReciever, bondIntentFilter);
 
+        // getting bluetooth adapter and making sure we have basic bluetooth permissions
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Log.d(TAG, "onCreate: " +bluetoothAdapter.getName() + " " + bluetoothAdapter.getAddress());
         if(!bluetoothAdapter.isEnabled()){
@@ -131,6 +134,11 @@ public class ConnectDevice extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_ENABLE_BT);
         }
 
+        // refresh the bonded devices list to show what devices are currently already paired to the phone
+        updateBondedList();
+
+        // enabling the scan for nearby devices
+        // we need certain bluetooth and location permissions. once those are ready we can start discovering nearby devices
         scan.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -145,40 +153,30 @@ public class ConnectDevice extends AppCompatActivity {
                     nearbyArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, nearbyDevicesStrings);
                     nearbyDevices.setAdapter(nearbyArrayAdapter);
                     startDiscovery();
-                }
-            }
-        });
-
-        listDevices.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
-                bondedDevices = new BluetoothDevice[bt.size()];
-                String[] strings = new String[bt.size()];
-                int index = 0;
-                if(bt.size() > 0){
-                    for(BluetoothDevice device : bt){
-                        bondedDevices[index] = device;
-                        strings[index] = device.getName();
-                        index++;
-                    }
-                    ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_expandable_list_item_1, strings);
-                    listView.setAdapter(arrayAdapter);
-                }
-                else{
-                    Snackbar.make(findViewById(R.id.baseLayout), "No devices bonded",
+                    Snackbar.make(findViewById(R.id.baseLayout), "Click on a nearby device to initiate the pairing process.",
                             Snackbar.LENGTH_SHORT)
                             .show();
                 }
             }
         });
 
+        // when you click the refresh bonded devices button it updates the array adapter for the bonded devices list view
+        listDevices.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                updateBondedList();
+            }
+        });
+
+        // when clicking on an item in the bonded devices list view it initiates a connection request to the hardware
         listView.setOnItemClickListener(new ListView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // gets the associated device
                 BluetoothDevice temp = bondedDevices[position];
                 ParcelUuid[] uuids = temp.getUuids();
 
+                // only initiates connection if there is a valid UUID for the device
                 if(uuids.length > 0){
                     bluetoothThread = new BluetoothThread(handler);
                     bluetoothThread.startConnectThread(temp);
@@ -186,6 +184,7 @@ public class ConnectDevice extends AppCompatActivity {
             }
         });
 
+        // when clicking on an item in the nearby devices list view, it initiates a bluetooth pairing process with that device
         nearbyDevices.setOnItemClickListener(new ListView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -201,6 +200,41 @@ public class ConnectDevice extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * Updates the bonded device list
+     */
+    public void updateBondedList(){
+        Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
+        bondedDevices = new BluetoothDevice[bt.size()];
+        String[] strings = new String[bt.size()];
+        int index = 0;
+        if(bt.size() > 0){
+            for(BluetoothDevice device : bt){
+                bondedDevices[index] = device;
+                strings[index] = device.getName();
+                index++;
+            }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_expandable_list_item_1, strings);
+            listView.setAdapter(arrayAdapter);
+            Snackbar.make(findViewById(R.id.baseLayout), "Click on a bonded device to connect to it.",
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
+        else{
+            Snackbar.make(findViewById(R.id.baseLayout), "No devices bonded",
+                    Snackbar.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    /**
+     * handles the call back if we did not have the bluetooth and location permissions
+     * and initiates the discovery of nearby devices
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -213,6 +247,9 @@ public class ConnectDevice extends AppCompatActivity {
         }
     }
 
+    /**
+     * starts discovery for nearby devices using the built in bluetooth adapter function startDiscovery()
+     */
     private void startDiscovery(){
         if(bluetoothAdapter.isDiscovering()){
             bluetoothAdapter.cancelDiscovery();
@@ -220,6 +257,7 @@ public class ConnectDevice extends AppCompatActivity {
         bluetoothAdapter.startDiscovery();
     }
 
+    // creating the handler for dealing with callbacks from the bluetooth threads used
     Handler handler = new Handler(new Handler.Callback(){
         @Override
         public boolean handleMessage(@NonNull Message msg) {
@@ -237,6 +275,8 @@ public class ConnectDevice extends AppCompatActivity {
                     Log.d(TAG, "handleMessage: connection failed :(");
                     break;
                 case STATE_CONNECTED_THREAD_SUCCESS:
+                    // connection was created and we send a prompt with what we want back
+                    // either a spriometer ID or DVT ID
                     byte[] bytes;
                     if(isSpiro){
                         bytes = "spiroid\r\n".getBytes(Charset.defaultCharset());
@@ -259,6 +299,7 @@ public class ConnectDevice extends AppCompatActivity {
                     finish();
                     break;
                 case STATE_MESSAGE_RECEIVED:
+                    // this handles the response from the hardware when we asked to give us a device ID
                     byte[] readBuff = (byte[]) msg.obj;
                     String[] deviceId = new String(readBuff, 0, msg.arg1).split("\\n");
 
@@ -289,6 +330,10 @@ public class ConnectDevice extends AppCompatActivity {
         }
     });
 
+    /**
+     * starts the connected thread with the device we want...this will enable the hardware to send us back data
+     * @param socket a bluetooth socket with the connetion to the device we want
+     */
     public static void manageConnectedSocket(BluetoothSocket socket){
         bluetoothThread.startConnectedThread(socket);
         Log.d(TAG, "manageConnectedSocket: managing open connect socket");

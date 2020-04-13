@@ -2,6 +2,7 @@ package com.example.incentive_spirometer_and_dvt_application.models;
 
 public class IncentiveSpirometer {
     private int id;
+    private String uuid;
     private int lungVolume; // units = ml
     private int numberOfInhalations;
 
@@ -9,8 +10,9 @@ public class IncentiveSpirometer {
 
     }
 
-    public IncentiveSpirometer(int id, int lungVolume, int numberOfInhalations) {
+    public IncentiveSpirometer(int id, String uuid, int lungVolume, int numberOfInhalations) {
         this.id = id;
+        this.uuid = uuid;
         this.lungVolume = lungVolume;
         this.numberOfInhalations = numberOfInhalations;
     }
@@ -22,6 +24,10 @@ public class IncentiveSpirometer {
     public void setId(int id) {
         this.id = id;
     }
+
+    public String getUuid() { return uuid; }
+
+    public void setUuid(String uuid) { this.uuid = uuid; }
 
     public int getLungVolume() {
         return lungVolume;

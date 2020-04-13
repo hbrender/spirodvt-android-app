@@ -53,6 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Common column names
     public static final String ID = "_id";
+    private static final String UUID = "uuid";
     private static final String START_TIMESTAMP = "startTimestamp";
     private static final String END_TIMESTAMP = "endTimestamp";
 
@@ -90,13 +91,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // IncentiveSpirometerData table create statement
     private static final String CREATE_TABLE_INCENTIVE_SPIROMETER = "CREATE TABLE " + TABLE_INCENTIVE_SPIROMETER + "("
-            + ID + " INTEGER PRIMARY KEY, "
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + UUID + " TEXT UNIQUE,"
             + LUNG_VOLUME + " INTEGER,"
             + NUMBER_OF_INHALATIONS + " INTEGER)";
 
     // Dvt table create statement
     private static final String CREATE_TABLE_DVT = "CREATE TABLE " + TABLE_DVT + "("
-            + ID + " INTEGER PRIMARY KEY, "
+            + ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+            + UUID + " TEXT UNIQUE,"
             + RESISTANCE + " TEXT,"
             + NUMBER_OF_REPS + " INTEGER)";
 
@@ -219,19 +222,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,6)");
         db.execSQL("INSERT INTO " + TABLE_DOCTOR_PATIENT + " VALUES(2,1)");
 
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(10, 2000, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(11, 2500, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(12, 1500, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(13, 2000, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(14, 2000, 10)");
-        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(15, 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(10, '1234', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(11, '5678', 2500, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(12, '91011', 1500, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(13, '121314', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(14, '151617', 2000, 10)");
+        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER + " VALUES(15, '171819', 2000, 10)");
 
-        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(90, 1, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(91, 2, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(92, 1, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(93, 1, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(94, 1, 10)");
-        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(95, 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(90, '202122', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(91, '232425', 2, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(92, '262728', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(93, '293031', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(94, '323334', 1, 10)");
+        db.execSQL("INSERT INTO " + TABLE_DVT + " VALUES(95, '353637', 1, 10)");
 
         // 3 days
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 08:00:00', '2019-11-08 08:59:59', 2000, 10, 3)");
@@ -979,9 +982,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " WHERE p." + ID + " = ?"
                 + " AND p." + INCENTIVE_SPIROMETER_ID + " = i." + ID;
 
-        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
-
         Log.d(TAG, "getIncentiveSpirometer: "+ query);
+        Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
 
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
@@ -989,6 +991,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // create incentive spirometer
             IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
             incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setUuid(c.getString(c.getColumnIndex(UUID)));
             incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
             incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
 
@@ -1017,6 +1020,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // create incentive spirometer
             IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
             incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setUuid(c.getString(c.getColumnIndex(UUID)));
             incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
             incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
 
@@ -1054,6 +1058,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(ID, incentiveSpirometer.getId());
+        values.put(UUID, incentiveSpirometer.getUuid());
         values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
         values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
 
@@ -1122,6 +1127,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // create dvt
             Dvt dvt = new Dvt();
             dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setUuid(c.getString(c.getColumnIndex(UUID)));
             dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
             dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
 
@@ -1150,6 +1156,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // create dvt
             Dvt dvt = new Dvt();
             dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setUuid(c.getString(c.getColumnIndex(UUID)));
             dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
             dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
 
@@ -1168,6 +1175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(ID, dvt.getId());
+        values.put(UUID, dvt.getUuid());
         values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
         values.put(RESISTANCE, dvt.getResistance());
 

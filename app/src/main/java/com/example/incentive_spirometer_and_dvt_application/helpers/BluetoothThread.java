@@ -27,7 +27,10 @@ public class BluetoothThread {
     static final int STATE_CONNECTED_THREAD_FAILED = 6;
     static final int STATE_MESSAGE_RECEIVED = 7;
 
+    // ServerClass inner class is not used so dont worry about it.
+    // it is there in case we ever need it
     private ServerClass serverClass;
+
     private ConnectThread connectThread;
     private ConnectedThread connectedThread;
 
@@ -39,11 +42,17 @@ public class BluetoothThread {
     private Handler handler;
     private BluetoothAdapter bluetoothAdapter;
 
+    /**
+     * Constructor for our bluetooth thread class
+     * @param handler a handler which allows us to send messages back to the Connect Device activity from the running threads
+     */
     public BluetoothThread(Handler handler){
         this.handler = handler;
         this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
+    // again this inner class is not used anywhere. It is only needed if we wanted the phone to be the bluetooth server and the hardware to be the client
+    // nice to keep just in case
     public class ServerClass extends Thread{
         private BluetoothServerSocket serverSocket;
 
@@ -82,14 +91,26 @@ public class BluetoothThread {
         }
     }
 
+    /**
+     * a function to start a new connect thread with a given device
+     * @param device the device to start a connection with
+     */
     public void startConnectThread(BluetoothDevice device){
       connectThread = new ConnectThread(device);
       connectThread.start();
     }
+
+    /**
+     * function which ends a connect thread
+     */
     public void endConnectThread(){
         connectThread.cancel();
     }
 
+    /**
+     * Connect Thread Class
+     * This class initiates the inital connection and creates an open bluetooth socket connection with the device
+     */
     public class ConnectThread extends Thread{
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
@@ -101,7 +122,6 @@ public class BluetoothThread {
             mmDevice = device;
             ParcelUuid[] uuids = mmDevice.getUuids();
 
-
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 Log.d(TAG, "ConnectThread: " + uuids[0].getUuid().toString());
@@ -112,6 +132,9 @@ public class BluetoothThread {
             mmSocket = tmp;
         }
 
+        /**
+         * this is the running part of the thread
+         */
         public void run() {
             // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
@@ -120,8 +143,7 @@ public class BluetoothThread {
                 Message message1 = Message.obtain();
                 message1.what  = STATE_CONNECTING;
                 handler.sendMessage(message1);
-                // Connect to the remote device through the socket. This call blocks
-                // until it succeeds or throws an exception.
+                // connects to the remote device through the socket
                 mmSocket.connect();
                 Log.d(TAG, "run: connection established and data link opened");
 
@@ -141,8 +163,7 @@ public class BluetoothThread {
                 return;
             }
 
-            // The connection attempt succeeded. Perform work associated with
-            // the connection in a separate thread.
+            // The connection attempt succeeded so we call the connect device activity's function manageConnectedSocket to start the connected thread
             ConnectDevice.manageConnectedSocket(mmSocket);
         }
 
@@ -156,14 +177,27 @@ public class BluetoothThread {
         }
     }
 
+    /**
+     * starts a connected thread given the socket from the connect thread
+     * @param socket the bluetooth socket with a connection to the device
+     */
     public void startConnectedThread(BluetoothSocket socket){
         connectedThread = new ConnectedThread(socket);
         connectedThread.start();
 
     }
+
+    /**
+     *  ends the connected thread
+     */
     public void endConnectedThread(){
         connectedThread.cancel();
     }
+
+    /**
+     * public function to send a message using the connected thread
+     * @param bytes the data to be sent (in byte[] format)
+     */
     public void sendMessage(byte[] bytes){ connectedThread.write(bytes); }
 
     public class ConnectedThread extends Thread{
@@ -192,11 +226,16 @@ public class BluetoothThread {
             inputStream = tempIn;
             outputStream = tempOut;
 
+            // since the opening of the input and output streams was a success, in connect device the callback is handled and a prompt is sent to the server
             Message message5 = Message.obtain();
             message5.what  = STATE_CONNECTED_THREAD_SUCCESS;
             handler.sendMessage(message5);
         }
 
+        /**
+         * writes to the connected socket using the output stream created
+         * @param bytes
+         */
         public void write(byte[] bytes){
             String text = new String(bytes, Charset.defaultCharset());
             Log.d(TAG, "write: " + text);
@@ -208,6 +247,9 @@ public class BluetoothThread {
             }
         }
 
+        /**
+         * this is the running part of the thread
+         */
         public void run(){
             byte[] buffer = new byte[1024];
             int bytes;
