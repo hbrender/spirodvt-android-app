@@ -134,10 +134,6 @@ public class DvtFragment extends Fragment{
 
         allDvtData = databaseHelper.getPatinetDvtData(patientId);
 
-        for (DvtData dvtd: allDvtData) {
-            //Log.d(TAG, "createDataLists: DVT data entry:" + dvtd);;
-        }
-
         Collections.sort(allDvtData);
 
         // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
@@ -145,8 +141,7 @@ public class DvtFragment extends Fragment{
 
         for (int session = 1; session <= allDvtData.size(); session++) {
             DvtData dvtd = allDvtData.get(session - 1);
-            float ex_rate = (float) ((double)dvtd.getRepsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
-            allBarEntries.add(new BarEntry(session, new float[] {ex_rate, dvtd.getNumberOfReps() - dvtd.getRepsCompleted()}));
+            allBarEntries.add(new BarEntry(session, new float[] {dvtd.getRepsCompleted(), dvtd.getNumberOfReps() - dvtd.getRepsCompleted()}));
         }
 
         setDataWindow(24);

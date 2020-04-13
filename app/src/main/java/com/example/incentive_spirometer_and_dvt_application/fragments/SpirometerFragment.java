@@ -152,8 +152,7 @@ public class SpirometerFragment extends Fragment{
 
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
-            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
-            allBarEntries.add(new BarEntry(session, new float[] {inhalation_rate, sp.getNumberOfInhalations() - inhalation_rate}));
+            allBarEntries.add(new BarEntry(session, new float[] {sp.getInhalationsCompleted(), sp.getNumberOfInhalations() - sp.getInhalationsCompleted()}));
         }
 
         setDataWindow(24);
