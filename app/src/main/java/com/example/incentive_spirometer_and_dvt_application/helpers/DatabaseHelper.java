@@ -1169,6 +1169,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(INCENTIVE_SPIROMETER_ID, 0);
+        values.putNull(INCENTIVE_SPIROMETER_UUID);
 
         int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
         int deleteDataResult = db.delete(TABLE_INCENTIVE_SPIROMETER_DATA, ID + " = ?", new String[] { String.valueOf(spirometerId)});
@@ -1194,6 +1195,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long result = db.insert(TABLE_INCENTIVE_SPIROMETER, null, values);
 
         return result != -1;
+    }
+
+    public boolean updateIncentiveSpiroForPatient(IncentiveSpirometer incentiveSpirometer, int patientId){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(INCENTIVE_SPIROMETER_UUID, incentiveSpirometer.getUuid());
+
+        long result = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
+
+        return result != 1;
     }
 
     /**
@@ -1313,6 +1325,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public boolean updateDvtForPatient(Dvt dvt, int patientId){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DVT_UUID, dvt.getUuid());
+
+        long result = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
+
+        return result != 1;
+    }
+
     /**
      * Checks if a certain Dvt device exists
      * @param dvt
@@ -1361,6 +1384,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(DVT_ID, 0);
+        values.putNull(DVT_UUID);
 
         int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
         int deleteDataResult = db.delete(TABLE_DVT_DATA, ID + " = ?", new String[] { String.valueOf(dvtId)});

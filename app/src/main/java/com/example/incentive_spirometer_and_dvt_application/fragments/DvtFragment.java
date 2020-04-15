@@ -226,12 +226,14 @@ public class DvtFragment extends Fragment{
         Dvt dvt = databaseHelper.getDvt(patientId);
 
         if (dvt == null) {
+            getDvtSession.setVisibility(View.GONE);
             noDvtTextView.setVisibility(View.VISIBLE);
             dataListView.setVisibility(View.GONE);
             columnTitlesGridLayout.setVisibility(View.GONE);
             graph.setVisibility(View.GONE);
             dvtInfoSpinnerArea.setVisibility(View.GONE);
         } else {
+            getDvtSession.setVisibility(View.VISIBLE);
             noDvtTextView.setVisibility(View.GONE);
             dataListView.setVisibility(View.VISIBLE);
             columnTitlesGridLayout.setVisibility(View.VISIBLE);

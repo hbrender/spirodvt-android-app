@@ -243,12 +243,14 @@ public class SpirometerFragment extends Fragment{
         IncentiveSpirometer spirometer = databaseHelper.getIncentiveSpirometer(patientId);
 
         if (spirometer == null) {
+            getSpiroSession.setVisibility(View.GONE);
             noSpirometerTextView.setVisibility(View.VISIBLE);
             dataListView.setVisibility(View.GONE);
             columnTitlesGridLayout.setVisibility(View.GONE);
             graph.setVisibility(View.GONE);
             spirometerInfoSpinnerArea.setVisibility(View.GONE);
         } else {
+            getSpiroSession.setVisibility(View.VISIBLE);
             noSpirometerTextView.setVisibility(View.GONE);
             dataListView.setVisibility(View.VISIBLE);
             columnTitlesGridLayout.setVisibility(View.VISIBLE);
