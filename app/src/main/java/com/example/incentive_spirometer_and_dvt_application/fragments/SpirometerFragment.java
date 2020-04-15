@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,6 +48,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -316,6 +318,12 @@ public class SpirometerFragment extends Fragment{
         }
 
         shownEntries.clear();
+
+
+//        for (int session = allBarEntries.size(); session >= 1 && session >= allBarEntries.size() - (numOfDaysInt * 12); session --) {
+//            shownEntries.add(allBarEntries.get(session - 1));
+//        }
+//
         Calendar now = new GregorianCalendar();
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
@@ -327,9 +335,9 @@ public class SpirometerFragment extends Fragment{
                 //Log.d(TAG, "setDataWindow: SHOWTHIS");
             }
         }
-        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
-            shownEntries.add(new BarEntry(session, 0));
-        }
+//        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
+//            shownEntries.add(new BarEntry(session, 0));
+//        }
     }
 
     // draws the features of the graph, including removing the description and legend, setting
