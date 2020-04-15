@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/noSpirometerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/no_spirometer_message"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/spirometerInfoSpinnerArea"
         android:orientation="horizontal"

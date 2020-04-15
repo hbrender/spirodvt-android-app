@@ -11,13 +11,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
 import com.example.incentive_spirometer_and_dvt_application.models.DvtData;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.IMarker;
@@ -49,8 +53,11 @@ public class DvtFragment extends Fragment{
 
     private int numOfDaysInt;
 
-    private BarChart graph;
     private List<BarEntry> shownEntries;
+    private BarChart graph;
+    private TextView noDvtTextView;
+    private GridLayout columnTitlesGridLayout;
+    private LinearLayout dvtInfoSpinnerArea;
 
     private ListView dataListView;
 
@@ -81,6 +88,8 @@ public class DvtFragment extends Fragment{
         super.onResume();
         createDataLists();
         drawGraph();
+
+        checkForNoDevice();
     }
 
     @Override
@@ -123,10 +132,32 @@ public class DvtFragment extends Fragment{
 
         shownEntries = new ArrayList<>();
 
+        noDvtTextView = view.findViewById(R.id.noDvtTextView);
+        columnTitlesGridLayout = view.findViewById(R.id.dvt_column_titles);
+        dvtInfoSpinnerArea = view.findViewById(R.id.dvtInfoSpinnerArea);
+
         createDataLists();
         drawGraph();
 
         return view;
+    }
+
+    private void checkForNoDevice() {
+        Dvt dvt = databaseHelper.getDvt(patientId);
+
+        if (dvt == null) {
+            noDvtTextView.setVisibility(View.VISIBLE);
+            dataListView.setVisibility(View.GONE);
+            columnTitlesGridLayout.setVisibility(View.GONE);
+            graph.setVisibility(View.GONE);
+            dvtInfoSpinnerArea.setVisibility(View.GONE);
+        } else {
+            noDvtTextView.setVisibility(View.GONE);
+            dataListView.setVisibility(View.VISIBLE);
+            columnTitlesGridLayout.setVisibility(View.VISIBLE);
+            graph.setVisibility(View.VISIBLE);
+            dvtInfoSpinnerArea.setVisibility(View.VISIBLE);
+        }
     }
 
     /*
