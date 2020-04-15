@@ -23,7 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -34,6 +34,7 @@ import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.BluetoothThread;
 import com.example.incentive_spirometer_and_dvt_application.helpers.CSVReader;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.IMarker;
@@ -46,10 +47,11 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
-import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -79,6 +81,9 @@ public class SpirometerFragment extends Fragment{
 
     private List<BarEntry> shownEntries;
     private BarChart graph;
+    private TextView noSpirometerTextView;
+    private GridLayout columnTitlesGridLayout;
+    private LinearLayout spirometerInfoSpinnerArea;
 
     private ListView dataListView;
     private int numOfDaysInt;
@@ -122,6 +127,7 @@ public class SpirometerFragment extends Fragment{
         createDataLists();
         drawGraph();
 
+        checkForNoDevice();
     }
 
     @Override
@@ -193,6 +199,10 @@ public class SpirometerFragment extends Fragment{
 
         shownEntries = new ArrayList<>();
 
+        noSpirometerTextView = view.findViewById(R.id.noSpirometerTextView);
+        columnTitlesGridLayout = view.findViewById(R.id.column_titles);
+        spirometerInfoSpinnerArea = view.findViewById(R.id.spirometerInfoSpinnerArea);
+
         createDataLists();
         drawGraph();
 
@@ -226,6 +236,24 @@ public class SpirometerFragment extends Fragment{
         }
         return null;
     }
+    
+    private void checkForNoDevice() {
+        IncentiveSpirometer spirometer = databaseHelper.getIncentiveSpirometer(patientId);
+
+        if (spirometer == null) {
+            noSpirometerTextView.setVisibility(View.VISIBLE);
+            dataListView.setVisibility(View.GONE);
+            columnTitlesGridLayout.setVisibility(View.GONE);
+            graph.setVisibility(View.GONE);
+            spirometerInfoSpinnerArea.setVisibility(View.GONE);
+        } else {
+            noSpirometerTextView.setVisibility(View.GONE);
+            dataListView.setVisibility(View.VISIBLE);
+            columnTitlesGridLayout.setVisibility(View.VISIBLE);
+            graph.setVisibility(View.VISIBLE);
+            spirometerInfoSpinnerArea.setVisibility(View.VISIBLE);
+        }
+    }
 
     /*
     gets the data for display from the database, sorts it into the different lists for display
@@ -253,16 +281,19 @@ public class SpirometerFragment extends Fragment{
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
-                TextView start = (TextView) view.findViewById(R.id.row_start);
-                TextView end = (TextView) view.findViewById(R.id.row_end);
+                TextView date = (TextView) view.findViewById(R.id.date);
+                TextView time = (TextView) view.findViewById(R.id.time);
                 TextView lung_volume = (TextView) view.findViewById(R.id.row_lung_volume);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_breaths_complete_ratio);
 
                 String breath_ratio_string = allSpData.get(position).getInhalationsCompleted() + " / " + allSpData.get(position).getNumberOfInhalations();
+                Date standardDate = allSpData.get(position).getStartTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format("%s",allSpData.size() - position));
-                start.setText(allSpData.get(position).getStringTime("start"));
-                end.setText(allSpData.get(position).getStringTime("end"));
+                date.setText(simpleDateFormat.format(standardDate));
+                time.setText(simpleTimeFormat.format(allSpData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allSpData.get(position).getEndTime()));
                 lung_volume.setText(String.format("%s", allSpData.get(position).getLungVolume()));
                 breaths_completed_ratio.setText(breath_ratio_string);
 

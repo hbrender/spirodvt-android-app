@@ -39,19 +39,22 @@
     <!-- Spirometer info screen strings -->
     <string name="default_spinner_prompt">select data window</string>
     <string name="spinner_preamble_show_data_for_past">Show data for the past</string>
-    <string name="spinner_post_days">days</string>
+    <string name="spinner_post_days">day(s)</string>
     <string name="one_day_button_text">1 day</string>
     <string name="two_day_button_text">2 days</string>
     <string name="three_day_button_text">3 days</string>
     <string name="week_button_text">week</string>
     <string name="spirometer_graph_title">Spirometry Exercises</string>
     <string name="session_label"><u>Session</u></string>
-    <string name="time_label"><u>Start / End Time</u></string>
+    <string name="date_label"><u>Date</u></string>
+    <string name="time_label"><u>Time</u></string>
     <string name="lung_volume_label"><u>Volume</u></string>
     <string name="completed_ratio_label"><u>Reps</u></string>
     <string name="resistance_on_table"><u>Resistance</u></string>
     <string name="get_dvt_session">Get Session From DVT</string>
     <string name="get_spiro_session">Get Session From Spirometer</string>
+    <string name="no_spirometer_message">There is no Incentive Spirometer for this patient. Add a device by editing the patient information.</string>
+    <string name="no_dvt_message">There is no DVT Exerciser for this patient. Add a device by editing the patient information.</string>
 
     <!-- Patient info screen strings -->
     <string name="label_save">Save</string>

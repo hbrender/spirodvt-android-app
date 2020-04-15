@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -27,7 +28,9 @@ import android.widget.Toast;
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.BluetoothThread;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
 import com.example.incentive_spirometer_and_dvt_application.models.DvtData;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.IMarker;
@@ -39,10 +42,11 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -71,8 +75,11 @@ public class DvtFragment extends Fragment{
 
     private int numOfDaysInt;
 
-    private BarChart graph;
     private List<BarEntry> shownEntries;
+    private BarChart graph;
+    private TextView noDvtTextView;
+    private GridLayout columnTitlesGridLayout;
+    private LinearLayout dvtInfoSpinnerArea;
 
     private ListView dataListView;
 
@@ -104,6 +111,8 @@ public class DvtFragment extends Fragment{
         super.onResume();
         createDataLists();
         drawGraph();
+
+        checkForNoDevice();
     }
 
     @Override
@@ -174,6 +183,10 @@ public class DvtFragment extends Fragment{
 
         shownEntries = new ArrayList<>();
 
+        noDvtTextView = view.findViewById(R.id.noDvtTextView);
+        columnTitlesGridLayout = view.findViewById(R.id.dvt_column_titles);
+        dvtInfoSpinnerArea = view.findViewById(R.id.dvtInfoSpinnerArea);
+
         createDataLists();
         drawGraph();
 
@@ -206,6 +219,24 @@ public class DvtFragment extends Fragment{
             }
         }
         return null;
+    } 
+    
+    private void checkForNoDevice() {
+        Dvt dvt = databaseHelper.getDvt(patientId);
+
+        if (dvt == null) {
+            noDvtTextView.setVisibility(View.VISIBLE);
+            dataListView.setVisibility(View.GONE);
+            columnTitlesGridLayout.setVisibility(View.GONE);
+            graph.setVisibility(View.GONE);
+            dvtInfoSpinnerArea.setVisibility(View.GONE);
+        } else {
+            noDvtTextView.setVisibility(View.GONE);
+            dataListView.setVisibility(View.VISIBLE);
+            columnTitlesGridLayout.setVisibility(View.VISIBLE);
+            graph.setVisibility(View.VISIBLE);
+            dvtInfoSpinnerArea.setVisibility(View.VISIBLE);
+        }
     }
 
     /*
@@ -238,16 +269,19 @@ public class DvtFragment extends Fragment{
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
-                TextView start = (TextView) view.findViewById(R.id.row_start);
-                TextView end = (TextView) view.findViewById(R.id.row_end);
+                TextView date = (TextView) view.findViewById(R.id.date);
+                TextView time = (TextView) view.findViewById(R.id.time);
                 TextView resistance = (TextView) view.findViewById(R.id.resistance_dvt_table_row);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_ex_complete_ratio);
 
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
+                Date standardDate = allDvtData.get(position).getStartTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format(String.format("%s",allDvtData.size() - position)));
-                start.setText(allDvtData.get(position).getStringTime("start"));
-                end.setText(allDvtData.get(position).getStringTime("end"));
+                date.setText(simpleDateFormat.format(standardDate));
+                time.setText(simpleTimeFormat.format(allDvtData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allDvtData.get(position).getEndTime()));
                 resistance.setText(allDvtData.get(position).getResistance());
 
                 breaths_completed_ratio.setText(breath_ratio_string);

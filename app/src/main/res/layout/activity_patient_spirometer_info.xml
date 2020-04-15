@@ -13,6 +13,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/get_spiro_session" />
+        
+    <TextView
+        android:id="@+id/noSpirometerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/no_spirometer_message"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/spirometerInfoSpinnerArea"
@@ -59,7 +68,7 @@
         android:id="@+id/column_titles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:columnCount="4"
+        android:columnCount="5"
         android:rowCount="1"
         android:paddingTop="10dp">
 
@@ -67,7 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:gravity="end"
+            android:gravity="center"
             android:text="@string/session_label"
             android:textStyle="bold"
             android:textSize="13sp"/>
@@ -75,7 +84,16 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_columnWeight="3"
+            android:layout_columnWeight="1"
+            android:gravity="center"
+            android:text="@string/date_label"
+            android:textStyle="bold"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
             android:gravity="center"
             android:text="@string/time_label"
             android:textStyle="bold"
@@ -85,7 +103,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:gravity="center"
+            android:gravity="end"
             android:text="@string/lung_volume_label"
             android:textStyle="bold"
             android:textSize="13sp"/>
