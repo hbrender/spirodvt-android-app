@@ -228,6 +228,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                     }
                 } else {
                     databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                    databaseHelper.updateIncentiveSpiroForPatient(incentiveSpirometer, patientId);
                 }
             }
 
@@ -249,6 +250,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                     }
                 } else {
                     databaseHelper.insertDvt(dvt);
+                    databaseHelper.updateDvtForPatient(dvt, patientId);
                 }
             }
 

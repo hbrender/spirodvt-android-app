@@ -42,6 +42,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -225,12 +226,14 @@ public class DvtFragment extends Fragment{
         Dvt dvt = databaseHelper.getDvt(patientId);
 
         if (dvt == null) {
+            getDvtSession.setVisibility(View.GONE);
             noDvtTextView.setVisibility(View.VISIBLE);
             dataListView.setVisibility(View.GONE);
             columnTitlesGridLayout.setVisibility(View.GONE);
             graph.setVisibility(View.GONE);
             dvtInfoSpinnerArea.setVisibility(View.GONE);
         } else {
+            getDvtSession.setVisibility(View.VISIBLE);
             noDvtTextView.setVisibility(View.GONE);
             dataListView.setVisibility(View.VISIBLE);
             columnTitlesGridLayout.setVisibility(View.VISIBLE);
