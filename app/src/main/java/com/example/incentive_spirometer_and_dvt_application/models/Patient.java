@@ -12,12 +12,14 @@ public class Patient {
     private String sex; // male, female, other?
     private int incentiveSpirometerId;
     private int dvtId;
+    private String incentiveSpirometerUuid;
+    private String dvtUuid;
 
     public Patient() {
 
     }
 
-    public Patient(int id, String patientId, String firstName, String lastName, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId) {
+    public Patient(int id, String patientId, String firstName, String lastName, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId, String incentiveSpirometerUuid, String dvtUuid) {
         this.id = id;
         this.patientId = patientId;
         this.firstName = firstName;
@@ -29,6 +31,8 @@ public class Patient {
         this.sex = sex;
         this.incentiveSpirometerId = incentiveSpirometerId;
         this.dvtId = dvtId;
+        this.incentiveSpirometerUuid = incentiveSpirometerUuid;
+        this.dvtUuid = dvtUuid;
     }
 
     public int getId() {
@@ -117,6 +121,22 @@ public class Patient {
 
     public void setDvtId(int dvtId) {
         this.dvtId = dvtId;
+    }
+
+    public String getIncentiveSpirometerUuid() {
+        return incentiveSpirometerUuid;
+    }
+
+    public void setIncentiveSpirometerUuid(String incentiveSpirometerUuid) {
+        this.incentiveSpirometerUuid = incentiveSpirometerUuid;
+    }
+
+    public String getDvtUuid() {
+        return dvtUuid;
+    }
+
+    public void setDvtUuid(String dvtUuid) {
+        this.dvtUuid = dvtUuid;
     }
 
     @Override

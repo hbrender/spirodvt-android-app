@@ -190,7 +190,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="@string/device_id" />
+        android:text="@string/device_id"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/spirometerIdEditText"
@@ -200,7 +201,8 @@
         android:layout_gravity="fill_horizontal"
         android:hint="@string/unique_id"
         android:textColor="@color/text_colors"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/inhalationNumTextView"
@@ -277,7 +279,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_columnSpan="1"
-        android:text="@string/device_id" />
+        android:text="@string/device_id"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/dvtIdEditText"
@@ -287,7 +290,8 @@
         android:layout_gravity="fill_horizontal"
         android:hint="@string/unique_id"
         android:textColor="@color/text_colors"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/repsNumTextView"

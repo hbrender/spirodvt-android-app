@@ -50,6 +50,8 @@
     <string name="lung_volume_label"><u>Volume</u></string>
     <string name="completed_ratio_label"><u>Reps</u></string>
     <string name="resistance_on_table"><u>Resistance</u></string>
+    <string name="get_dvt_session">Get Session From DVT</string>
+    <string name="get_spiro_session">Get Session From Spirometer</string>
 
     <!-- Patient info screen strings -->
     <string name="label_save">Save</string>
@@ -96,7 +98,7 @@
     <string name="delete_spirometer">Delete Incentive Spirometer</string>
     <string name="message_delete_spirometer">All device data will be permanently deleted. Are you
         sure you want to delete this patient\'s Incentive Spirometer device? </string>
-    <string name="spirometer_deleted">Incentive Spirometer deleted</string>
+    <string name="spirometer_deleted">Incentive Spirometer</string>
     <string name="delete_dvt">Delete DVT Prevention Device</string>
     <string name="message_delete_dvt">All device data will be permanently deleted. Are you
         sure you want to delete this patient\'s DVT Prevention Device? </string>

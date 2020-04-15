@@ -179,7 +179,7 @@ public class ConnectDevice extends AppCompatActivity {
                 // only initiates connection if there is a valid UUID for the device
                 if(uuids.length > 0){
                     bluetoothThread = new BluetoothThread(handler);
-                    bluetoothThread.startConnectThread(temp);
+                    bluetoothThread.startConnectThread(temp, null);
                 }
             }
         });

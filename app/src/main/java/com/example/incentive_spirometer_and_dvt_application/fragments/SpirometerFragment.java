@@ -5,21 +5,33 @@
  */
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.os.Message;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
+import com.example.incentive_spirometer_and_dvt_application.helpers.BluetoothThread;
 import com.example.incentive_spirometer_and_dvt_application.helpers.CSVReader;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
@@ -31,23 +43,38 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
 public class SpirometerFragment extends Fragment{
     static final String TAG = "PatientSpiroInfoFrag";
+    static final int STATE_LISTENING = 1;
+    static final int STATE_CONNECTING = 2;
+    static final int STATE_CONNECTED = 3;
+    static final int STATE_CONNECTION_FAILED = 4;
+    static final int STATE_CONNECTED_THREAD_SUCCESS = 5;
+    static final int STATE_CONNECTED_THREAD_FAILED = 6;
+    static final int STATE_MESSAGE_RECEIVED = 7;
+
+    private static BluetoothThread bluetoothThread;
+    private BluetoothAdapter bluetoothAdapter;
     private DatabaseHelper databaseHelper;
 
     private List<IncentiveSpirometerData> allSpData;
     private List<BarEntry> allBarEntries;
 
+    private LinearLayout baseLayout;
+    private Button getSpiroSession;
     private Spinner dataWindowSpinner;
 
     private List<BarEntry> shownEntries;
@@ -59,6 +86,8 @@ public class SpirometerFragment extends Fragment{
     private int patientId;
     private int doctorId;
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +95,7 @@ public class SpirometerFragment extends Fragment{
         if (bundle != null) {
             patientId = bundle.getInt("patientId", -1);
             doctorId = bundle.getInt("doctorId", -1);
+            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         }
     }
 
@@ -100,7 +130,36 @@ public class SpirometerFragment extends Fragment{
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
 
-        View view = inflater.inflate(R.layout.activity_patient_spirometer_info, container, false);
+        final View view = inflater.inflate(R.layout.activity_patient_spirometer_info, container, false);
+
+        baseLayout = view.findViewById(R.id.spiroFragBaseLayout);
+        getSpiroSession = view.findViewById(R.id.getSpiroDataButton);
+        getSpiroSession.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                BluetoothDevice[] bondedDevices = getBondedDevices();
+                if(bondedDevices == null) {
+                    Toast.makeText(getActivity(), "Error: your phone has no paired devices", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    String patientSpiroUuid = databaseHelper.getDeviceUuid(patientId, true);
+                    if(patientSpiroUuid == null){
+                        Toast.makeText(getActivity(), "Error: patient has no DVT saved", Toast.LENGTH_LONG).show();                    }
+                    else {
+                        BluetoothDevice device = checkDeviceExists(bondedDevices, patientSpiroUuid);
+                        if(device != null){
+                            Log.d(TAG, "onClick: device exists");
+                            bluetoothThread = new BluetoothThread(handler);
+                            boolean[] spiroOrDvt = {true, false};
+                            bluetoothThread.startConnectThread(device, spiroOrDvt);
+                        }
+                        else {
+                            Toast.makeText(getActivity(), "Error: the device is not recognized in the database", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        });
 
         dataWindowSpinner = (Spinner) view.findViewById(R.id.dataWindowSpinner);
         ArrayList<String> numOfDays = new ArrayList<>();
@@ -138,6 +197,34 @@ public class SpirometerFragment extends Fragment{
         drawGraph();
 
         return view;
+    }
+
+    private BluetoothDevice[] getBondedDevices(){
+        Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
+        BluetoothDevice[] bondedDevices = new BluetoothDevice[bt.size()];
+        int index = 0;
+        if(bt.size() > 0){
+            for(BluetoothDevice device : bt){
+                bondedDevices[index] = device;
+                index++;
+            }
+        }
+        else{
+            return null;
+        }
+        return bondedDevices;
+    }
+
+    private BluetoothDevice checkDeviceExists(BluetoothDevice[] bondedDevices, String deviceUuid) {
+        for(BluetoothDevice device : bondedDevices){
+            ParcelUuid[] uuids = device.getUuids();
+            String checkAgainstUuid = uuids[0].toString().replaceAll("[-]", "");
+            Log.d(TAG, "checkDeviceExists: " + checkAgainstUuid);
+            if(deviceUuid.equals(checkAgainstUuid)){
+                return device;
+            }
+        }
+        return null;
     }
 
     /*
@@ -257,5 +344,68 @@ public class SpirometerFragment extends Fragment{
 
         graph.setData(data);
         graph.invalidate();
+    }
+
+    // creating the handler for dealing with callbacks from the bluetooth threads used
+    Handler handler = new Handler(new Handler.Callback(){
+        @Override
+        public boolean handleMessage(@NonNull Message msg) {
+            switch(msg.what){
+                case STATE_LISTENING:
+                    Log.d(TAG, "handleMessage: listening");
+                    break;
+                case STATE_CONNECTING:
+                    Log.d(TAG, "handleMessage: connecting");
+                    break;
+                case STATE_CONNECTED:
+                    Log.d(TAG, "handleMessage: connected");
+                    break;
+                case STATE_CONNECTION_FAILED:
+                    Log.d(TAG, "handleMessage: connection failed :(");
+                    Toast.makeText(getActivity(), "Error: connection to device failed", Toast.LENGTH_LONG).show();
+                    break;
+                case STATE_CONNECTED_THREAD_SUCCESS:
+                    // connection was created and we send a prompt with what we want back
+                    // either a spriometer ID or DVT ID
+                    byte[] bytes;
+
+                    bytes = "data\r\n".getBytes(Charset.defaultCharset());
+
+                    bluetoothThread.sendMessage(bytes);
+                    Log.d(TAG, "handleMessage: success in sending message");
+                    break;
+                case STATE_CONNECTED_THREAD_FAILED:
+                    Log.d(TAG, "handleMessage: connected thread failed...closing it promptly");
+                    bluetoothThread.endConnectThread();
+                    bluetoothThread.endConnectedThread();
+                    Toast.makeText(getActivity(), "Error: could not get data from device", Toast.LENGTH_LONG).show();
+                    break;
+                case STATE_MESSAGE_RECEIVED:
+                    // this handles the response from the hardware when we asked to give us a device ID
+                    byte[] readBuff = (byte[]) msg.obj;
+                    String[] tempdata = new String(readBuff, 0, msg.arg1).split("\\n");
+
+                    try{
+                        String data = tempdata[0].trim();
+                        bluetoothThread.endConnectThread();
+                        bluetoothThread.endConnectedThread();
+                        Log.d(TAG, "handleMessage: " + data);
+                    }
+                    catch(NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+            return true;
+        }
+    });
+
+    /**
+     * starts the connected thread with the device we want...this will enable the hardware to send us back data
+     * @param socket a bluetooth socket with the connetion to the device we want
+     */
+    public static void manageConnectedSocket(BluetoothSocket socket){
+        bluetoothThread.startConnectedThread(socket);
+        Log.d(TAG, "manageConnectedSocket: managing open connect socket");
     }
 }

@@ -10,6 +10,7 @@ import android.os.ParcelUuid;
 import android.util.Log;
 
 import com.example.incentive_spirometer_and_dvt_application.activities.ConnectDevice;
+import com.example.incentive_spirometer_and_dvt_application.fragments.SpirometerFragment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,8 +96,8 @@ public class BluetoothThread {
      * a function to start a new connect thread with a given device
      * @param device the device to start a connection with
      */
-    public void startConnectThread(BluetoothDevice device){
-      connectThread = new ConnectThread(device);
+    public void startConnectThread(BluetoothDevice device, boolean[] spiroOrDvt){
+      connectThread = new ConnectThread(device, spiroOrDvt);
       connectThread.start();
     }
 
@@ -114,13 +115,15 @@ public class BluetoothThread {
     public class ConnectThread extends Thread{
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
+        private boolean[] spiroOrDvt;
 
-        public ConnectThread(BluetoothDevice device) {
+        public ConnectThread(BluetoothDevice device, boolean[] flags) {
             // Use a temporary object that is later assigned to mmSocket
             // because mmSocket is final.
             BluetoothSocket tmp = null;
             mmDevice = device;
             ParcelUuid[] uuids = mmDevice.getUuids();
+            spiroOrDvt = flags;
 
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
@@ -163,8 +166,17 @@ public class BluetoothThread {
                 return;
             }
 
-            // The connection attempt succeeded so we call the connect device activity's function manageConnectedSocket to start the connected thread
-            ConnectDevice.manageConnectedSocket(mmSocket);
+            if(spiroOrDvt == null){
+                // The connection attempt succeeded so we call the connect device activity's function manageConnectedSocket to start the connected thread
+                ConnectDevice.manageConnectedSocket(mmSocket);
+            }
+            else if(spiroOrDvt[0]) {
+                Log.d(TAG, "run: get spiro data is true in connect thread");
+                SpirometerFragment.manageConnectedSocket(mmSocket);
+            }
+            else if(spiroOrDvt[1]){
+                Log.d(TAG, "run: get dvt data is true in connect thread");
+            }
         }
 
         // Closes the client socket and causes the thread to finish.
@@ -184,7 +196,6 @@ public class BluetoothThread {
     public void startConnectedThread(BluetoothSocket socket){
         connectedThread = new ConnectedThread(socket);
         connectedThread.start();
-
     }
 
     /**
