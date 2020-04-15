@@ -39,7 +39,7 @@
     <!-- Spirometer info screen strings -->
     <string name="default_spinner_prompt">select data window</string>
     <string name="spinner_preamble_show_data_for_past">Show data for the past</string>
-    <string name="spinner_post_days">days</string>
+    <string name="spinner_post_days">day(s)</string>
     <string name="one_day_button_text">1 day</string>
     <string name="two_day_button_text">2 days</string>
     <string name="three_day_button_text">3 days</string>
@@ -50,6 +50,8 @@
     <string name="lung_volume_label"><u>Volume</u></string>
     <string name="completed_ratio_label"><u>Reps</u></string>
     <string name="resistance_on_table"><u>Resistance</u></string>
+    <string name="no_spirometer_message">There is no Incentive Spirometer for this patient. Add a device by editing the patient information.</string>
+    <string name="no_dvt_message">There is no DVT Exerciser for this patient. Add a device by editing the patient information.</string>
 
     <!-- Patient info screen strings -->
     <string name="label_save">Save</string>

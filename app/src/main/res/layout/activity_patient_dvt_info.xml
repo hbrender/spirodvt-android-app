@@ -6,8 +6,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/noDvtTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="@string/no_dvt_message"
+        android:gravity="center"
+        android:padding="5dp"
+        android:textSize="16sp"
+        android:visibility="gone" />
+
     <LinearLayout
-        android:id="@+id/spirometerInfoSpinnerArea"
+        android:id="@+id/dvtInfoSpinnerArea"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,7 +56,7 @@
         />
 
     <GridLayout
-        android:id="@+id/column_titles"
+        android:id="@+id/dvt_column_titles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="4"

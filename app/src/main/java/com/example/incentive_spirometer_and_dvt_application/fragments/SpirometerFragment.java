@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.GridLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.CSVReader;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
+import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
 import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.IMarker;
@@ -52,6 +55,9 @@ public class SpirometerFragment extends Fragment{
 
     private List<BarEntry> shownEntries;
     private BarChart graph;
+    private TextView noSpirometerTextView;
+    private GridLayout columnTitlesGridLayout;
+    private LinearLayout spirometerInfoSpinnerArea;
 
     private ListView dataListView;
     private int numOfDaysInt;
@@ -92,6 +98,7 @@ public class SpirometerFragment extends Fragment{
         createDataLists();
         drawGraph();
 
+        checkForNoDevice();
     }
 
     @Override
@@ -134,10 +141,32 @@ public class SpirometerFragment extends Fragment{
 
         shownEntries = new ArrayList<>();
 
+        noSpirometerTextView = view.findViewById(R.id.noSpirometerTextView);
+        columnTitlesGridLayout = view.findViewById(R.id.column_titles);
+        spirometerInfoSpinnerArea = view.findViewById(R.id.spirometerInfoSpinnerArea);
+
         createDataLists();
         drawGraph();
 
         return view;
+    }
+
+    private void checkForNoDevice() {
+        IncentiveSpirometer spirometer = databaseHelper.getIncentiveSpirometer(patientId);
+
+        if (spirometer == null) {
+            noSpirometerTextView.setVisibility(View.VISIBLE);
+            dataListView.setVisibility(View.GONE);
+            columnTitlesGridLayout.setVisibility(View.GONE);
+            graph.setVisibility(View.GONE);
+            spirometerInfoSpinnerArea.setVisibility(View.GONE);
+        } else {
+            noSpirometerTextView.setVisibility(View.GONE);
+            dataListView.setVisibility(View.VISIBLE);
+            columnTitlesGridLayout.setVisibility(View.VISIBLE);
+            graph.setVisibility(View.VISIBLE);
+            spirometerInfoSpinnerArea.setVisibility(View.VISIBLE);
+        }
     }
 
     /*
