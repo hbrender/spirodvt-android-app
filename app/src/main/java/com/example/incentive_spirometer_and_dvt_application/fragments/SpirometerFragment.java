@@ -33,9 +33,11 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -166,16 +168,19 @@ public class SpirometerFragment extends Fragment{
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
-                TextView start = (TextView) view.findViewById(R.id.row_start);
-                TextView end = (TextView) view.findViewById(R.id.row_end);
+                TextView date = (TextView) view.findViewById(R.id.date);
+                TextView time = (TextView) view.findViewById(R.id.time);
                 TextView lung_volume = (TextView) view.findViewById(R.id.row_lung_volume);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_breaths_complete_ratio);
 
                 String breath_ratio_string = allSpData.get(position).getInhalationsCompleted() + " / " + allSpData.get(position).getNumberOfInhalations();
+                Date standardDate = allSpData.get(position).getStartTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format("%s",allSpData.size() - position));
-                start.setText(allSpData.get(position).getStringTime("start"));
-                end.setText(allSpData.get(position).getStringTime("end"));
+                date.setText(simpleDateFormat.format(standardDate));
+                time.setText(simpleTimeFormat.format(allSpData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allSpData.get(position).getEndTime()));
                 lung_volume.setText(String.format("%s", allSpData.get(position).getLungVolume()));
                 breaths_completed_ratio.setText(breath_ratio_string);
 

@@ -28,9 +28,11 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -157,16 +159,19 @@ public class DvtFragment extends Fragment{
                 View view = super.getView(position, convertView, parent);
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
-                TextView start = (TextView) view.findViewById(R.id.row_start);
-                TextView end = (TextView) view.findViewById(R.id.row_end);
+                TextView date = (TextView) view.findViewById(R.id.date);
+                TextView time = (TextView) view.findViewById(R.id.time);
                 TextView resistance = (TextView) view.findViewById(R.id.resistance_dvt_table_row);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_ex_complete_ratio);
 
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
+                Date standardDate = allDvtData.get(position).getStartTime();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format(String.format("%s",allDvtData.size() - position)));
-                start.setText(allDvtData.get(position).getStringTime("start"));
-                end.setText(allDvtData.get(position).getStringTime("end"));
+                date.setText(simpleDateFormat.format(standardDate));
+                time.setText(simpleTimeFormat.format(allDvtData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allDvtData.get(position).getEndTime()));
                 resistance.setText(allDvtData.get(position).getResistance());
 
                 breaths_completed_ratio.setText(breath_ratio_string);
