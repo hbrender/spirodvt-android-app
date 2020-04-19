@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/spinner_preamble_show_data_for_past"
-            android:textSize="16sp"
+            android:textSize="14sp"
             />
 
         <Spinner
@@ -50,7 +50,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:text="@string/spinner_post_days"
             />
 
@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:columnCount="5"
         android:rowCount="1"
-        android:paddingTop="10dp">
+        >
 
         <TextView
             android:layout_width="0dp"
@@ -90,20 +90,20 @@
             android:textStyle="bold"
             android:textSize="13sp"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:gravity="center"
-            android:text="@string/time_label"
-            android:textStyle="bold"
-            android:textSize="13sp"/>
+<!--        <TextView-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_columnWeight="1"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/time_label"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="13sp"/>-->
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
-            android:gravity="end"
+            android:gravity="center"
             android:text="@string/lung_volume_label"
             android:textStyle="bold"
             android:textSize="13sp"/>

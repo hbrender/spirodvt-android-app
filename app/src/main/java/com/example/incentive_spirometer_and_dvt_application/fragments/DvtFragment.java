@@ -273,18 +273,18 @@ public class DvtFragment extends Fragment{
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
                 TextView date = (TextView) view.findViewById(R.id.date);
-                TextView time = (TextView) view.findViewById(R.id.time);
+                //TextView time = (TextView) view.findViewById(R.id.time);
                 TextView resistance = (TextView) view.findViewById(R.id.resistance_dvt_table_row);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_ex_complete_ratio);
 
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
                 Date standardDate = allDvtData.get(position).getStartTime();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
-                SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
+                //SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format(String.format("%s",allDvtData.size() - position)));
                 date.setText(simpleDateFormat.format(standardDate));
-                time.setText(simpleTimeFormat.format(allDvtData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allDvtData.get(position).getEndTime()));
+                //time.setText(simpleTimeFormat.format(allDvtData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allDvtData.get(position).getEndTime()));
                 resistance.setText(allDvtData.get(position).getResistance());
 
                 breaths_completed_ratio.setText(breath_ratio_string);
@@ -309,17 +309,25 @@ public class DvtFragment extends Fragment{
         }
 
         shownEntries.clear();
-        Calendar now = new GregorianCalendar();
+
         for (int session = 1; session <= allDvtData.size(); session++) {
-            DvtData dvtd = allDvtData.get(session - 1);
-            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - dvtd.getStartTime().getTime()));
-            if (timeDiff < hoursToShow) {
+            if (session > allDvtData.size() - (numOfDaysInt * 16)) {
                 shownEntries.add(allBarEntries.get(session - 1));
             }
         }
-        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
-            shownEntries.add(new BarEntry(session, 0));
-        }
+
+
+        //        Calendar now = new GregorianCalendar();
+//        for (int session = 1; session <= allDvtData.size(); session++) {
+//            DvtData dvtd = allDvtData.get(session - 1);
+//            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - dvtd.getStartTime().getTime()));
+//            if (timeDiff < hoursToShow) {
+//                shownEntries.add(allBarEntries.get(session - 1));
+//            }
+//        }
+//        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
+//            shownEntries.add(new BarEntry(session, 0));
+//        }
     }
 
     // draws the features of the graph, including removing the description and legend, setting
@@ -340,18 +348,30 @@ public class DvtFragment extends Fragment{
         set.setDrawValues(false);
 
         XAxis x = graph.getXAxis();
-        x.setPosition(XAxis.XAxisPosition.BOTTOM);
-        x.setLabelRotationAngle(-90);
+        //x.setPosition(XAxis.XAxisPosition.BOTTOM);
+        //x.setLabelRotationAngle(-90);
         x.setDrawGridLines(false);
         x.setDrawAxisLine(true);
-        // x.setDrawLabels(false);
+        x.setDrawLabels(false);
 
-        x.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getBarLabel(BarEntry barEntry) {
-                return super.getBarLabel(barEntry);
-            }
-        });
+        if (shownEntries.size() > 0 && shownEntries.size() < numOfDaysInt *  16) {
+            x.setAxisMinimum(shownEntries.get(0).getX() - 1);
+            Log.d(TAG, "drawGraph: Min: " + (shownEntries.get(0).getX() - 1));
+            x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX()+ ((numOfDaysInt * 16) - shownEntries.get(shownEntries.size() - 1).getX()));
+            Log.d(TAG, "drawGraph: Max: " + (shownEntries.get(shownEntries.size() - 1).getX()+ 1));
+        } else if (shownEntries.size() > 0) {
+            x.setAxisMinimum(shownEntries.get(0).getX() - 1);
+            Log.d(TAG, "drawGraph: Min: " + (shownEntries.get(0).getX() - 1));
+            x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX()+ 1);
+            Log.d(TAG, "drawGraph: Max: " + (shownEntries.get(shownEntries.size() - 1).getX()+ 1));
+        }
+
+//        x.setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getBarLabel(BarEntry barEntry) {
+//                return super.getBarLabel(barEntry);
+//            }
+//        });
 
 
         YAxis yleft = graph.getAxisLeft();

@@ -18,7 +18,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:id="@+id/avgbreaths"
+        android:id="@+id/breaths"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
-        android:id="@+id/start"
+        android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -41,17 +41,29 @@
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <TextView
-        android:id="@+id/end"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text=""
-        android:textSize="12dp"
-        android:textColor="@android:color/black"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+<!--    <TextView-->
+<!--        android:id="@+id/start"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:text=""-->
+<!--        android:textSize="12dp"-->
+<!--        android:textColor="@android:color/black"-->
+<!--        android:ellipsize="end"-->
+<!--        android:singleLine="true"-->
+<!--        android:textAppearance="?android:attr/textAppearanceSmall" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/end"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:text=""-->
+<!--        android:textSize="12dp"-->
+<!--        android:textColor="@android:color/black"-->
+<!--        android:ellipsize="end"-->
+<!--        android:singleLine="true"-->
+<!--        android:textAppearance="?android:attr/textAppearanceSmall" />-->
 
 
 
