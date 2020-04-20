@@ -16,7 +16,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activities.ConnectDevice"></activity>
         <activity android:name=".activities.CreateAccountActivity" />
-        <activity android:name=".activities.BluetoothTestActivity" />
         <activity
             android:name=".activities.DeviceDataActivity"
             android:screenOrientation="portrait"

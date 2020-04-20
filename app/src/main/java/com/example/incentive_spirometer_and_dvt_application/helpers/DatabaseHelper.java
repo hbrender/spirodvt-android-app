@@ -276,7 +276,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2020-04-11 17:00:00', '2020-04-11 17:59:59', 2000, 10, 3)");
         db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2020-04-11 18:00:00', '2020-04-11 18:59:59', 2000, 10, 3)");
 
-
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2020-04-13 08:00:00', '2020-04-13 08:59:59', 'Easy', 10, 1)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2020-04-13 09:00:00', '2020-04-13 09:59:59', 'Easy', 10, 1)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2020-04-13 10:00:00', '2020-04-13 10:59:59', 'Easy', 10, 1)");

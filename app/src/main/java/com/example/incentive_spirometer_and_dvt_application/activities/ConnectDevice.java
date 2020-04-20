@@ -36,6 +36,14 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Set;
 
+/**
+ *
+ * Activity where a user can pair a hardware device and attach it to a specific patient
+ *
+ *  v1.0: 04/20/20
+ *
+ */
+
 public class ConnectDevice extends AppCompatActivity {
     static final String TAG = "ConnectDeviceTag";
 

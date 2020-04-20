@@ -4,18 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.TableLayout;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.fragments.DvtFragment;
 import com.example.incentive_spirometer_and_dvt_application.fragments.SpirometerFragment;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.Patient;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
@@ -28,6 +25,14 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+
+/**
+ *
+ * This is the activity that holds the graph and table for the devices
+ * (Hosts the SpirometerFragment and DvtFragment)
+ *
+ *  v1.0: 04/20/20
+ */
 
 public class DeviceDataActivity extends AppCompatActivity {
     static final int REQUEST_CODE = 1;

@@ -4,10 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,9 +15,13 @@ import android.widget.EditText;
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.Authenticate;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
-import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
-import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
-import com.example.incentive_spirometer_and_dvt_application.models.Patient;
+
+/**
+ *
+ * This is where users can create a new account. (They input a new username and password)
+ *
+ *  v1.0: 04/20/20
+ */
 
 public class CreateAccountActivity extends AppCompatActivity {
 

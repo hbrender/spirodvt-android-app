@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -22,15 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
@@ -44,7 +38,7 @@ import java.util.List;
  * to get more detail, delete multiple patients from the list at a time, and also sign out or add a
  * patient to their list.
  *
- * @author(s) Hanna Brender, Cole deSilva
+ * v1.0: 04/20/20
  */
 
 public class PatientListActivity extends AppCompatActivity {
@@ -174,7 +168,6 @@ public class PatientListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
 
-                //Intent intent = new Intent(PatientListActivity.this, PatientSpirometerInfoActivity.class); // change here
                 Intent intent = new Intent(PatientListActivity.this, DeviceDataActivity.class);
                 intent.putExtra("patientId", cursor.getInt(cursor.getColumnIndex(DatabaseHelper.ID)));
                 intent.putExtra("firstName", cursor.getString(cursor.getColumnIndex(DatabaseHelper.FIRST_NAME)));
@@ -252,18 +245,15 @@ public class PatientListActivity extends AppCompatActivity {
         super.onResume();
 
         // remove old patients
-        /*List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
+        List<Integer> oldPatients = databaseHelper.getOldPatients(doctorId);
         for (Integer i : oldPatients) {
             databaseHelper.deletePatientById(i);
-        }*/
-
-        Log.d(TAG, "onResume: ");
+        }
         updatePatientListView();
     }
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
         databaseHelper.close();
         super.onDestroy();
     }

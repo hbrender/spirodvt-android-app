@@ -4,17 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.Selection;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +20,6 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
@@ -40,7 +33,7 @@ import com.google.android.material.snackbar.Snackbar;
  * This screen displays information for a patient including name, age, sex, etc. Also this screen
  * displays device data.
  *
- * @author(s) Hanna Brender
+ *  v1.0: 04/20/20
  */
 
 public class PatientInfoActivity extends AppCompatActivity {
@@ -241,14 +234,12 @@ public class PatientInfoActivity extends AppCompatActivity {
                     } else if (patientId != -1) {
                         databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
                         int deviceId = databaseHelper.getDeviceIdFromUuid(incentiveSpirometer.getUuid(), true);
-                        Log.d(TAG, "savePatient: spirodeviceid = " + deviceId);
                         incentiveSpirometer.setId(deviceId);
                         databaseHelper.updateIncentiveSpiroForPatient(incentiveSpirometer, patientId);
                     }
                 } else {
                     databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
                     int deviceId = databaseHelper.getDeviceIdFromUuid(incentiveSpirometer.getUuid(), true);
-                    Log.d(TAG, "savePatient: spirodeviceid = " + deviceId);
                     incentiveSpirometer.setId(deviceId);
                     databaseHelper.updateIncentiveSpiroForPatient(incentiveSpirometer, patientId);
                 }
@@ -270,14 +261,12 @@ public class PatientInfoActivity extends AppCompatActivity {
                     } else if (patientId != -1) {
                         databaseHelper.updateDvt(dvt);
                         int deviceId = databaseHelper.getDeviceIdFromUuid(dvt.getUuid(), false);
-                        Log.d(TAG, "savePatient: dvtdeviceid = " + deviceId);
                         dvt.setId(deviceId);
                         databaseHelper.updateDvtForPatient(dvt, patientId);
                     }
                 } else {
                     databaseHelper.insertDvt(dvt);
                     int deviceId = databaseHelper.getDeviceIdFromUuid(dvt.getUuid(), false);
-                    Log.d(TAG, "savePatient: dvtdeviceid = " + deviceId);
                     dvt.setId(deviceId);
                     databaseHelper.updateDvtForPatient(dvt, patientId);
                 }
@@ -475,7 +464,6 @@ public class PatientInfoActivity extends AppCompatActivity {
      * Enables editing of patient information
      */
     public void enablePatientEdit() {
-        //patientIdEditText.setEnabled(true);
         firstNameEditText.setEnabled(true);
         lastNameEditText.setEnabled(true);
         heightFeetEditText.setEnabled(true);
@@ -659,13 +647,10 @@ public class PatientInfoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: result has been gotten");
-        Log.d(TAG, "onActivityResult: " + (data == null));
         if(data != null){
             if(requestCode == CONNECT_REQUEST_CODE && resultCode == RESULT_OK){
                 boolean isSpiroResult = data.getBooleanExtra("isSpiro", true);
                 String tempId = data.getStringExtra("idThingy");
-                Log.d(TAG, "onActivityResult: " + tempId + " " + isSpiroResult);
 
                 if(isSpiroResult && !tempId.equals("none")){
                     spirometerIdTV.setVisibility(View.VISIBLE);

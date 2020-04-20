@@ -3,14 +3,11 @@ package com.example.incentive_spirometer_and_dvt_application.activities;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.Authenticate;
@@ -21,8 +18,7 @@ import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelp
  * Users will input their username-password combinations and it will be validated with user data from the database
  * Only authorized users will have access to the rest of the application
  *
- * @author(s) Cole deSilva, Isak Bjornson
- * @editor(s) Hanna Brender
+ * v1.0: 04/20/20
  *
  */
 
