@@ -23,10 +23,7 @@ public class CSVReader {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(spCsvFile));
             Log.d("CSVREADER ERROR: ", "readInSpirometerData: " + spCsvFile);
-            String testline1 = csvReader.readLine().split(",")[0];
-
-            Log.d(TAG, "readInSpirometerData: " + testline1);
-            int deviceId = Integer.parseInt("10");
+            String deviceUuid = csvReader.readLine().split(",")[0];
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
             String[] startArray = csvReader.readLine().split(",");
             String[] endArray = csvReader.readLine().split(",");
@@ -35,8 +32,8 @@ public class CSVReader {
             Date endDate = convertArrayToDate(endArray);
 
             DatabaseHelper db = new DatabaseHelper(context);
-            IncentiveSpirometer incentiveSpirometer = db.getIncentiveSpirometerBySpirometerId(deviceId);
-            IncentiveSpirometerData isd = new IncentiveSpirometerData(deviceId, startDate, endDate, incentiveSpirometer.getLungVolume(), incentiveSpirometer.getNumberOfInhalations(), completedReps);
+            IncentiveSpirometer incentiveSpirometer = db.getIncentiveSpirometerByUuid(deviceUuid);
+            IncentiveSpirometerData isd = new IncentiveSpirometerData(incentiveSpirometer.getId(), startDate, endDate, incentiveSpirometer.getLungVolume(), incentiveSpirometer.getNumberOfInhalations(), completedReps);
 
             db.insertIncentiveSpirometerData(isd);
 
@@ -50,7 +47,7 @@ public class CSVReader {
     public void readInDvtData (File dvtCsvFile, Context context) {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(dvtCsvFile));
-            int deviceId = Integer.parseInt(csvReader.readLine().split(",")[0]);
+            String deviceUuid = csvReader.readLine().split(",")[0];
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
             String[] startArray = csvReader.readLine().split(",");
             String[] endArray = csvReader.readLine().split(",");
@@ -59,8 +56,8 @@ public class CSVReader {
             Date endDate = convertArrayToDate(endArray);
 
             DatabaseHelper db = new DatabaseHelper(context);
-            Dvt dvt = db.getDvtByDvtId(deviceId);
-            DvtData dvtd = new DvtData(deviceId, startDate, endDate, dvt.getResistance(), dvt.getNumberOfReps(), completedReps);
+            Dvt dvt = db.getDvtByUuid(deviceUuid);
+            DvtData dvtd = new DvtData(dvt.getId(), startDate, endDate, dvt.getResistance(), dvt.getNumberOfReps(), completedReps);
 
             db.insertDvtData(dvtd);
 

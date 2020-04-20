@@ -1123,9 +1123,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             incentiveSpirometer.setUuid(c.getString(c.getColumnIndex(UUID)));
             incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
             incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
-
+            Log.d(TAG, "getIncentiveSpirometer: returning the spiro");
             return incentiveSpirometer;
         }
+        Log.d(TAG, "getIncentiveSpirometer: returning null");
         return null;
     }
 
@@ -1158,6 +1159,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public IncentiveSpirometer getIncentiveSpirometerByUuid(String spirometerUuid){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT i.* FROM " + TABLE_INCENTIVE_SPIROMETER + " i"
+                + " WHERE i." + UUID + " = ?";
+
+        Cursor c = db.rawQuery(query, new String[]{ spirometerUuid });
+
+        Log.d(TAG, "getIncentiveSpirometerBySpirometerId: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create incentive spirometer
+            IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
+            incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
+            incentiveSpirometer.setUuid(c.getString(c.getColumnIndex(UUID)));
+            incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
+            incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
+
+            Log.d(TAG, "getIncentiveSpirometerByUuid: returning the spiro");
+            return incentiveSpirometer;
+        }
+        Log.d(TAG, "getIncentiveSpirometerByUuid: returning null");
+        return null;
+    }
+
     /**
      * Delete a spirometer device
      * @param spirometerId the device to delete
@@ -1168,7 +1195,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "deleteSpirometerById: Spirometer:" + spirometerId + " Patient:" + patientId);
 
         ContentValues values = new ContentValues();
-        values.put(INCENTIVE_SPIROMETER_ID, 0);
+        values.putNull(INCENTIVE_SPIROMETER_ID);
         values.putNull(INCENTIVE_SPIROMETER_UUID);
 
         int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
@@ -1187,13 +1214,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(ID, incentiveSpirometer.getId());
         values.put(UUID, incentiveSpirometer.getUuid());
         values.put(NUMBER_OF_INHALATIONS, incentiveSpirometer.getNumberOfInhalations());
         values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
 
         long result = db.insert(TABLE_INCENTIVE_SPIROMETER, null, values);
-
+        Log.d(TAG, "insertIncentiveSpirometer: " + result);
         return result != -1;
     }
 
@@ -1201,6 +1227,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(INCENTIVE_SPIROMETER_ID, incentiveSpirometer.getId());
         values.put(INCENTIVE_SPIROMETER_UUID, incentiveSpirometer.getUuid());
 
         long result = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
@@ -1306,6 +1333,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return null;
     }
 
+    public Dvt getDvtByUuid(String uuid){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT d.* FROM " + TABLE_DVT + " d"
+                + " WHERE d." + UUID + " = ?";
+
+        Cursor c = db.rawQuery(query, new String[]{ uuid });
+
+        Log.d(TAG, "getDvt: "+ query);
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            // create dvt
+            Dvt dvt = new Dvt();
+            dvt.setId(c.getInt(c.getColumnIndex(ID)));
+            dvt.setUuid(c.getString(c.getColumnIndex(UUID)));
+            dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
+            dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
+
+            return dvt;
+        }
+        return null;
+    }
+
     /**
      * Insert a new Dvt device
      * @param dvt Dvt object to insert
@@ -1315,7 +1366,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(ID, dvt.getId());
         values.put(UUID, dvt.getUuid());
         values.put(NUMBER_OF_REPS, dvt.getNumberOfReps());
         values.put(RESISTANCE, dvt.getResistance());
@@ -1329,6 +1379,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(DVT_ID, dvt.getId());
         values.put(DVT_UUID, dvt.getUuid());
 
         long result = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
@@ -1383,7 +1434,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, "deleteDvtById: DVT:" + dvtId + " Patient:" + patientId);
 
         ContentValues values = new ContentValues();
-        values.put(DVT_ID, 0);
+        values.putNull(DVT_ID);
         values.putNull(DVT_UUID);
 
         int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
@@ -1391,6 +1442,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int deleteDeviceResult = db.delete(TABLE_DVT, ID + " = ?", new String[] { String.valueOf(dvtId)});
 
         Log.d(TAG, "deleteDvtById: update:" + updateResult + " deleteData:" + deleteDataResult + " deleteDevice:" + deleteDeviceResult);
+    }
+
+    public int getDeviceIdFromUuid(String uuid, boolean isSpiro){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "";
+        if(isSpiro){
+            query = "SELECT * FROM " + TABLE_INCENTIVE_SPIROMETER
+                    + " WHERE " + UUID + " = ?";
+        }
+        else {
+            query = "SELECT * FROM " + TABLE_DVT
+                    + " WHERE " + UUID + " = ?";
+        }
+        Cursor c = db.rawQuery(query, new String[]{ uuid });
+
+        Log.d(TAG, "getDeviceUuid: " + query);
+
+        int deviceId = -1;
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            deviceId = c.getInt(c.getColumnIndex(ID));
+            return deviceId;
+        }
+        return deviceId;
     }
 }
 

@@ -225,9 +225,16 @@ public class PatientInfoActivity extends AppCompatActivity {
                         return false;
                     } else if (patientId != -1) {
                         databaseHelper.updateIncentiveSpirometer(incentiveSpirometer);
+                        int deviceId = databaseHelper.getDeviceIdFromUuid(incentiveSpirometer.getUuid(), true);
+                        Log.d(TAG, "savePatient: spirodeviceid = " + deviceId);
+                        incentiveSpirometer.setId(deviceId);
+                        databaseHelper.updateIncentiveSpiroForPatient(incentiveSpirometer, patientId);
                     }
                 } else {
                     databaseHelper.insertIncentiveSpirometer(incentiveSpirometer);
+                    int deviceId = databaseHelper.getDeviceIdFromUuid(incentiveSpirometer.getUuid(), true);
+                    Log.d(TAG, "savePatient: spirodeviceid = " + deviceId);
+                    incentiveSpirometer.setId(deviceId);
                     databaseHelper.updateIncentiveSpiroForPatient(incentiveSpirometer, patientId);
                 }
             }
@@ -247,9 +254,16 @@ public class PatientInfoActivity extends AppCompatActivity {
                         return false;
                     } else if (patientId != -1) {
                         databaseHelper.updateDvt(dvt);
+                        int deviceId = databaseHelper.getDeviceIdFromUuid(dvt.getUuid(), false);
+                        Log.d(TAG, "savePatient: dvtdeviceid = " + deviceId);
+                        dvt.setId(deviceId);
+                        databaseHelper.updateDvtForPatient(dvt, patientId);
                     }
                 } else {
                     databaseHelper.insertDvt(dvt);
+                    int deviceId = databaseHelper.getDeviceIdFromUuid(dvt.getUuid(), false);
+                    Log.d(TAG, "savePatient: dvtdeviceid = " + deviceId);
+                    dvt.setId(deviceId);
                     databaseHelper.updateDvtForPatient(dvt, patientId);
                 }
             }
@@ -386,16 +400,10 @@ public class PatientInfoActivity extends AppCompatActivity {
         if (spirometerIdEditText.getText().toString().length() > 0) {
             patient.setIncentiveSpirometerUuid(spirometerIdEditText.getText().toString());
         }
-//        else{
-//            patient.setIncentiveSpirometerUuid("none");
-//        }
 
         if (dvtIdEditText.getText().toString().length() > 0) {
             patient.setDvtUuid(dvtIdEditText.getText().toString());
         }
-//        else{
-//            patient.setDvtUuid("none");
-//        }
 
         return patient;
     }
@@ -508,7 +516,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                         databaseHelper.deleteSpirometerById(spiro.getId(), patientId);
 
                         // reset device input
-                        spirometerIdEditText.setText("");
+                        spirometerIdEditText.setText(null);
                         inhalationsNumIdEditText.setText(null);
                         lungVolumeEditText.setText(null);
 
@@ -543,7 +551,7 @@ public class PatientInfoActivity extends AppCompatActivity {
                         databaseHelper.deleteDvtById(dvt.getId(), patientId);
 
                         // reset device input
-                        dvtIdEditText.setText("");
+                        dvtIdEditText.setText(null);
                         repsNumIdEditText.setText(null);
                         dvtResistanceSpinner.setSelection(0);
 

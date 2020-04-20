@@ -10,8 +10,7 @@ public class IncentiveSpirometer {
 
     }
 
-    public IncentiveSpirometer(int id, String uuid, int lungVolume, int numberOfInhalations) {
-        this.id = id;
+    public IncentiveSpirometer(String uuid, int lungVolume, int numberOfInhalations) {
         this.uuid = uuid;
         this.lungVolume = lungVolume;
         this.numberOfInhalations = numberOfInhalations;

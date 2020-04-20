@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.helpers.BluetoothThread;
+import com.example.incentive_spirometer_and_dvt_application.helpers.CSVReader;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
 import com.example.incentive_spirometer_and_dvt_application.models.DvtData;
@@ -42,6 +43,9 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,6 +71,7 @@ public class DvtFragment extends Fragment{
     private static BluetoothThread bluetoothThread;
     private BluetoothAdapter bluetoothAdapter;
     private DatabaseHelper databaseHelper;
+    private static File session;
 
     private List<DvtData> allDvtData;
     private List<BarEntry> allBarEntries;
@@ -110,9 +115,9 @@ public class DvtFragment extends Fragment{
     public void onResume() {
         Log.d(TAG, "onResume: ONERESUME");
         super.onResume();
+
         createDataLists();
         drawGraph();
-
         checkForNoDevice();
     }
 
@@ -405,22 +410,51 @@ public class DvtFragment extends Fragment{
                 case STATE_MESSAGE_RECEIVED:
                     // this handles the response from the hardware when we asked to give us a device ID
                     byte[] readBuff = (byte[]) msg.obj;
-                    String[] tempdata = new String(readBuff, 0, msg.arg1).split("\\n");
+                    String[] tempdata = new String(readBuff, 0, msg.arg1).split(" ");
 
-                    try{
-                        String data = tempdata[0].trim();
+                    boolean nosuccess = tempdata.length == 1;
+                    if(nosuccess){
+                        Toast.makeText(getActivity(), "No session found on device", Toast.LENGTH_LONG).show();
                         bluetoothThread.endConnectThread();
                         bluetoothThread.endConnectedThread();
-                        Log.d(TAG, "handleMessage: " + data);
                     }
-                    catch(NumberFormatException e) {
-                        e.printStackTrace();
+                    else{
+                        try{
+                            session = new File(getContext().getFilesDir(), "session.csv");
+
+                            FileWriter fr = new FileWriter(session, false);
+
+                            for(int i = 0; i < tempdata.length; i++){
+                                Log.d(TAG, "handleMessage: "  + tempdata[i]);
+                                fr.append(tempdata[i]+'\n');
+                            }
+                            fr.close();
+
+                            updatePage(session);
+
+                            bluetoothThread.endConnectThread();
+                            bluetoothThread.endConnectedThread();
+                        }
+                        catch(NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                        catch(IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
             }
             return true;
         }
     });
+
+    private void updatePage(File session){
+        CSVReader csvReader = new CSVReader();
+        csvReader.readInDvtData(session, getContext());
+
+        createDataLists();
+        drawGraph();
+    }
 
     /**
      * starts the connected thread with the device we want...this will enable the hardware to send us back data

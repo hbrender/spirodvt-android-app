@@ -10,6 +10,7 @@ import android.os.ParcelUuid;
 import android.util.Log;
 
 import com.example.incentive_spirometer_and_dvt_application.activities.ConnectDevice;
+import com.example.incentive_spirometer_and_dvt_application.fragments.DvtFragment;
 import com.example.incentive_spirometer_and_dvt_application.fragments.SpirometerFragment;
 
 import java.io.IOException;
@@ -176,6 +177,7 @@ public class BluetoothThread {
             }
             else if(spiroOrDvt[1]){
                 Log.d(TAG, "run: get dvt data is true in connect thread");
+                DvtFragment.manageConnectedSocket(mmSocket);
             }
         }
 

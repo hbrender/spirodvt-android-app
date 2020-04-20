@@ -10,8 +10,7 @@ public class Dvt {
 
     }
 
-    public Dvt(int id, String uuid, String resistance, int numberOfReps) {
-        this.id = id;
+    public Dvt(String uuid, String resistance, int numberOfReps) {
         this.uuid = uuid;
         this.resistance = resistance;
         this.numberOfReps = numberOfReps;
