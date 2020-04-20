@@ -280,11 +280,12 @@ public class ConnectDevice extends AppCompatActivity {
                     byte[] bytes;
                     if(isSpiro){
                         bytes = "spiroid\r\n".getBytes(Charset.defaultCharset());
+                        bluetoothThread.sendMessage(bytes);
                     }
                     else{
                         bytes = "dvtid\r\n".getBytes(Charset.defaultCharset());
+                        bluetoothThread.sendMessage(bytes);
                     }
-                    bluetoothThread.sendMessage(bytes);
                     Log.d(TAG, "handleMessage: success in sending message");
                     break;
                 case STATE_CONNECTED_THREAD_FAILED:

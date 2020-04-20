@@ -437,7 +437,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean insertPatient(Patient patient) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(ID, patient.getId());
+
         values.put(PATIENT_ID, patient.getPatientId());
         values.put(FIRST_NAME, patient.getFirstName());
         values.put(LAST_NAME, patient.getLastName());
@@ -502,6 +502,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         patient.setDvtUuid(c.getString(c.getColumnIndex(DVT_UUID)));
 
         return patient;
+    }
+
+    public int getIdByPatientId(String patientId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT + " WHERE " + PATIENT_ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{patientId});
+
+        Log.d(TAG, "patientExists: "+ query);
+        int id = -1;
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+            id = c.getInt(c.getColumnIndex(ID));
+
+            return id;
+        }
+
+        return id;
     }
 
     /**

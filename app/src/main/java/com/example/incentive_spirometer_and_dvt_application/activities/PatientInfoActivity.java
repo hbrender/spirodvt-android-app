@@ -210,6 +210,21 @@ public class PatientInfoActivity extends AppCompatActivity {
             IncentiveSpirometer incentiveSpirometer = getSpirometerInfo();
             Dvt dvt = getDvtInfo();
 
+            if (patientId != -1) { // editing existing patient info
+                databaseHelper.updatePatient(patient);
+            } else { // creating new patient
+
+                boolean result3 = databaseHelper.insertPatient(patient);
+                patientId = databaseHelper.getIdByPatientId(patient.getPatientId());
+                patient.setId(patientId);
+                boolean result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
+
+                if (!result3 || !result4) {
+                    Log.d(TAG, "savePatient: SQL Error inserting patient");
+                    return false;
+                }
+            }
+
             if (incentiveSpirometer != null) {
                 if (databaseHelper.incentiveSpirometerExists(incentiveSpirometer)) {
                     // make sure device uuid has not already been used
@@ -265,19 +280,6 @@ public class PatientInfoActivity extends AppCompatActivity {
                     Log.d(TAG, "savePatient: dvtdeviceid = " + deviceId);
                     dvt.setId(deviceId);
                     databaseHelper.updateDvtForPatient(dvt, patientId);
-                }
-            }
-
-            if (patientId != -1) { // editing existing patient info
-                databaseHelper.updatePatient(patient);
-            } else { // creating new patient
-                patientId = patient.getId();
-                boolean result3 = databaseHelper.insertPatient(patient);
-                boolean result4 = databaseHelper.insertDoctorPatient(patientId, doctorId);
-
-                if (!result3 || !result4) {
-                    Log.d(TAG, "savePatient: SQL Error inserting patient");
-                    return false;
                 }
             }
 

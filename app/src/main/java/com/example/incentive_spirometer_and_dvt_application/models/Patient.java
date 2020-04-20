@@ -19,8 +19,7 @@ public class Patient {
 
     }
 
-    public Patient(int id, String patientId, String firstName, String lastName, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId, String incentiveSpirometerUuid, String dvtUuid) {
-        this.id = id;
+    public Patient(String patientId, String firstName, String lastName, int heightFeet, double heightInches, double weight, int age, String sex, int incentiveSpirometerId, int dvtId, String incentiveSpirometerUuid, String dvtUuid) {
         this.patientId = patientId;
         this.firstName = firstName;
         this.lastName = lastName;
