@@ -14,7 +14,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:text="Scan For Nearby Devices" />
+        android:text="@string/scan_for_nearby_devices_text"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/nearbyDevLabel"
@@ -22,7 +24,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="Nearby Devices"
+        android:text="@string/nearby_devices_text"
         android:textSize="20sp" />
 
     <ListView
@@ -38,7 +40,9 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:text="Refresh Paired Devices" />
+        android:text="@string/refresh_paired_devices_text"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/bondedDevLabel"
@@ -46,7 +50,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center|center_vertical"
-        android:text="Bonded Devices"
+        android:text="@string/bonded_devices_text"
         android:textSize="20sp" />
 
     <ListView

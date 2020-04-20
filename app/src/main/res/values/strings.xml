@@ -51,8 +51,7 @@
     <string name="lung_volume_label"><u>Volume</u></string>
     <string name="completed_ratio_label"><u>Reps</u></string>
     <string name="resistance_on_table"><u>Resistance</u></string>
-    <string name="get_dvt_session">Get Session From DVT</string>
-    <string name="get_spiro_session">Get Session From Spirometer</string>
+    <string name="get_session">Get Session</string>
     <string name="no_spirometer_message">There is no Incentive Spirometer for this patient. Add a device by editing the patient information.</string>
     <string name="no_dvt_message">There is no DVT Exerciser for this patient. Add a device by editing the patient information.</string>
 
@@ -110,5 +109,11 @@
     <string name="not_unique_id_message">A patient with this ID already exists. Please enter a unique patient ID.</string>
     <string name="not_unique_device_id">Nonunique device ID</string>
     <string name="not_unique_device_id_message">A device with this ID has already been used by a patient. Please enter a device ID that is unused.</string>
+    <string name="connect_spirometer_text">Connect Spirometer</string>
+    <string name="connect_dvt_text">Connect DVT</string>
+    <string name="scan_for_nearby_devices_text">Scan For Nearby Devices</string>
+    <string name="refresh_paired_devices_text">Refresh Paired Devices</string>
+    <string name="nearby_devices_text">Nearby Devices</string>
+    <string name="bonded_devices_text">Bonded Devices</string>
 
 </resources>

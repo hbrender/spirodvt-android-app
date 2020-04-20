@@ -185,7 +185,20 @@
         android:onClick="deleteSpirometerButtonClick"
         android:src="@drawable/ic_delete_28dp"/>
 
-    <TextView
+        <Button
+            android:id="@+id/connectSpiroButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="3"
+            android:layout_gravity="fill_horizontal"
+            android:onClick="connectDev"
+            android:text="@string/connect_spirometer_text"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="100dp"
+            android:drawableStart="@drawable/ic_bluetooth_white_24dp"/>
+
+        <TextView
         android:id="@+id/spirometerIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -240,15 +253,6 @@
             android:textColor="@color/text_colors"
             app:suffix="@string/ml" />
 
-        <Button
-            android:id="@+id/connectSpiroButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_columnSpan="3"
-            android:layout_gravity="fill_horizontal"
-            android:onClick="connectDev"
-            android:text="Connect Spirometer" />
-
         <View style="@style/Divider" />
 
     <TextView
@@ -274,7 +278,21 @@
         android:onClick="deleteDvtButtonClick"
         android:src="@drawable/ic_delete_28dp"/>
 
-    <TextView
+        <Button
+            android:id="@+id/connectDVTButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="3"
+            android:layout_gravity="fill_horizontal"
+            android:onClick="connectDev"
+            android:text="@string/connect_dvt_text"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="130dp"
+            android:drawableStart="@drawable/ic_bluetooth_white_24dp"/>
+
+
+        <TextView
         android:id="@+id/dvtIdTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -326,15 +344,6 @@
         android:layout_columnSpan="2"
         android:textColor="@color/text_colors"
         android:layout_gravity="fill_horizontal" />
-
-        <Button
-            android:id="@+id/connectDVTButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_columnSpan="3"
-            android:layout_gravity="fill_horizontal"
-            android:onClick="connectDev"
-            android:text="Connect DVT" />
 
 </GridLayout>
 </ScrollView>
