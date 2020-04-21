@@ -20,12 +20,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +83,9 @@ public class SpirometerFragment extends Fragment{
     private BluetoothAdapter bluetoothAdapter;
     private DatabaseHelper databaseHelper;
     private static File session;
+    private AlphaAnimation inAnim;
+    private AlphaAnimation outAnim;
+    private FrameLayout progressBarHolder;
 
     private List<IncentiveSpirometerData> allSpData;
     private List<BarEntry> allBarEntries;
@@ -138,6 +144,7 @@ public class SpirometerFragment extends Fragment{
         final View view = inflater.inflate(R.layout.fragment_spirometer, container, false);
 
         baseLayout = view.findViewById(R.id.spiroFragBaseLayout);
+        progressBarHolder = view.findViewById(R.id.spiroProgressBarHolder);
         getSpiroSession = view.findViewById(R.id.getSpiroDataButton);
         getSpiroSession.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -156,6 +163,7 @@ public class SpirometerFragment extends Fragment{
                             bluetoothThread = new BluetoothThread(handler);
                             boolean[] spiroOrDvt = {true, false};
                             bluetoothThread.startConnectThread(device, spiroOrDvt);
+                            startProgressBar();
                         }
                         else {
                             Toast.makeText(getActivity(), "Error: the device is not recognized in the database", Toast.LENGTH_LONG).show();
@@ -207,6 +215,29 @@ public class SpirometerFragment extends Fragment{
 
         return view;
     }
+
+    /**
+     * starts the progress bar
+     */
+    private void startProgressBar(){
+        getSpiroSession.setEnabled(false);
+        inAnim = new AlphaAnimation(0f, 1f);
+        inAnim.setDuration(200);
+        progressBarHolder.setAnimation(inAnim);
+        progressBarHolder.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * ends the progress bar
+     */
+    private void endProgressBar(){
+        outAnim = new AlphaAnimation(1f, 0f);
+        outAnim.setDuration(200);
+        progressBarHolder.setAnimation(outAnim);
+        progressBarHolder.setVisibility(View.GONE);
+        getSpiroSession.setEnabled(true);
+    }
+
 
     /**
      * gets paired devices
@@ -432,6 +463,7 @@ public class SpirometerFragment extends Fragment{
                             }
                             fr.close();
 
+                            endProgressBar();
                             updatePage(session);
                         }
                         catch(NumberFormatException e) {

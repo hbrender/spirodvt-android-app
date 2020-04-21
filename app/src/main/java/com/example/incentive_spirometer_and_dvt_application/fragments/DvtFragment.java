@@ -15,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -68,6 +70,9 @@ public class DvtFragment extends Fragment{
     private BluetoothAdapter bluetoothAdapter;
     private DatabaseHelper databaseHelper;
     private static File session;
+    private AlphaAnimation inAnim;
+    private AlphaAnimation outAnim;
+    private FrameLayout progressBarHolder;
 
     private List<DvtData> allDvtData;
     private List<BarEntry> allBarEntries;
@@ -125,6 +130,7 @@ public class DvtFragment extends Fragment{
 
         final View view = inflater.inflate(R.layout.fragment_dvt, container, false);
 
+        progressBarHolder = view.findViewById(R.id.dvtProgressBarHolder);
         getDvtSession = view.findViewById(R.id.getDvtDataButton);
         getDvtSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +151,7 @@ public class DvtFragment extends Fragment{
                             bluetoothThread = new BluetoothThread(handler);
                             boolean[] spiroOrDvt = {false, true};
                             bluetoothThread.startConnectThread(device, spiroOrDvt);
+                            startProgressBar();
                         }
                         else {
                             Toast.makeText(getActivity(), "Error: the device is not recognized in the database", Toast.LENGTH_LONG).show();
@@ -195,6 +202,31 @@ public class DvtFragment extends Fragment{
         return view;
     }
 
+    /**
+     * starts the progress bar
+     */
+    private void startProgressBar(){
+        getDvtSession.setEnabled(false);
+        inAnim = new AlphaAnimation(0f, 1f);
+        inAnim.setDuration(200);
+        progressBarHolder.setAnimation(inAnim);
+        progressBarHolder.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * ends the progress bar
+     */
+    private void endProgressBar(){
+        outAnim = new AlphaAnimation(1f, 0f);
+        outAnim.setDuration(200);
+        progressBarHolder.setAnimation(outAnim);
+        progressBarHolder.setVisibility(View.GONE);
+        getDvtSession.setEnabled(true);
+    }
+
+    /**
+     * gets paired devices
+     */
     private BluetoothDevice[] getBondedDevices(){
         Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
         BluetoothDevice[] bondedDevices = new BluetoothDevice[bt.size()];
@@ -211,6 +243,9 @@ public class DvtFragment extends Fragment{
         return bondedDevices;
     }
 
+    /**
+     * checks device UID against paired devices to see if it exists
+     */
     private BluetoothDevice checkDeviceExists(BluetoothDevice[] bondedDevices, String deviceUuid) {
         for(BluetoothDevice device : bondedDevices){
             ParcelUuid[] uuids = device.getUuids();
@@ -221,8 +256,11 @@ public class DvtFragment extends Fragment{
             }
         }
         return null;
-    } 
-    
+    }
+
+    /**
+     * checks to see if there is no assigned spirometer device
+     */
     private void checkForNoDevice() {
         Dvt dvt = databaseHelper.getDvt(patientId);
 
@@ -436,6 +474,9 @@ public class DvtFragment extends Fragment{
                     }
                     else{
                         try{
+                            bluetoothThread.endConnectThread();
+                            bluetoothThread.endConnectedThread();
+
                             session = new File(getContext().getFilesDir(), "session.csv");
 
                             FileWriter fr = new FileWriter(session, false);
@@ -446,10 +487,8 @@ public class DvtFragment extends Fragment{
                             }
                             fr.close();
 
+                            endProgressBar();
                             updatePage(session);
-
-                            bluetoothThread.endConnectThread();
-                            bluetoothThread.endConnectedThread();
                         }
                         catch(NumberFormatException e) {
                             e.printStackTrace();
@@ -464,6 +503,9 @@ public class DvtFragment extends Fragment{
         }
     });
 
+    /*
+    adds a new session worth of data
+     */
     private void updatePage(File session){
         CSVReader csvReader = new CSVReader();
         csvReader.readInDvtData(session, getContext());
