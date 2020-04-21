@@ -17,12 +17,18 @@ import java.io.FileReader;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
+/**
+ * file that reads data from a csv and can save the data directly to our local database
+ * 
+ * v1.0: 04/20/20
+ */
+
 public class CSVReader {
 
     public void readInSpirometerData (File spCsvFile, Context context) {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(spCsvFile));
-            Log.d("CSVREADER ERROR: ", "readInSpirometerData: " + spCsvFile);
+            
             String deviceUuid = csvReader.readLine().split(",")[0];
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
             String[] startArray = csvReader.readLine().split(",");
@@ -47,6 +53,7 @@ public class CSVReader {
     public void readInDvtData (File dvtCsvFile, Context context) {
         try {
             BufferedReader csvReader = new BufferedReader(new FileReader(dvtCsvFile));
+            
             String deviceUuid = csvReader.readLine().split(",")[0];
             int completedReps = Integer.parseInt(csvReader.readLine().split(",")[0]);
             String[] startArray = csvReader.readLine().split(",");
@@ -62,21 +69,23 @@ public class CSVReader {
             db.insertDvtData(dvtd);
 
         } catch (java.io.FileNotFoundException e) {
-            System.out.println("File not found: " + e.getStackTrace().toString());
+            Log.e(TAG, "readInDvtData: File not found: " + e.getStackTrace().toString());
         } catch (java.io.IOException f) {
-            System.out.println("error in input file: " + f.getStackTrace().toString());
+            Log.e(TAG, "readInDvtData: error in input file: " + f.getStackTrace().toString());
         }
     }
 
+    /**
+     *  convert a compatible array to a Date object (this array is from the csv read in)
+     */
     public Date convertArrayToDate(String[] array) {
 
         String stringDate = addZerosToString(array[0]) + "/" + addZerosToString(array[1]) + "/" + addZerosToString(array[2]) + " " + addZerosToString(array[3]) + ":" + addZerosToString(array[4]);
-        Log.d(TAG, "convertArrayToDate: " + stringDate);
         Date date = new Date();
         try {
             date = new SimpleDateFormat("dd/MM/yyyy HH:mm").parse(stringDate);
         } catch (java.text.ParseException e) {
-            System.out.println("error parsing date: " + e.getStackTrace().toString());
+            Log.e(TAG, "convertArrayToDate: error parsing date: " + e.getStackTrace().toString());
         }
         return date;
     }

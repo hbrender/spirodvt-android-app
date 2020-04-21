@@ -115,5 +115,6 @@
     <string name="refresh_paired_devices_text">Refresh Paired Devices</string>
     <string name="nearby_devices_text">Nearby Devices</string>
     <string name="bonded_devices_text">Bonded Devices</string>
+    <string name="details_text">Details</string>
 
 </resources>

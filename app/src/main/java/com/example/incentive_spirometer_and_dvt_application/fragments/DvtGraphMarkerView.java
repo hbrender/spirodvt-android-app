@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class dvt_graph_labels extends MarkerView{
+public class DvtGraphMarkerView extends MarkerView{
     private TextView session;
     private TextView breathRate;
     private TextView date;
@@ -27,7 +27,7 @@ public class dvt_graph_labels extends MarkerView{
     //private TextView end;
     private List<DvtData> data;
 
-        public dvt_graph_labels(Context context, int layoutResource, List<DvtData> data) {
+        public DvtGraphMarkerView(Context context, int layoutResource, List<DvtData> data) {
             super(context, layoutResource);
             // find your layout components
             session = (TextView) findViewById(R.id.session);

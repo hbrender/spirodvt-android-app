@@ -23,17 +23,19 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.sql.Types;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+
+/**
+ * sqlite database structure and applicable functions to manage local database
+ *
+ * v1.0 4/20/20
+ */
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
@@ -168,9 +170,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // found out had to implement this so that we wouldnt get the recursive calls to getDatabase
-    // http://www.programmersought.com/article/6020366286/ if you want to check it out
-    // also why this.defaultDB = db is in both onCreate and onUpgrade.
     @Override
     public SQLiteDatabase getWritableDatabase() {
 
@@ -184,7 +183,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return db;
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -312,7 +310,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2020-04-11 17:00:00', '2020-04-11 17:59:59', 'Easy', 10, 3)");
         db.execSQL("INSERT INTO " + TABLE_DVT_DATA + " VALUES(90, '2020-04-11 18:00:00', '2020-04-11 18:59:59', 'Easy', 10, 3)");
 
-
+// sample old data
 //        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 08:00:00', '2019-11-08 08:59:59', 2000, 10, 3)");
 //        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 09:00:00', '2019-11-08 09:59:59', 2000, 10, 0)");
 //        db.execSQL("INSERT INTO " + TABLE_INCENTIVE_SPIROMETER_DATA + " VALUES(10, '2019-11-08 10:00:00', '2019-11-08 10:59:59', 2000, 10, 0)");
@@ -793,33 +791,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(patient.getId()) });
     }
 
-    public String getDeviceUuid(int patientId, boolean isSpiro) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT * FROM " + TABLE_PATIENT
-                + " WHERE " + ID + " = ?";
-        Cursor c = db.rawQuery(query, new String[]{Integer.toString(patientId)});
-
-        Log.d(TAG, "getDeviceUuid: " + query);
-
-        String deviceUuid = null;
-
-        if (c != null && c.getCount() > 0) {
-            c.moveToFirst();
-
-            if(isSpiro){
-                deviceUuid = c.getString(c.getColumnIndex(INCENTIVE_SPIROMETER_UUID));
-            }
-            else{
-                deviceUuid = c.getString(c.getColumnIndex(DVT_UUID));
-            }
-
-            Log.d(TAG, "getDeviceUuid: " + deviceUuid);
-            return deviceUuid;
-        }
-        return null;
-
-    }
-
     // *************************** DoctorPatient table CRUD functions ****************************
 
     /**
@@ -970,6 +941,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // *************************** Incentive Spirometer Data table CRUD functions ****************************
 
+    public String getDeviceUuid(int patientId, boolean isSpiro) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_PATIENT
+                + " WHERE " + ID + " = ?";
+        Cursor c = db.rawQuery(query, new String[]{Integer.toString(patientId)});
+
+        Log.d(TAG, "getDeviceUuid: " + query);
+
+        String deviceUuid = null;
+
+        if (c != null && c.getCount() > 0) {
+            c.moveToFirst();
+
+            if(isSpiro){
+                deviceUuid = c.getString(c.getColumnIndex(INCENTIVE_SPIROMETER_UUID));
+            }
+            else{
+                deviceUuid = c.getString(c.getColumnIndex(DVT_UUID));
+            }
+
+            Log.d(TAG, "getDeviceUuid: " + deviceUuid);
+            return deviceUuid;
+        }
+        return null;
+
+    }
+
     /**
      * Get a given patient's spirometer data
      * @param patientId patient to read data from
@@ -977,11 +975,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<IncentiveSpirometerData> getPatinetSpirometerData(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
         String query = "SELECT isd.* FROM " + TABLE_PATIENT + " p, " + TABLE_INCENTIVE_SPIROMETER_DATA
                 + " isd WHERE p." + INCENTIVE_SPIROMETER_ID + " = isd." + ID
                 + " AND p." + ID + " = ?";
         Cursor c = db.rawQuery(query, new String[]{String.valueOf(patientId)});
+
+        Log.d(TAG, "getPatinetSpirometerData: " + query);
 
         List<IncentiveSpirometerData> spirometerData = new ArrayList<>();
 
@@ -995,7 +994,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     start = dateFormat.parse(c.getString(c.getColumnIndex(START_TIMESTAMP)));
                     end = dateFormat.parse(c.getString(c.getColumnIndex(END_TIMESTAMP)));
                 } catch (java.text.ParseException e) {
-                    Log.d(TAG, "getPatinetSpirometerData: ERROR PARSING DATE FROM database");
+                    Log.e(TAG, "getPatinetSpirometerData: ERROR PARSING DATE FROM database");
                 }
 
                 IncentiveSpirometerData spData = new IncentiveSpirometerData();
@@ -1006,7 +1005,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 spData.setNumberOfInhalations(c.getInt((c.getColumnIndex(NUMBER_OF_INHALATIONS))));
                 spData.setInhalationsCompleted(c.getInt(c.getColumnIndex(INHALATIONS_COMPLETED)));
 
-                spirometerData.add(spData); // you were missing this line
+                spirometerData.add(spData);
             } while (c.moveToNext());
         }
 
@@ -1049,7 +1048,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<DvtData> getPatinetDvtData(int patientId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Log.d(TAG, "getPatinetSpirometerData: PATIENT ID DATABASE: " + patientId);
         String query = "SELECT dvtd.* FROM " + TABLE_PATIENT + " p, " + TABLE_DVT_DATA
                 + " dvtd WHERE p." + DVT_ID + " = dvtd." + ID
                 + " AND p." + ID + " = ?";
@@ -1057,7 +1055,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         List<DvtData> dvtData = new ArrayList<>();
 
-        Log.d(TAG, "getPatientDvt: " + query);
+        Log.d(TAG, "getPatinetDvtData " + query);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
@@ -1069,7 +1067,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     start = dateFormat.parse(c.getString(c.getColumnIndex(START_TIMESTAMP)));
                     end = dateFormat.parse(c.getString(c.getColumnIndex(END_TIMESTAMP)));
                 } catch (java.text.ParseException e) {
-                    Log.d(TAG, "getPatinetDvtData: ERROR PARSING DATE FROM database");
+                    Log.e(TAG, "getPatinetDvtData: ERROR PARSING DATE FROM database");
                 }
 
                 DvtData dvtDatapoint = new DvtData();
@@ -1139,42 +1137,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             incentiveSpirometer.setUuid(c.getString(c.getColumnIndex(UUID)));
             incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
             incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
-            Log.d(TAG, "getIncentiveSpirometer: returning the spiro");
             return incentiveSpirometer;
         }
-        Log.d(TAG, "getIncentiveSpirometer: returning null");
         return null;
     }
 
     /**
-     * Get incentive spirometer by spirometer id
-     * @param spirometerId id of the desired spriometer
+     * Get incentive spirometer by spirometer Uuid
+     * @param spirometerUuid id of the desired spriometer
      * @return data for the desired spirometer
      */
-    public IncentiveSpirometer getIncentiveSpirometerBySpirometerId (int spirometerId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT i.* FROM " + TABLE_INCENTIVE_SPIROMETER + " i"
-                + " WHERE i." + ID + " = ?";
-
-        Cursor c = db.rawQuery(query, new String[]{String.valueOf(spirometerId)});
-
-        Log.d(TAG, "getIncentiveSpirometerBySpirometerId: "+ query);
-
-        if (c != null && c.getCount() > 0) {
-            c.moveToFirst();
-
-            // create incentive spirometer
-            IncentiveSpirometer incentiveSpirometer = new IncentiveSpirometer();
-            incentiveSpirometer.setId(c.getInt(c.getColumnIndex(ID)));
-            incentiveSpirometer.setUuid(c.getString(c.getColumnIndex(UUID)));
-            incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
-            incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
-
-            return incentiveSpirometer;
-        }
-        return null;
-    }
-
     public IncentiveSpirometer getIncentiveSpirometerByUuid(String spirometerUuid){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT i.* FROM " + TABLE_INCENTIVE_SPIROMETER + " i"
@@ -1194,10 +1166,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             incentiveSpirometer.setLungVolume(c.getInt(c.getColumnIndex(LUNG_VOLUME)));
             incentiveSpirometer.setNumberOfInhalations(c.getInt(c.getColumnIndex(NUMBER_OF_INHALATIONS)));
 
-            Log.d(TAG, "getIncentiveSpirometerByUuid: returning the spiro");
             return incentiveSpirometer;
         }
-        Log.d(TAG, "getIncentiveSpirometerByUuid: returning null");
         return null;
     }
 
@@ -1208,7 +1178,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void deleteSpirometerById(int spirometerId, int patientId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.d(TAG, "deleteSpirometerById: Spirometer:" + spirometerId + " Patient:" + patientId);
 
         ContentValues values = new ContentValues();
         values.putNull(INCENTIVE_SPIROMETER_ID);
@@ -1217,8 +1186,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int updateResult = db.update(TABLE_PATIENT, values, ID + " = ?", new String[] { String.valueOf(patientId) });
         int deleteDataResult = db.delete(TABLE_INCENTIVE_SPIROMETER_DATA, ID + " = ?", new String[] { String.valueOf(spirometerId)});
         int deleteDeviceResult = db.delete(TABLE_INCENTIVE_SPIROMETER, ID + " = ?", new String[] { String.valueOf(spirometerId)});
-
-        Log.d(TAG, "deleteSpirometerById: update:" + updateResult + " deleteData:" + deleteDataResult + " deleteDevice:" + deleteDeviceResult);
     }
 
     /**
@@ -1235,10 +1202,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(LUNG_VOLUME, incentiveSpirometer.getLungVolume());
 
         long result = db.insert(TABLE_INCENTIVE_SPIROMETER, null, values);
-        Log.d(TAG, "insertIncentiveSpirometer: " + result);
         return result != -1;
     }
 
+    /**
+     * updates the incentive spirometer assigned to a patient
+     * @param incentiveSpirometer
+     * @param patientId
+     * @return
+     */
     public boolean updateIncentiveSpiroForPatient(IncentiveSpirometer incentiveSpirometer, int patientId){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -1265,7 +1237,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, new String[]{incentiveSpirometer.getUuid()});
 
         if (c != null && c.getCount() > 0) {
-            Log.d(TAG, "incentiveSpirometerExists: true");
             return true;
         }
         return false;
@@ -1321,42 +1292,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * return the desired data for a given dvt id
-     * @param dvtId id of the dvt device of interest
+     * return the desired data for a given dvt uuid
+     * @param uuid id of the dvt device of interest
      * @return the full data of the dvt device of interest
      */
-    public Dvt getDvtByDvtId (int dvtId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT d.* FROM " + TABLE_DVT + " d"
-                + " WHERE d." + ID + " = ?";
-
-        Cursor c = db.rawQuery(query, new String[]{String.valueOf(dvtId)});
-
-        Log.d(TAG, "getDvt: "+ query);
-
-        if (c != null && c.getCount() > 0) {
-            c.moveToFirst();
-
-            // create dvt
-            Dvt dvt = new Dvt();
-            dvt.setId(c.getInt(c.getColumnIndex(ID)));
-            dvt.setUuid(c.getString(c.getColumnIndex(UUID)));
-            dvt.setResistance(c.getString(c.getColumnIndex(RESISTANCE)));
-            dvt.setNumberOfReps(c.getInt(c.getColumnIndex(NUMBER_OF_REPS)));
-
-            return dvt;
-        }
-        return null;
-    }
-
-    public Dvt getDvtByUuid(String uuid){
+      public Dvt getDvtByUuid(String uuid){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT d.* FROM " + TABLE_DVT + " d"
                 + " WHERE d." + UUID + " = ?";
 
         Cursor c = db.rawQuery(query, new String[]{ uuid });
 
-        Log.d(TAG, "getDvt: "+ query);
+        Log.d(TAG, "getDvtByUuid: "+ query);
 
         if (c != null && c.getCount() > 0) {
             c.moveToFirst();
@@ -1391,6 +1338,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    /**
+     * update the dvt device assigned to a patient
+     * @param dvt
+     * @param patientId
+     * @return
+     */
     public boolean updateDvtForPatient(Dvt dvt, int patientId){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -1417,10 +1370,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, new String[]{dvt.getUuid()});
 
         if (c != null && c.getCount() > 0) {
-            Log.d(TAG, "dvtExists: the dvt exists");
             return true;
         }
-        Log.d(TAG, "dvtExists: the dvt does not exist");
         return false;
     }
 
@@ -1447,7 +1398,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void deleteDvtById(int dvtId, int patientId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Log.d(TAG, "deleteDvtById: DVT:" + dvtId + " Patient:" + patientId);
 
         ContentValues values = new ContentValues();
         values.putNull(DVT_ID);
@@ -1457,9 +1407,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int deleteDataResult = db.delete(TABLE_DVT_DATA, ID + " = ?", new String[] { String.valueOf(dvtId)});
         int deleteDeviceResult = db.delete(TABLE_DVT, ID + " = ?", new String[] { String.valueOf(dvtId)});
 
-        Log.d(TAG, "deleteDvtById: update:" + updateResult + " deleteData:" + deleteDataResult + " deleteDevice:" + deleteDeviceResult);
     }
 
+    /**
+     * finds the desired device (spirometer or dvt device) based on a given Uuid
+     * @param uuid
+     * @param isSpiro
+     * @return
+     */
     public int getDeviceIdFromUuid(String uuid, boolean isSpiro){
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "";
@@ -1473,7 +1428,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         Cursor c = db.rawQuery(query, new String[]{ uuid });
 
-        Log.d(TAG, "getDeviceUuid: " + query);
+        Log.d(TAG, "getDeviceIdFromUuid: " + query);
 
         int deviceId = -1;
 

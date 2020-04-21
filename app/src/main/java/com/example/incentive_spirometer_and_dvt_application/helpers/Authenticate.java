@@ -3,7 +3,7 @@ package com.example.incentive_spirometer_and_dvt_application.helpers;
  * Authentication class which is used in the login activity
  * stores the input of the users and then validates it with the user info stored in the database
  *
- * @author(s) Cole deSilva, Isak Bjornson
+ * v1.0: 04/20/20
  */
 
 import android.util.Log;

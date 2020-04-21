@@ -50,27 +50,6 @@ public class DvtData implements Comparable <DvtData>{
         this.endTime = endTime;
     }
 
-    public String getStringTime(String flag) {
-        String strTime = " ";
-        if (flag.equalsIgnoreCase("start")){
-            strTime = startTime.toString();
-        }
-        else if(flag.equalsIgnoreCase("end")){
-            strTime = endTime.toString();
-        }
-
-        StringBuilder result = new StringBuilder();
-        String[] timeInfo = strTime.split("[ ]+");
-
-        result.append(timeInfo[1] + " ");
-        result.append(timeInfo[2] + ", " + timeInfo[5] + "   ");
-
-        String[] noSeconds = timeInfo[3].split("[:]+");
-        result.append(noSeconds[0] + ":");
-        result.append(noSeconds[1]);
-
-        return result.toString();
-    }
 
     public String getResistance() {
         return resistance;

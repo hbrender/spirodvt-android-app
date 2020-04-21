@@ -44,7 +44,6 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,7 +54,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+
+/**
+ * Displays a table and graph of a patient's Spirometry exercises
+ * - updates from bluetooth connection
+ * - can show specific session information
+ *
+ * Graphing software source:
+ *
+ * v1.0: 04/20/20
+ */
 
 
 public class SpirometerFragment extends Fragment{
@@ -107,7 +115,6 @@ public class SpirometerFragment extends Fragment{
 
     @Override
     public void onStart() {
-        Log.d(TAG, "onStart: ONSTART");
         super.onStart();
         createDataLists();
         drawGraph();
@@ -115,7 +122,6 @@ public class SpirometerFragment extends Fragment{
 
     @Override
     public void onResume() {
-        Log.d(TAG, "onResume: ONERESUME");
         super.onResume();
 
         createDataLists();
@@ -129,7 +135,7 @@ public class SpirometerFragment extends Fragment{
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
 
-        final View view = inflater.inflate(R.layout.activity_patient_spirometer_info, container, false);
+        final View view = inflater.inflate(R.layout.fragment_spirometer, container, false);
 
         baseLayout = view.findViewById(R.id.spiroFragBaseLayout);
         getSpiroSession = view.findViewById(R.id.getSpiroDataButton);
@@ -147,7 +153,6 @@ public class SpirometerFragment extends Fragment{
                     else {
                         BluetoothDevice device = checkDeviceExists(bondedDevices, patientSpiroUuid);
                         if(device != null){
-                            Log.d(TAG, "onClick: device exists");
                             bluetoothThread = new BluetoothThread(handler);
                             boolean[] spiroOrDvt = {true, false};
                             bluetoothThread.startConnectThread(device, spiroOrDvt);
@@ -160,6 +165,7 @@ public class SpirometerFragment extends Fragment{
             }
         });
 
+        //populates the options for the spinner for the range of days to choose from
         dataWindowSpinner = (Spinner) view.findViewById(R.id.dataWindowSpinner);
         ArrayList<String> numOfDays = new ArrayList<>();
         numOfDays.add("1");
@@ -202,6 +208,9 @@ public class SpirometerFragment extends Fragment{
         return view;
     }
 
+    /**
+     * gets paired devices
+     */
     private BluetoothDevice[] getBondedDevices(){
         Set<BluetoothDevice> bt = bluetoothAdapter.getBondedDevices();
         BluetoothDevice[] bondedDevices = new BluetoothDevice[bt.size()];
@@ -218,18 +227,23 @@ public class SpirometerFragment extends Fragment{
         return bondedDevices;
     }
 
+    /**
+     * checks device UID against paired devices to see if it exists
+     */
     private BluetoothDevice checkDeviceExists(BluetoothDevice[] bondedDevices, String deviceUuid) {
         for(BluetoothDevice device : bondedDevices){
             ParcelUuid[] uuids = device.getUuids();
             String checkAgainstUuid = uuids[0].toString().replaceAll("[-]", "");
-            Log.d(TAG, "checkDeviceExists: " + checkAgainstUuid);
             if(deviceUuid.equals(checkAgainstUuid)){
                 return device;
             }
         }
         return null;
     }
-    
+
+    /**
+     * checks to see if there is no assigned spirometer device
+     */
     private void checkForNoDevice() {
         IncentiveSpirometer spirometer = databaseHelper.getIncentiveSpirometer(patientId);
 
@@ -251,8 +265,9 @@ public class SpirometerFragment extends Fragment{
     }
 
     /*
-    gets the data for display from the database, sorts it into the different lists for display
-     */
+    * gets the data for display from the database, sorts it into the different lists, and preps
+    * for display in the graph format
+    */
     private void createDataLists() {
         allSpData = new ArrayList<>();
         allBarEntries = new ArrayList<>();
@@ -261,13 +276,17 @@ public class SpirometerFragment extends Fragment{
 
         Collections.sort(allSpData);
 
+        //convert all spirometer data into "bar entries" for display on graph, save to a seperate
+        //array list
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
             allBarEntries.add(new BarEntry(session, new float[] {sp.getInhalationsCompleted(), sp.getNumberOfInhalations() - sp.getInhalationsCompleted()}));
         }
 
+        // selects the most recent "day" of data
         setDataWindow(24);
 
+        // array adapter for table info
         ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(getContext(),
                 R.layout.spirometer_info_list_row, R.id.row_session, allSpData) {
             @Override
@@ -277,18 +296,15 @@ public class SpirometerFragment extends Fragment{
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
                 TextView date = (TextView) view.findViewById(R.id.date);
-                //TextView time = (TextView) view.findViewById(R.id.time);
                 TextView lung_volume = (TextView) view.findViewById(R.id.row_lung_volume);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_breaths_complete_ratio);
 
                 String breath_ratio_string = allSpData.get(position).getInhalationsCompleted() + " / " + allSpData.get(position).getNumberOfInhalations();
                 Date standardDate = allSpData.get(position).getStartTime();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
-                //SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format("%s",allSpData.size() - position));
                 date.setText(simpleDateFormat.format(standardDate));
-                //time.setText(simpleTimeFormat.format(allSpData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allSpData.get(position).getEndTime()));
                 lung_volume.setText(String.format("%s", allSpData.get(position).getLungVolume()));
                 breaths_completed_ratio.setText(breath_ratio_string);
 
@@ -300,41 +316,17 @@ public class SpirometerFragment extends Fragment{
 
     // sets the amount of data that will be shown on the graph
     // hoursToShow: the number of past hours the user would like to see, for example, if the user
-    // would like to see data from the past day this number should be 24
+    // if you would like to see data from the past day this number should be 24
     private void setDataWindow(int hoursToShow) {
-        Collections.sort(allSpData);//, Collections.<IncentiveSpirometerData>reverseOrder());
-
-        for (int session = 1; session <= allSpData.size(); session++) {
-            IncentiveSpirometerData sp = allSpData.get(session - 1);
-            float inhalation_rate = (float) ((double)sp.getInhalationsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(sp.getEndTime().getTime() - sp.getStartTime().getTime())));
-            allBarEntries.add(new BarEntry(session, new float[] {inhalation_rate, sp.getNumberOfInhalations() - inhalation_rate}));
-        }
+        Collections.sort(allSpData);
 
         shownEntries.clear();
-
-
-//        for (int session = allSpData.size(); session >= 1 && session >= allSpData.size() - (numOfDaysInt * 16); session --) {
-//            shownEntries.add(allBarEntries.get(session - 1));
-//        }
 
         for (int session = 1; session <= allSpData.size(); session++) {
             if (session > allSpData.size() - (numOfDaysInt * 16)) {
                 shownEntries.add(allBarEntries.get(session - 1));
             }
         }
-//
-//        Calendar now = new GregorianCalendar();
-//        for (int session = 1; session <= allSpData.size(); session++) {
-//            IncentiveSpirometerData sp = allSpData.get(session - 1);
-//            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - sp.getStartTime().getTime()));
-//            if (timeDiff < hoursToShow) {
-//                shownEntries.add(allBarEntries.get(session - 1));
-//            }
-//        }
-
-//        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
-//            shownEntries.add(new BarEntry(session, 0));
-//        }
     }
 
     // draws the features of the graph, including removing the description and legend, setting
@@ -355,42 +347,24 @@ public class SpirometerFragment extends Fragment{
         set.setDrawValues(false);
 
         XAxis x = graph.getXAxis();
-        //x.setPosition(XAxis.XAxisPosition.BOTTOM);
-        //x.setLabelRotationAngle(-90);
         x.setDrawGridLines(false);
         x.setDrawAxisLine(true);
         x.setDrawLabels(false);
 
-//        for (int i = 0; i < shownEntries.size(); i++) {
-//            Log.d(TAG, "drawGraph: session:" + shownEntries.get(i).getX());
-//        }
-
         if (shownEntries.size() > 0 && shownEntries.size() < numOfDaysInt *  16) {
             x.setAxisMinimum(shownEntries.get(0).getX() - 1);
-            Log.d(TAG, "drawGraph: Min: " + (shownEntries.get(0).getX() - 1));
             x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX()+ ((numOfDaysInt * 16) - shownEntries.get(shownEntries.size() - 1).getX()));
-            Log.d(TAG, "drawGraph: Max: " + (shownEntries.get(shownEntries.size() - 1).getX()+ 1));
         } else if (shownEntries.size() > 0) {
             x.setAxisMinimum(shownEntries.get(0).getX() - 1);
-            Log.d(TAG, "drawGraph: Min: " + (shownEntries.get(0).getX() - 1));
-            x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX()+ 1);
-            Log.d(TAG, "drawGraph: Max: " + (shownEntries.get(shownEntries.size() - 1).getX()+ 1));
+            x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX() + 1);
         }
-
-//        x.setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getBarLabel(BarEntry barEntry) {
-//                return super.getBarLabel(barEntry);
-//            }
-//        });
 
         YAxis yleft = graph.getAxisLeft();
         graph.getAxisRight().setEnabled(false);
 
         yleft.setAxisMinimum(0);
-        //yleft.setAxisMaximum(12);
 
-        IMarker marker = new spiro_graph_labels(getContext(), R.layout.graph_labels, allSpData);
+        IMarker marker = new SpirometerGraphMarkerView(getContext(), R.layout.spirometer_graph_labels, allSpData);
         graph.setMarker(marker);
         graph.setScaleEnabled(false);
 
@@ -475,6 +449,9 @@ public class SpirometerFragment extends Fragment{
     });
 
 
+    /*
+    adds a new session worth of data
+     */
     private void updatePage(File session){
         CSVReader csvReader = new CSVReader();
         csvReader.readInSpirometerData(session, getContext());

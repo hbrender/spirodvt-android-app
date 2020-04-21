@@ -19,6 +19,12 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
+/**
+ * Java class that contains client bluetooth thread and connected thread to manage
+ * bluetooth connections
+ *
+ * v1.0: 04/20/20
+ */
 public class BluetoothThread {
     static final String TAG = "BluetoothThreadTag";
     static final int STATE_LISTENING = 1;
@@ -128,7 +134,6 @@ public class BluetoothThread {
 
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
-                Log.d(TAG, "ConnectThread: " + uuids[0].getUuid().toString());
                 tmp = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed", e);

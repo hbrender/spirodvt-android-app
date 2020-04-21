@@ -9,7 +9,7 @@ public class Patient {
     private double heightInches; // units = in.
     private double weight; // units = lb.
     private int age; // units = years
-    private String sex; // male, female, other?
+    private String sex; // male, female, other
     private int incentiveSpirometerId;
     private int dvtId;
     private String incentiveSpirometerUuid;

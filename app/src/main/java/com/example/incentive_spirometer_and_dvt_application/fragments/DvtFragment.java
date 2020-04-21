@@ -31,8 +31,6 @@ import com.example.incentive_spirometer_and_dvt_application.helpers.CSVReader;
 import com.example.incentive_spirometer_and_dvt_application.helpers.DatabaseHelper;
 import com.example.incentive_spirometer_and_dvt_application.models.Dvt;
 import com.example.incentive_spirometer_and_dvt_application.models.DvtData;
-import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometer;
-import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.IMarker;
 import com.github.mikephil.charting.components.XAxis;
@@ -40,8 +38,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -127,7 +123,7 @@ public class DvtFragment extends Fragment{
         // Inflate the layout for this fragment
         setHasOptionsMenu(true);
 
-        final View view = inflater.inflate(R.layout.activity_patient_dvt_info, container, false);
+        final View view = inflater.inflate(R.layout.fragment_dvt, container, false);
 
         getDvtSession = view.findViewById(R.id.getDvtDataButton);
         getDvtSession.setOnClickListener(new View.OnClickListener() {
@@ -385,7 +381,7 @@ public class DvtFragment extends Fragment{
         yleft.setAxisMinimum(0);
         yleft.setAxisMaximum(12);
 
-        IMarker marker = new dvt_graph_labels(getContext(), R.layout.dvt_graph_labels, allDvtData);
+        IMarker marker = new DvtGraphMarkerView(getContext(), R.layout.dvt_graph_labels, allDvtData);
         graph.setMarker(marker);
         graph.setScaleEnabled(false);
 

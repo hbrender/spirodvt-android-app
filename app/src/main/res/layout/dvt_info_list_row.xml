@@ -29,17 +29,6 @@
         android:gravity="center"
         />
 
-<!--    <TextView-->
-<!--        android:id="@+id/time"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_column="2"-->
-<!--        android:layout_row="0"-->
-<!--        android:layout_rowSpan="2"-->
-<!--        android:layout_rowWeight="1"-->
-<!--        android:layout_columnWeight="2"-->
-<!--        android:gravity="center"-->
-<!--        />-->
-
     <TextView
         android:id="@+id/resistance_dvt_table_row"
         android:layout_width="0dp"
