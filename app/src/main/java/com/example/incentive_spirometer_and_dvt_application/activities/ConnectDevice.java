@@ -133,6 +133,8 @@ public class ConnectDevice extends AppCompatActivity {
         nearbyDevices = (ListView) findViewById(R.id.nearbyDevices);
         message = (TextView) findViewById(R.id.message);
         baseLayout = (LinearLayout) findViewById(R.id.baseLayout);
+        nearbyDevicesAL = new ArrayList<>();
+        nearbyDevicesStrings = new ArrayList<>();
 
         // registering receivers so we can get callbacks from the bluetooth thread
         IntentFilter foundIntentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
