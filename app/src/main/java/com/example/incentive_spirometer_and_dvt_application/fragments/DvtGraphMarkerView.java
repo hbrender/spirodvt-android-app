@@ -1,11 +1,19 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
+/**
+ * code that provides details for the pop up labels that appear when bars on the dvt
+ * graph are clicked
+ * code originally sourced from: https://github.com/PhilJay/MPAndroidChart
+ * modifications made
+ *
+ * v1.0 4/22/20
+ */
+
 import android.content.Context;
 import android.widget.TextView;
 
 import com.example.incentive_spirometer_and_dvt_application.R;
 import com.example.incentive_spirometer_and_dvt_application.models.DvtData;
-import com.example.incentive_spirometer_and_dvt_application.models.IncentiveSpirometerData;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.highlight.Highlight;
@@ -17,24 +25,19 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 public class DvtGraphMarkerView extends MarkerView{
     private TextView session;
     private TextView breathRate;
     private TextView date;
-    //private TextView start;
-    //private TextView end;
     private List<DvtData> data;
 
         public DvtGraphMarkerView(Context context, int layoutResource, List<DvtData> data) {
             super(context, layoutResource);
-            // find your layout components
+            // find layout components
             session = (TextView) findViewById(R.id.session);
             breathRate = (TextView) findViewById(R.id.ex);
             date = (TextView) findViewById(R.id.date);
-            //start = (TextView) findViewById(R.id.start);
-            //end = (TextView) findViewById(R.id.end);
             this.data = data;
         }
         // callbacks everytime the MarkerView is redrawn, can be used to update the
@@ -48,14 +51,10 @@ public class DvtGraphMarkerView extends MarkerView{
             String formatExercises = "Exercises: " + dvtd.getRepsCompleted();
             String formatSession = "Session: " + format2.format(e.getX());
             String formatDate = "Date: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
-            //String formatStart = "Start Time: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
-            //String formatEnd = "End Time:  " + dateFormat.format(data.get((int) e.getX() - 1).getEndTime());
 
             session.setText(formatSession);
             breathRate.setText(formatExercises);
             date.setText(formatDate);
-//            start.setText(formatStart);
-//            end.setText(formatEnd);
 
             // this will perform necessary layouting
             super.refreshContent(e, highlight);
@@ -69,7 +68,5 @@ public class DvtGraphMarkerView extends MarkerView{
             }
             return mOffset;
         }
-
-
     }
 

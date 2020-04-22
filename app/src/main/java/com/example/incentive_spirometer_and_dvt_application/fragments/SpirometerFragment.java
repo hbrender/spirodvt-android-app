@@ -1,9 +1,13 @@
+package com.example.incentive_spirometer_and_dvt_application.fragments;
+
 /**
- * Coded by: Kelsey Lally
  * Description: creates a graph of patient data as pulled from the database. Also shows a scrollable
  * table of the same data
+ *
+ * Graphing software source: https://github.com/PhilJay/MPAndroidChart
+ *
+ * v1.0: 04/22/20
  */
-package com.example.incentive_spirometer_and_dvt_application.fragments;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -55,17 +59,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Displays a table and graph of a patient's Spirometry exercises
- * - updates from bluetooth connection
- * - can show specific session information
- *
- * Graphing software source:
- *
- * v1.0: 04/20/20
- */
-
-
 public class SpirometerFragment extends Fragment{
     static final String TAG = "PatientSpiroInfoFrag";
     static final int STATE_LISTENING = 1;
@@ -99,8 +92,6 @@ public class SpirometerFragment extends Fragment{
 
     private int patientId;
     private int doctorId;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,7 +174,7 @@ public class SpirometerFragment extends Fragment{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String numOfDays = parent.getItemAtPosition(position).toString();
                 numOfDaysInt = Integer.parseInt(numOfDays);
-                setDataWindow(24 * numOfDaysInt);
+                setDataWindow();
                 drawGraph();
             }
             @Override
@@ -264,10 +255,10 @@ public class SpirometerFragment extends Fragment{
         }
     }
 
-    /*
-    * gets the data for display from the database, sorts it into the different lists, and preps
-    * for display in the graph format
-    */
+    /**
+     * retrieves data from the database and converts it to an array list, converts into format
+     * needed for graphing software, formats and shows the table
+     */
     private void createDataLists() {
         allSpData = new ArrayList<>();
         allBarEntries = new ArrayList<>();
@@ -276,7 +267,7 @@ public class SpirometerFragment extends Fragment{
 
         Collections.sort(allSpData);
 
-        //convert all spirometer data into "bar entries" for display on graph, save to a seperate
+        //convert all spirometer data into "bar entries" for display on graph, save to a separate
         //array list
         for (int session = 1; session <= allSpData.size(); session++) {
             IncentiveSpirometerData sp = allSpData.get(session - 1);
@@ -284,7 +275,7 @@ public class SpirometerFragment extends Fragment{
         }
 
         // selects the most recent "day" of data
-        setDataWindow(24);
+        setDataWindow();
 
         // array adapter for table info
         ArrayAdapter<IncentiveSpirometerData> arrayAdapter = new ArrayAdapter<IncentiveSpirometerData>(getContext(),
@@ -314,10 +305,11 @@ public class SpirometerFragment extends Fragment{
         dataListView.setAdapter(arrayAdapter);
     }
 
-    // sets the amount of data that will be shown on the graph
-    // hoursToShow: the number of past hours the user would like to see, for example, if the user
-    // if you would like to see data from the past day this number should be 24
-    private void setDataWindow(int hoursToShow) {
+    /**
+     * sets data that will be shown on the graph based on the number of days selected
+     * from the spinner
+     */
+        private void setDataWindow() {
         Collections.sort(allSpData);
 
         shownEntries.clear();
@@ -450,7 +442,7 @@ public class SpirometerFragment extends Fragment{
 
 
     /*
-    adds a new session worth of data
+     * adds a new session worth of data from a given, compatible file
      */
     private void updatePage(File session){
         CSVReader csvReader = new CSVReader();
