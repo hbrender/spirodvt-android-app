@@ -25,9 +25,11 @@ import android.os.Message;
 import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -59,6 +61,9 @@ public class ConnectDevice extends AppCompatActivity {
     static final int REQUEST_LOCATION = 7;
 
     private static boolean isSpiro;
+    private AlphaAnimation inAnim;
+    private AlphaAnimation outAnim;
+    private FrameLayout progressBarHolder;
 
     LinearLayout baseLayout;
     Button listDevices, scan;
@@ -121,6 +126,7 @@ public class ConnectDevice extends AppCompatActivity {
         }
 
         // getting global view variables
+        progressBarHolder = findViewById(R.id.connectProgressBarHolder);
         listDevices = (Button) findViewById(R.id.listDevices);
         scan = (Button) findViewById(R.id.scanNearby);
         listView = (ListView) findViewById(R.id.listView);
@@ -188,6 +194,7 @@ public class ConnectDevice extends AppCompatActivity {
                 if(uuids.length > 0){
                     bluetoothThread = new BluetoothThread(handler);
                     bluetoothThread.startConnectThread(temp, null);
+                    startProgressBar();
                 }
             }
         });
@@ -285,13 +292,12 @@ public class ConnectDevice extends AppCompatActivity {
                 case STATE_CONNECTED_THREAD_SUCCESS:
                     // connection was created and we send a prompt with what we want back
                     // either a spriometer ID or DVT ID
-                    byte[] bytes;
                     if(isSpiro){
-                        bytes = "spiroid\r\n".getBytes(Charset.defaultCharset());
+                        byte[] bytes = "spiroid\r\n".getBytes(Charset.defaultCharset());
                         bluetoothThread.sendMessage(bytes);
                     }
                     else{
-                        bytes = "dvtid\r\n".getBytes(Charset.defaultCharset());
+                        byte[] bytes = "dvtid\r\n".getBytes(Charset.defaultCharset());
                         bluetoothThread.sendMessage(bytes);
                     }
                     Log.d(TAG, "handleMessage: success in sending message");
@@ -303,6 +309,7 @@ public class ConnectDevice extends AppCompatActivity {
                     unregisterReceiver(nearbyReceiver);
                     unregisterReceiver(bondReciever);
 
+                    endProgressBar();
                     Intent failedReturnIntent = new Intent();
                     setResult(RESULT_CANCELED, failedReturnIntent);
                     finish();
@@ -312,33 +319,45 @@ public class ConnectDevice extends AppCompatActivity {
                     byte[] readBuff = (byte[]) msg.obj;
                     String[] deviceId = new String(readBuff, 0, msg.arg1).split("\\n");
 
-                    try{
-                        String tempId = deviceId[0].trim();
-                        bluetoothThread.endConnectThread();
-                        bluetoothThread.endConnectedThread();
+                    String realDevId = deviceId[0].trim();
+                    bluetoothThread.endConnectThread();
+                    bluetoothThread.endConnectedThread();
 
-                        unregisterReceiver(nearbyReceiver);
-                        unregisterReceiver(bondReciever);
+                    unregisterReceiver(nearbyReceiver);
+                    unregisterReceiver(bondReciever);
 
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("isSpiro", isSpiro);
-                        returnIntent.putExtra("idThingy", tempId);
-                        setResult(RESULT_OK, returnIntent);
-                        finish();
-                    }
-                    catch(NumberFormatException e) {
-                        e.printStackTrace();
+                    endProgressBar();
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("isSpiro", isSpiro);
+                    returnIntent.putExtra("deviceUuid", realDevId);
+                    setResult(RESULT_OK, returnIntent);
+                    finish();
 
-                        Intent returnIntent = new Intent();
-                        returnIntent.putExtra("idThingy", "none");
-                        setResult(RESULT_CANCELED, returnIntent);
-                        finish();
-                    }
                     break;
             }
             return true;
         }
     });
+
+    /**
+     * starts the progress bar
+     */
+    private void startProgressBar(){
+        inAnim = new AlphaAnimation(0f, 1f);
+        inAnim.setDuration(200);
+        progressBarHolder.setAnimation(inAnim);
+        progressBarHolder.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * ends the progress bar
+     */
+    private void endProgressBar(){
+        outAnim = new AlphaAnimation(1f, 0f);
+        outAnim.setDuration(200);
+        progressBarHolder.setAnimation(outAnim);
+        progressBarHolder.setVisibility(View.GONE);
+    }
 
     /**
      * starts the connected thread with the device we want...this will enable the hardware to send us back data
@@ -347,5 +366,32 @@ public class ConnectDevice extends AppCompatActivity {
     public static void manageConnectedSocket(BluetoothSocket socket){
         bluetoothThread.startConnectedThread(socket);
         Log.d(TAG, "manageConnectedSocket: managing open connect socket");
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        try{
+            unregisterReceiver(nearbyReceiver);
+            unregisterReceiver(bondReciever);
+        }
+        catch(Exception e){
+            Log.d(TAG, "onBackPressed:receivers already unregistered");
+        }
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        try{
+            unregisterReceiver(nearbyReceiver);
+            unregisterReceiver(bondReciever);
+        }
+        catch(Exception e){
+            Log.d(TAG, "onDestroy: receivers already unregistered");
+        }
+
+        super.onDestroy();
     }
 }

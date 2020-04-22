@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,7 +59,9 @@ public class PatientInfoActivity extends AppCompatActivity {
     // Incentive Spirometer components
     TextView spirometerIdTV;
     EditText spirometerIdEditText;
+    TextView spirometerNumIdTV;
     EditText inhalationsNumIdEditText;
+    TextView lungVolumeTV;
     EditText lungVolumeEditText;
     ImageView deleteSpirometerButton;
     Button connectSpiroButton;
@@ -64,7 +69,9 @@ public class PatientInfoActivity extends AppCompatActivity {
     // DVT Prevention Device components
     TextView dvtIdTV;
     EditText dvtIdEditText;
+    TextView repsNumIdTV;
     EditText repsNumIdEditText;
+    TextView dvtResistanceTV;
     Spinner dvtResistanceSpinner;
     ImageView deleteDvtButton;
     Button connectDVTButton;
@@ -100,6 +107,12 @@ public class PatientInfoActivity extends AppCompatActivity {
         deleteSpirometerButton = findViewById(R.id.deleteSpirometerButton);
         deleteDvtButton = findViewById(R.id.deleteDvtButton);
 
+        spirometerNumIdTV = findViewById(R.id.inhalationNumTextView);
+        lungVolumeTV = findViewById(R.id.lungVolumeTextView);
+        repsNumIdTV = findViewById(R.id.repsNumTextView);
+        dvtResistanceTV = findViewById(R.id.resistanceTextView);
+
+
         connectSpiroButton = findViewById(R.id.connectSpiroButton);
         connectDVTButton = findViewById(R.id.connectDVTButton);
 
@@ -118,6 +131,13 @@ public class PatientInfoActivity extends AppCompatActivity {
                 Dvt dvt = databaseHelper.getDvt(patientId);
                 setPatientInfo(patient, incentiveSpirometer, dvt);
             }
+            else {
+                enableConnectSpiroButton(true);
+                makeSpiroDevFieldsAppear(false);
+                enableConnectDvtButton(true);
+                makeDvtDevFieldsAppear(false);
+            }
+
         }
     }
 
@@ -147,24 +167,23 @@ public class PatientInfoActivity extends AppCompatActivity {
         }
 
         if (incentiveSpirometer != null) {
-            spirometerIdTV.setVisibility(View.VISIBLE);
-            spirometerIdEditText.setVisibility(View.VISIBLE);
+            makeSpiroDevFieldsAppear(true);
+
             spirometerIdEditText.setText(String.valueOf(incentiveSpirometer.getUuid()));
             inhalationsNumIdEditText.setText(String.valueOf(incentiveSpirometer.getNumberOfInhalations()));
             lungVolumeEditText.setText(String.valueOf(incentiveSpirometer.getLungVolume()));
-            connectSpiroButton.setEnabled(false);
+            enableConnectSpiroButton(false);
         } else {
-            spirometerIdTV.setVisibility(View.GONE);
-            spirometerIdEditText.setVisibility(View.GONE);
+            makeSpiroDevFieldsAppear(false);
+
             spirometerIdEditText.setText(null);
             inhalationsNumIdEditText.setText(null);
             lungVolumeEditText.setText(null);
-            connectSpiroButton.setEnabled(true);
+            enableConnectSpiroButton(true);
         }
 
         if (dvt != null) {
-            dvtIdTV.setVisibility(View.VISIBLE);
-            dvtIdEditText.setVisibility(View.VISIBLE);
+            makeDvtDevFieldsAppear(true);
             dvtIdEditText.setText(String.valueOf(dvt.getUuid()));
             repsNumIdEditText.setText(String.valueOf(dvt.getNumberOfReps()));
 
@@ -178,14 +197,14 @@ public class PatientInfoActivity extends AppCompatActivity {
                 default:
                     dvtResistanceSpinner.setSelection(2);
             }
-            connectDVTButton.setEnabled(false);
+            enableConnectDvtButton(false);
         } else {
-            dvtIdTV.setVisibility(View.GONE);
-            dvtIdEditText.setVisibility(View.GONE);
+            makeDvtDevFieldsAppear(false);
+
             dvtIdEditText.setText(null);
             repsNumIdEditText.setText(null);
             dvtResistanceSpinner.setSelection(0);
-            connectDVTButton.setEnabled(true);
+            enableConnectDvtButton(true);
         }
 
         disablePatientEdit();
@@ -456,8 +475,20 @@ public class PatientInfoActivity extends AppCompatActivity {
         dvtResistanceSpinner.setEnabled(false);
         deleteSpirometerButton.setVisibility(View.INVISIBLE);
         deleteDvtButton.setVisibility(View.INVISIBLE);
-        connectSpiroButton.setVisibility(View.GONE);
-        connectDVTButton.setVisibility(View.GONE);
+
+        if(spirometerIdEditText.getText().toString().length() == 0){
+            enableConnectSpiroButton(false);
+        }
+        else{
+            connectSpiroButton.setVisibility(View.GONE);
+        }
+
+        if(dvtIdEditText.getText().toString().length() == 0){
+            enableConnectDvtButton(false);
+        }
+        else{
+            connectDVTButton.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -473,21 +504,30 @@ public class PatientInfoActivity extends AppCompatActivity {
         sexSpinner.setEnabled(true);
 
         if (spirometerIdEditText.getText().toString().length() == 0) {
-            spirometerIdEditText.setEnabled(false);
             connectSpiroButton.setVisibility(View.VISIBLE);
+            enableConnectSpiroButton(true);
+            makeSpiroDevFieldsAppear(false);
+
+            spirometerIdEditText.setEnabled(false);
+
         } else {
             connectSpiroButton.setVisibility(View.GONE);
+            makeSpiroDevFieldsAppear(true);
             deleteSpirometerButton.setVisibility(View.VISIBLE);
         }
-
         inhalationsNumIdEditText.setEnabled(true);
         lungVolumeEditText.setEnabled(true);
 
+        //if there is no device
         if (dvtIdEditText.getText().toString().length() == 0) {
             connectDVTButton.setVisibility(View.VISIBLE);
+            enableConnectDvtButton(true);
+            makeDvtDevFieldsAppear(false);
+
             dvtIdEditText.setEnabled(false);
         } else {
             connectDVTButton.setVisibility(View.GONE);
+            makeDvtDevFieldsAppear(true);
             deleteDvtButton.setVisibility(View.VISIBLE);
         }
         repsNumIdEditText.setEnabled(true);
@@ -516,7 +556,9 @@ public class PatientInfoActivity extends AppCompatActivity {
                         spirometerIdEditText.setEnabled(false);
 
                         connectSpiroButton.setVisibility(View.VISIBLE);
-                        connectSpiroButton.setEnabled(true);
+                        enableConnectSpiroButton(true);
+                        makeSpiroDevFieldsAppear(false);
+
                         // hide delete button
                         deleteSpirometerButton.setVisibility(View.INVISIBLE);
 
@@ -551,7 +593,8 @@ public class PatientInfoActivity extends AppCompatActivity {
                         dvtIdEditText.setEnabled(false);
 
                         connectDVTButton.setVisibility(View.VISIBLE);
-                        connectDVTButton.setEnabled(true);
+                        enableConnectDvtButton(true);
+                        makeDvtDevFieldsAppear(false);
 
                         // hide delete button
                         deleteDvtButton.setVisibility(View.INVISIBLE);
@@ -631,6 +674,7 @@ public class PatientInfoActivity extends AppCompatActivity {
         }
     }
 
+    // onclick for the connect device buttons
     public void connectDev(View v){
         Button view = (Button) v;
         Intent intent = new Intent(this, ConnectDevice.class);
@@ -650,21 +694,22 @@ public class PatientInfoActivity extends AppCompatActivity {
         if(data != null){
             if(requestCode == CONNECT_REQUEST_CODE && resultCode == RESULT_OK){
                 boolean isSpiroResult = data.getBooleanExtra("isSpiro", true);
-                String tempId = data.getStringExtra("idThingy");
+                String deviceUuid = data.getStringExtra("deviceUuid");
 
-                if(isSpiroResult && !tempId.equals("none")){
-                    spirometerIdTV.setVisibility(View.VISIBLE);
-                    spirometerIdEditText.setVisibility(View.VISIBLE);
-                    spirometerIdEditText.setText(tempId+"");
+                if(isSpiroResult && !deviceUuid.equals("none")){
+
+                    makeSpiroDevFieldsAppear(true);
+                    spirometerIdEditText.setText(deviceUuid+"");
                     spirometerIdEditText.setEnabled(false);
-                    connectSpiroButton.setEnabled(false);
+
+                    connectSpiroButton.setVisibility(View.GONE);
                 }
-                else if(!isSpiroResult && !tempId.equals("none")){
-                    dvtIdTV.setVisibility(View.VISIBLE);
-                    dvtIdEditText.setVisibility(View.VISIBLE);
-                    dvtIdEditText.setText(tempId+"");
+                else if(!isSpiroResult && !deviceUuid.equals("none")){
+                    makeDvtDevFieldsAppear(true);
+                    dvtIdEditText.setText(deviceUuid+"");
                     dvtIdEditText.setEnabled(false);
-                    connectDVTButton.setEnabled(false);
+
+                    connectDVTButton.setVisibility(View.GONE);
                 }
 
             }
@@ -672,6 +717,70 @@ public class PatientInfoActivity extends AppCompatActivity {
                 GridLayout layout = findViewById(R.id.gridLayout);
                 Snackbar.make(layout,"Error: not able to get connection with device to store the ID", Snackbar.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    // enables or disables the connect spirometer button
+    public void enableConnectSpiroButton(boolean flag){
+        if(flag){
+            connectSpiroButton.setEnabled(true);
+            connectSpiroButton.setBackgroundColor(ContextCompat.getColor(PatientInfoActivity.this, R.color.colorAccent));
+        }
+        else{
+            connectSpiroButton.setEnabled(false);
+            connectSpiroButton.setBackgroundColor(Color.GRAY);
+        }
+    }
+
+    // enables or disables the connect dvt button
+    public void enableConnectDvtButton(boolean flag){
+        if(flag){
+            connectDVTButton.setEnabled(true);
+            connectDVTButton.setBackgroundColor(ContextCompat.getColor(PatientInfoActivity.this, R.color.colorAccent));
+        }
+        else{
+            connectDVTButton.setEnabled(false);
+            connectDVTButton.setBackgroundColor(Color.GRAY);
+        }
+    }
+
+    // makes the spirometer device fields appear or disappear
+    public void makeSpiroDevFieldsAppear(boolean flag){
+        if(flag){
+            spirometerIdTV.setVisibility(View.VISIBLE);
+            spirometerIdEditText.setVisibility(View.VISIBLE);
+            spirometerNumIdTV.setVisibility(View.VISIBLE);
+            inhalationsNumIdEditText.setVisibility(View.VISIBLE);
+            lungVolumeTV.setVisibility(View.VISIBLE);
+            lungVolumeEditText.setVisibility(View.VISIBLE);
+        }
+        else {
+            spirometerIdTV.setVisibility(View.GONE);
+            spirometerIdEditText.setVisibility(View.GONE);
+            spirometerNumIdTV.setVisibility(View.GONE);
+            inhalationsNumIdEditText.setVisibility(View.GONE);
+            lungVolumeTV.setVisibility(View.GONE);
+            lungVolumeEditText.setVisibility(View.GONE);
+        }
+    }
+
+    // makes the dvt device fields appear of disappear
+    public void makeDvtDevFieldsAppear(boolean flag){
+        if(flag){
+            dvtIdTV.setVisibility(View.VISIBLE);
+            dvtIdEditText.setVisibility(View.VISIBLE);
+            repsNumIdTV.setVisibility(View.VISIBLE);
+            repsNumIdEditText.setVisibility(View.VISIBLE);
+            dvtResistanceTV.setVisibility(View.VISIBLE);
+            dvtResistanceSpinner.setVisibility(View.VISIBLE);
+        }
+        else{
+            dvtIdTV.setVisibility(View.GONE);
+            dvtIdEditText.setVisibility(View.GONE);
+            repsNumIdTV.setVisibility(View.GONE);
+            repsNumIdEditText.setVisibility(View.GONE);
+            dvtResistanceTV.setVisibility(View.GONE);
+            dvtResistanceSpinner.setVisibility(View.GONE);
         }
     }
 

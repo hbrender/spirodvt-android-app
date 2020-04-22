@@ -1,15 +1,5 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
-/**
- * Displays a table and graph of a patient's Dvt prevention exercises
- * - updates from bluetooth connection
- * - can show specific session information
- *
- * Graphing software source: https://github.com/PhilJay/MPAndroidChart
- *
- * v1.0: 04/22/20
- */
-
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -25,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -63,6 +55,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+
 public class DvtFragment extends Fragment{
     static final String TAG = "PatientDvtInfoFragment";
     static final int STATE_LISTENING = 1;
@@ -77,6 +70,9 @@ public class DvtFragment extends Fragment{
     private BluetoothAdapter bluetoothAdapter;
     private DatabaseHelper databaseHelper;
     private static File session;
+    private AlphaAnimation inAnim;
+    private AlphaAnimation outAnim;
+    private FrameLayout progressBarHolder;
 
     private List<DvtData> allDvtData;
     private List<BarEntry> allBarEntries;
@@ -134,6 +130,7 @@ public class DvtFragment extends Fragment{
 
         final View view = inflater.inflate(R.layout.fragment_dvt, container, false);
 
+        progressBarHolder = view.findViewById(R.id.dvtProgressBarHolder);
         getDvtSession = view.findViewById(R.id.getDvtDataButton);
         getDvtSession.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +151,7 @@ public class DvtFragment extends Fragment{
                             bluetoothThread = new BluetoothThread(handler);
                             boolean[] spiroOrDvt = {false, true};
                             bluetoothThread.startConnectThread(device, spiroOrDvt);
+                            startProgressBar();
                         }
                         else {
                             Toast.makeText(getActivity(), "Error: the device is not recognized in the database", Toast.LENGTH_LONG).show();
@@ -162,8 +160,6 @@ public class DvtFragment extends Fragment{
                 }
             }
         });
-
-        //populates the options for the spinner for the range of days to choose from
         dataWindowSpinner = (Spinner) view.findViewById(R.id.dataWindowSpinner);
         ArrayList<String> numOfDays = new ArrayList<>();
         numOfDays.add("1");
@@ -181,7 +177,7 @@ public class DvtFragment extends Fragment{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String numOfDays = parent.getItemAtPosition(position).toString();
                 numOfDaysInt = Integer.parseInt(numOfDays);
-                setDataWindow();
+                setDataWindow(24 * numOfDaysInt);
                 drawGraph();
             }
             @Override
@@ -204,6 +200,28 @@ public class DvtFragment extends Fragment{
         drawGraph();
 
         return view;
+    }
+
+    /**
+     * starts the progress bar
+     */
+    private void startProgressBar(){
+        getDvtSession.setEnabled(false);
+        inAnim = new AlphaAnimation(0f, 1f);
+        inAnim.setDuration(200);
+        progressBarHolder.setAnimation(inAnim);
+        progressBarHolder.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * ends the progress bar
+     */
+    private void endProgressBar(){
+        outAnim = new AlphaAnimation(1f, 0f);
+        outAnim.setDuration(200);
+        progressBarHolder.setAnimation(outAnim);
+        progressBarHolder.setVisibility(View.GONE);
+        getDvtSession.setEnabled(true);
     }
 
     /**
@@ -263,9 +281,8 @@ public class DvtFragment extends Fragment{
         }
     }
 
-    /**
-     * retrieves data from the database and converts it to an array list, converts into format
-     * needed for graphing software, formats and shows the table
+    /*
+    gets the data for display from the database, sorts it into the different lists for display
      */
     private void createDataLists() {
         allDvtData = new ArrayList<>();
@@ -275,17 +292,16 @@ public class DvtFragment extends Fragment{
 
         Collections.sort(allDvtData);
 
-        //convert all dvt data into "bar entries" for display on graph, save to a separate
-        //array list
+        // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
+        Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
+
         for (int session = 1; session <= allDvtData.size(); session++) {
             DvtData dvtd = allDvtData.get(session - 1);
             allBarEntries.add(new BarEntry(session, new float[] {dvtd.getRepsCompleted(), dvtd.getNumberOfReps() - dvtd.getRepsCompleted()}));
         }
 
-        // selects the most recent "day" of data
-        setDataWindow();
+        setDataWindow(24);
 
-        // array adapter for table info
         ArrayAdapter<DvtData> arrayAdapter = new ArrayAdapter<DvtData>(getContext(),
                 R.layout.dvt_info_list_row, R.id.row_session, allDvtData) {
             @Override
@@ -296,15 +312,18 @@ public class DvtFragment extends Fragment{
 
                 TextView session = (TextView) view.findViewById(R.id.row_session);
                 TextView date = (TextView) view.findViewById(R.id.date);
+                //TextView time = (TextView) view.findViewById(R.id.time);
                 TextView resistance = (TextView) view.findViewById(R.id.resistance_dvt_table_row);
                 TextView breaths_completed_ratio = (TextView) view.findViewById(R.id.row_ex_complete_ratio);
 
                 String breath_ratio_string = allDvtData.get(position).getRepsCompleted() + " / " + allDvtData.get(position).getNumberOfReps();
                 Date standardDate = allDvtData.get(position).getStartTime();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yy");
+                //SimpleDateFormat simpleTimeFormat = new SimpleDateFormat("HH:mm");
 
                 session.setText(String.format(String.format("%s",allDvtData.size() - position)));
                 date.setText(simpleDateFormat.format(standardDate));
+                //time.setText(simpleTimeFormat.format(allDvtData.get(position).getStartTime()) + " - " + simpleTimeFormat.format(allDvtData.get(position).getEndTime()));
                 resistance.setText(allDvtData.get(position).getResistance());
 
                 breaths_completed_ratio.setText(breath_ratio_string);
@@ -315,11 +334,11 @@ public class DvtFragment extends Fragment{
         dataListView.setAdapter(arrayAdapter);
     }
 
-    /**
-     * sets data that will be shown on the graph based on the number of days selected
-     * from the spinner
-     */
-    private void setDataWindow() {
+
+    // sets the amount of data that will be shown on the graph
+    // hoursToShow: the number of past hours the user would like to see, for example, if the user
+    // would like to see data from the past day this number should be 24
+    private void setDataWindow(int hoursToShow) {
         Collections.sort(allDvtData);
 
         for (int session = 1; session <= allDvtData.size(); session++) {
@@ -335,14 +354,24 @@ public class DvtFragment extends Fragment{
                 shownEntries.add(allBarEntries.get(session - 1));
             }
         }
+
+
+        //        Calendar now = new GregorianCalendar();
+//        for (int session = 1; session <= allDvtData.size(); session++) {
+//            DvtData dvtd = allDvtData.get(session - 1);
+//            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - dvtd.getStartTime().getTime()));
+//            if (timeDiff < hoursToShow) {
+//                shownEntries.add(allBarEntries.get(session - 1));
+//            }
+//        }
+//        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
+//            shownEntries.add(new BarEntry(session, 0));
+//        }
     }
 
-    /** draws the features of the graph, including removing the description and legend, setting
-     * touch selection to enabled, setting the data set to the graph, and setting all labels
-     * visible for the graph and bars on the graph
-     *
-     * underlying graphing code provided by:https://github.com/PhilJay/MPAndroidChart
-     */
+    // draws the features of the graph, including removing the description and legend, setting
+    // touch selection to enabled, setting the data set to the graph, and setting all labels
+    // visible for the graph and bars on the graph
     private void drawGraph() {
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
@@ -358,6 +387,8 @@ public class DvtFragment extends Fragment{
         set.setDrawValues(false);
 
         XAxis x = graph.getXAxis();
+        //x.setPosition(XAxis.XAxisPosition.BOTTOM);
+        //x.setLabelRotationAngle(-90);
         x.setDrawGridLines(false);
         x.setDrawAxisLine(true);
         x.setDrawLabels(false);
@@ -373,6 +404,14 @@ public class DvtFragment extends Fragment{
             x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX()+ 1);
             Log.d(TAG, "drawGraph: Max: " + (shownEntries.get(shownEntries.size() - 1).getX()+ 1));
         }
+
+//        x.setValueFormatter(new ValueFormatter() {
+//            @Override
+//            public String getBarLabel(BarEntry barEntry) {
+//                return super.getBarLabel(barEntry);
+//            }
+//        });
+
 
         YAxis yleft = graph.getAxisLeft();
         graph.getAxisRight().setEnabled(false);
@@ -435,6 +474,9 @@ public class DvtFragment extends Fragment{
                     }
                     else{
                         try{
+                            bluetoothThread.endConnectThread();
+                            bluetoothThread.endConnectedThread();
+
                             session = new File(getContext().getFilesDir(), "session.csv");
 
                             FileWriter fr = new FileWriter(session, false);
@@ -445,10 +487,8 @@ public class DvtFragment extends Fragment{
                             }
                             fr.close();
 
+                            endProgressBar();
                             updatePage(session);
-
-                            bluetoothThread.endConnectThread();
-                            bluetoothThread.endConnectedThread();
                         }
                         catch(NumberFormatException e) {
                             e.printStackTrace();
@@ -464,7 +504,7 @@ public class DvtFragment extends Fragment{
     });
 
     /*
-     * adds a new session worth of data from a given, compatible file
+    adds a new session worth of data
      */
     private void updatePage(File session){
         CSVReader csvReader = new CSVReader();

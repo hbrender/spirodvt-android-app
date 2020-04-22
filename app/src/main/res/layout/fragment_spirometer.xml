@@ -7,6 +7,24 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <FrameLayout
+    android:id="@+id/spiroProgressBarHolder"
+    android:animateLayoutChanges="true"
+    android:visibility="gone"
+    android:alpha="0.4"
+    android:background="#000000"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/getSessionProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_gravity="center" />
+</FrameLayout>
+
     <Button
         android:id="@+id/getSpiroDataButton"
         android:layout_width="wrap_content"
