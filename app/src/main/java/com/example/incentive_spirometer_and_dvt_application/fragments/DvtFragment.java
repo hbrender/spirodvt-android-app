@@ -337,9 +337,12 @@ public class DvtFragment extends Fragment{
         }
     }
 
-    // draws the features of the graph, including removing the description and legend, setting
-    // touch selection to enabled, setting the data set to the graph, and setting all labels
-    // visible for the graph and bars on the graph
+    /** draws the features of the graph, including removing the description and legend, setting
+     * touch selection to enabled, setting the data set to the graph, and setting all labels
+     * visible for the graph and bars on the graph
+     *
+     * underlying graphing code provided by:https://github.com/PhilJay/MPAndroidChart
+     */
     private void drawGraph() {
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
@@ -459,7 +462,7 @@ public class DvtFragment extends Fragment{
             return true;
         }
     });
-    
+
     /*
      * adds a new session worth of data from a given, compatible file
      */
