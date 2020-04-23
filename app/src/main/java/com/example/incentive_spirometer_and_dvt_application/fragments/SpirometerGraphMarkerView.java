@@ -20,6 +20,15 @@ import java.util.Locale;
 
 import static com.example.incentive_spirometer_and_dvt_application.fragments.SpirometerFragment.TAG;
 
+/**
+ * code that provides details for the pop up labels that appear when bars on the spirometer
+ * graph are clicked
+ * code originally sourced from: https://github.com/PhilJay/MPAndroidChart
+ * modifications made
+ *
+ * v1.0 4/22/20
+ */
+
 class SpirometerGraphMarkerView extends MarkerView {
     private TextView session;
     private TextView breathRate;
@@ -42,7 +51,7 @@ class SpirometerGraphMarkerView extends MarkerView {
 
         IncentiveSpirometerData sp;
         try{
-            sp = data.get(data.size() - (int) e.getX());
+            sp = data.get((int) e.getX() - 1);
             String formatBreaths = "Breaths: " + sp.getInhalationsCompleted() + " / " + sp.getNumberOfInhalations();
             String formatSession = "Session: " + format2.format(e.getX());
             String formatDate = "Date: " + dateFormat.format(sp.getStartTime());

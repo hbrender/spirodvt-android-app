@@ -257,6 +257,14 @@ public class ConnectDevice extends AppCompatActivity {
         if(requestCode == REQUEST_LOCATION){
             if(grantResults.length > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED)){
                 Log.d(TAG, "onRequestPermissionsResult: permissions were granted!");
+                nearbyDevicesAL = new ArrayList<>();
+                nearbyDevicesStrings = new ArrayList<>();
+                nearbyArrayAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, nearbyDevicesStrings);
+                nearbyDevices.setAdapter(nearbyArrayAdapter);
+                startDiscovery();
+                Snackbar.make(findViewById(R.id.baseLayout), "Click on a nearby device to initiate the pairing process.",
+                        Snackbar.LENGTH_SHORT)
+                        .show();
                 startDiscovery();
             }
         }
@@ -288,17 +296,21 @@ public class ConnectDevice extends AppCompatActivity {
                     break;
                 case STATE_CONNECTION_FAILED:
                     Log.d(TAG, "handleMessage: connection failed :(");
+                    endProgressBar();
+                    Snackbar.make(findViewById(R.id.baseLayout), "Error: connection could not be made",
+                            Snackbar.LENGTH_SHORT)
+                            .show();
                     break;
                 case STATE_CONNECTED_THREAD_SUCCESS:
                     // connection was created and we send a prompt with what we want back
                     // either a spriometer ID or DVT ID
+                    byte[] spiroBytes = "spiroid\r\n".getBytes(Charset.defaultCharset());
+                    byte[] dvtBytes = "dvtid\r\n".getBytes(Charset.defaultCharset());
                     if(isSpiro){
-                        byte[] bytes = "spiroid\r\n".getBytes(Charset.defaultCharset());
-                        bluetoothThread.sendMessage(bytes);
+                        bluetoothThread.sendMessage(spiroBytes);
                     }
                     else{
-                        byte[] bytes = "dvtid\r\n".getBytes(Charset.defaultCharset());
-                        bluetoothThread.sendMessage(bytes);
+                        bluetoothThread.sendMessage(dvtBytes);
                     }
                     Log.d(TAG, "handleMessage: success in sending message");
                     break;
