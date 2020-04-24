@@ -1,5 +1,14 @@
 package com.example.incentive_spirometer_and_dvt_application.fragments;
 
+/**
+ * Description: creates a graph of patient data as pulled from the database. Also shows a scrollable
+ * table of the same data
+ *
+ * Graphing software source: https://github.com/PhilJay/MPAndroidChart
+ *
+ * v1.0: 04/22/20
+ */
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -54,7 +63,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
 
 public class DvtFragment extends Fragment{
     static final String TAG = "PatientDvtInfoFragment";
@@ -160,6 +168,8 @@ public class DvtFragment extends Fragment{
                 }
             }
         });
+
+        //populates the options for the spinner for the range of days to choose from
         dataWindowSpinner = (Spinner) view.findViewById(R.id.dataWindowSpinner);
         ArrayList<String> numOfDays = new ArrayList<>();
         numOfDays.add("1");
@@ -177,7 +187,7 @@ public class DvtFragment extends Fragment{
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String numOfDays = parent.getItemAtPosition(position).toString();
                 numOfDaysInt = Integer.parseInt(numOfDays);
-                setDataWindow(24 * numOfDaysInt);
+                setDataWindow();
                 drawGraph();
             }
             @Override
@@ -281,8 +291,9 @@ public class DvtFragment extends Fragment{
         }
     }
 
-    /*
-    gets the data for display from the database, sorts it into the different lists for display
+    /**
+     * retrieves data from the database and converts it to an array list, converts into format
+     * needed for graphing software, formats and shows the table
      */
     private void createDataLists() {
         allDvtData = new ArrayList<>();
@@ -292,16 +303,17 @@ public class DvtFragment extends Fragment{
 
         Collections.sort(allDvtData);
 
-        // date for use with test data only - will need to be updated to reflect the CURRENT DATE when in real use
-        Calendar now = new GregorianCalendar(2019, Calendar.NOVEMBER, 11, 7, 0, 0);
-
+        //convert all spirometer data into "bar entries" for display on graph, save to a separate
+        //array list
         for (int session = 1; session <= allDvtData.size(); session++) {
             DvtData dvtd = allDvtData.get(session - 1);
             allBarEntries.add(new BarEntry(session, new float[] {dvtd.getRepsCompleted(), dvtd.getNumberOfReps() - dvtd.getRepsCompleted()}));
         }
 
-        setDataWindow(24);
+        // selects the most recent "day" of data
+        setDataWindow();
 
+        // array adapter for table info
         ArrayAdapter<DvtData> arrayAdapter = new ArrayAdapter<DvtData>(getContext(),
                 R.layout.dvt_info_list_row, R.id.row_session, allDvtData) {
             @Override
@@ -335,17 +347,12 @@ public class DvtFragment extends Fragment{
     }
 
 
-    // sets the amount of data that will be shown on the graph
-    // hoursToShow: the number of past hours the user would like to see, for example, if the user
-    // would like to see data from the past day this number should be 24
-    private void setDataWindow(int hoursToShow) {
+    /**
+     * sets data that will be shown on the graph based on the number of days selected
+     * from the spinner
+     */
+    private void setDataWindow() {
         Collections.sort(allDvtData);
-
-        for (int session = 1; session <= allDvtData.size(); session++) {
-            DvtData dvtd = allDvtData.get(session - 1);
-            float ex_rate = (float) ((double)dvtd.getRepsCompleted()*3600.0/(double) (TimeUnit.MILLISECONDS.toSeconds(dvtd.getEndTime().getTime() - dvtd.getStartTime().getTime())));
-            allBarEntries.add(new BarEntry(session, new float[] {ex_rate, dvtd.getNumberOfReps() - dvtd.getRepsCompleted()}));
-        }
 
         shownEntries.clear();
 
@@ -354,24 +361,14 @@ public class DvtFragment extends Fragment{
                 shownEntries.add(allBarEntries.get(session - 1));
             }
         }
-
-
-        //        Calendar now = new GregorianCalendar();
-//        for (int session = 1; session <= allDvtData.size(); session++) {
-//            DvtData dvtd = allDvtData.get(session - 1);
-//            int timeDiff = (int) (TimeUnit.MILLISECONDS.toHours(now.getTimeInMillis() - dvtd.getStartTime().getTime()));
-//            if (timeDiff < hoursToShow) {
-//                shownEntries.add(allBarEntries.get(session - 1));
-//            }
-//        }
-//        for (int session = shownEntries.size(); session < numOfDaysInt * 10; session++){
-//            shownEntries.add(new BarEntry(session, 0));
-//        }
     }
 
-    // draws the features of the graph, including removing the description and legend, setting
-    // touch selection to enabled, setting the data set to the graph, and setting all labels
-    // visible for the graph and bars on the graph
+    /** draws the features of the graph, including removing the description and legend, setting
+     * touch selection to enabled, setting the data set to the graph, and setting all labels
+     * visible for the graph and bars on the graph
+     *
+     * underlying graphing code provided by:https://github.com/PhilJay/MPAndroidChart
+     */
     private void drawGraph() {
         graph.getDescription().setEnabled(false);
         graph.getLegend().setEnabled(false);
@@ -387,8 +384,6 @@ public class DvtFragment extends Fragment{
         set.setDrawValues(false);
 
         XAxis x = graph.getXAxis();
-        //x.setPosition(XAxis.XAxisPosition.BOTTOM);
-        //x.setLabelRotationAngle(-90);
         x.setDrawGridLines(false);
         x.setDrawAxisLine(true);
         x.setDrawLabels(false);
@@ -404,14 +399,6 @@ public class DvtFragment extends Fragment{
             x.setAxisMaximum(shownEntries.get(shownEntries.size() - 1).getX()+ 1);
             Log.d(TAG, "drawGraph: Max: " + (shownEntries.get(shownEntries.size() - 1).getX()+ 1));
         }
-
-//        x.setValueFormatter(new ValueFormatter() {
-//            @Override
-//            public String getBarLabel(BarEntry barEntry) {
-//                return super.getBarLabel(barEntry);
-//            }
-//        });
-
 
         YAxis yleft = graph.getAxisLeft();
         graph.getAxisRight().setEnabled(false);
@@ -504,7 +491,7 @@ public class DvtFragment extends Fragment{
     });
 
     /*
-    adds a new session worth of data
+     * adds a new session worth of data from a given, compatible file
      */
     private void updatePage(File session){
         CSVReader csvReader = new CSVReader();

@@ -48,9 +48,9 @@ public class DvtGraphMarkerView extends MarkerView{
             DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy", Locale.US);
 
             DvtData dvtd = data.get((int) e.getX() - 1);
-            String formatExercises = "Exercises: " + dvtd.getRepsCompleted();
+            String formatExercises = "Exercises: " + dvtd.getRepsCompleted() + " / " + dvtd.getNumberOfReps();
             String formatSession = "Session: " + format2.format(e.getX());
-            String formatDate = "Date: " + dateFormat.format(data.get((int) e.getX() - 1).getStartTime());
+            String formatDate = "Date: " + dateFormat.format(dvtd.getStartTime());
 
             session.setText(formatSession);
             breathRate.setText(formatExercises);
