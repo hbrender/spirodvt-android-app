@@ -103,6 +103,7 @@ public class ConnectDevice extends AppCompatActivity {
 
                 if(tempDev.getBondState() == BluetoothDevice.BOND_BONDED){
                     Log.d(TAG, "BondBroadcast: already bonded");
+                    updateBondedList();
                 }
                 if(tempDev.getBondState() == BluetoothDevice.BOND_BONDING){
                     Log.d(TAG, "BondBroadcast: currently bonding");
