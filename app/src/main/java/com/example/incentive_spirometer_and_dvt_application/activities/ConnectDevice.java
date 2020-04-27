@@ -266,7 +266,6 @@ public class ConnectDevice extends AppCompatActivity {
                 Snackbar.make(findViewById(R.id.baseLayout), "Click on a nearby device to initiate the pairing process.",
                         Snackbar.LENGTH_SHORT)
                         .show();
-                startDiscovery();
             }
         }
     }
